@@ -1,85 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TLSM Kedah</title>
-  <style>
-    /* Reset margins and force full-screen viewport */
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      background-color: #0f172a; /* Matches your Web App theme */
-    }
-
-    /* Fixed iFrame container */
-    iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* Floating Fullscreen Button */
-    .fullscreen-btn {
-      position: fixed;
-      bottom: 15px;
-      right: 15px;
-      z-index: 9999;
-      background: rgba(99, 102, 241, 0.9);
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      backdrop-filter: blur(5px);
-      transition: all 0.2s ease;
-    }
-
-    .fullscreen-btn:hover {
-      background: #4f46e5;
-      transform: scale(1.05);
-    }
-  </style>
+  <title>TLSM KEDAH : MCQ SHEET EXAM</title>
 </head>
 <body>
-
-  <!-- Clean iFrame -->
   <iframe 
-    id="tlsmApp"
-    src="https://script.google.com/macros/s/AKfycbwSMgN_CgF1BjVg9PA5t5CobHA14EljcH7UA29yFOwJv1c2Ba9zB3k2p0x1hiP1UfZe/exec" 
-    allow="fullscreen">
+    src="https://script.google.com/macros/s/AKfycbxZuhajdf5Pup9DCYCK4iVWpSOCpnY2i_UQy9zGYBcimlMZNO_Ox0y9kfwcvmTOAqS0/exec"
+    width="100%"
+    height="100%"
+    allowfullscreen="true"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none;">
   </iframe>
-
-  <!-- Fullscreen Toggle Button -->
-  <button class="fullscreen-btn" onclick="toggleFullscreen()">🖥️ Enter Fullscreen</button>
-
-  <script>
-    function toggleFullscreen() {
-      const elem = document.documentElement;
-      if (!document.fullscreenElement) {
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) { /* Safari */
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) { /* IE11 */
-          elem.msRequestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
-    }
-  </script>
-
-</body>
-</html>
