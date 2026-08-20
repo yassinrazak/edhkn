@@ -118,37 +118,8 @@
           <p class="text-xs text-slate-400 mt-1">Malaysia Ministry of Health ALS Certification</p>
         </div>
 
-        <!-- AUTH TABS (REGISTER DEFAULT) -->
-        <div class="flex rounded-xl bg-slate-950/80 p-1 mb-6 border border-slate-800/80">
-          <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm">Register</button>
-          <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white">Log In</button>
-        </div>
-
-        <!-- REGISTER FORM (DEFAULT ACTIVE) -->
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left" autocomplete="off">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
-            <input type="text" id="reg-name" required autocomplete="off" placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
-            <input type="text" id="reg-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Department / Facility</label>
-            <input type="text" id="reg-dept" required autocomplete="off" placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Create Password</label>
-            <input type="password" id="reg-pass" required autocomplete="new-password" placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <button type="submit" id="btn-reg-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
-            <span>Register Practitioner</span>
-          </button>
-        </form>
-
-        <!-- LOGIN FORM (HIDDEN BY DEFAULT) -->
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left hidden" autocomplete="off">
+        <!-- LOGIN FORM -->
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left" autocomplete="off">
           <div>
             <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
             <input type="text" id="login-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
@@ -624,9 +595,8 @@
 
     // INITIALIZATION & SESSION CHECK
     window.onload = () => {
-      // Clear forms on page refresh to ensure clean blank start
+      // Clear login form on page refresh
       document.getElementById('form-login')?.reset();
-      document.getElementById('form-register')?.reset();
 
       const savedSession = localStorage.getItem('als_active_session');
       if (savedSession) {
@@ -634,7 +604,6 @@
         updateNavUser();
         showPage('dashboard');
       } else {
-        switchTab('register');
         showPage('auth');
       }
     };
@@ -711,45 +680,6 @@
       return users ? JSON.parse(users) : [];
     }
 
-    // REGISTER FUNCTIONALITY
-    async function handleRegister(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-reg-submit');
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Registering...</span>`;
-
-      const name = document.getElementById('reg-name').value.trim();
-      const id = document.getElementById('reg-id').value.trim();
-      const dept = document.getElementById('reg-dept').value.trim();
-      const pass = document.getElementById('reg-pass').value;
-
-      const users = getRegisteredUsers();
-      const existingUser = users.find(u => u.id.toLowerCase() === id.toLowerCase());
-      if (existingUser) {
-        alert("This Staff ID / IC Number is already registered locally. Please log in.");
-        btn.disabled = false;
-        btn.innerHTML = `<span>Register Practitioner</span>`;
-        switchTab('login');
-        document.getElementById('login-id').value = id;
-        return;
-      }
-
-      const newUser = { id, name, dept, pass };
-      users.push(newUser);
-      localStorage.setItem('als_registered_users', JSON.stringify(users));
-
-      await sendWebhookRequest({ action: 'register', id, name, dept, pass });
-
-      currentUser = { id: newUser.id, name: newUser.name, dept: newUser.dept };
-      localStorage.setItem('als_active_session', JSON.stringify(currentUser));
-
-      alert("Registration successful! Welcome to the ALS Assessment Platform.");
-      btn.disabled = false;
-      btn.innerHTML = `<span>Register Practitioner</span>`;
-      updateNavUser();
-      showPage('dashboard');
-    }
-
     // LOGIN FUNCTIONALITY
     async function handleLogin(e) {
       e.preventDefault();
@@ -785,7 +715,7 @@
         updateNavUser();
         showPage('dashboard');
       } else {
-        alert("Invalid Staff ID or Password! Please check your credentials or register.");
+        alert("Invalid Staff ID or Password! Please check your credentials.");
       }
     }
 
@@ -800,29 +730,6 @@
       if (pageName === 'dashboard') pageDashboard.classList.remove('hidden');
       if (pageName === 'quiz') pageQuiz.classList.remove('hidden');
       if (pageName === 'results') pageResults.classList.remove('hidden');
-    }
-
-    function switchTab(tab) {
-      const loginBtn = document.getElementById('tab-login-btn');
-      const regBtn = document.getElementById('tab-register-btn');
-      const formLogin = document.getElementById('form-login');
-      const formReg = document.getElementById('form-register');
-
-      // Always reset inputs when switching tabs
-      formLogin.reset();
-      formReg.reset();
-
-      if (tab === 'register') {
-        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
-        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
-        formReg.classList.remove('hidden');
-        formLogin.classList.add('hidden');
-      } else {
-        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
-        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
-        formLogin.classList.remove('hidden');
-        formReg.classList.add('hidden');
-      }
     }
 
     function updateNavUser() {
@@ -840,7 +747,6 @@
       localStorage.removeItem('als_active_session');
       currentUser = null;
       updateNavUser();
-      switchTab('register');
       showPage('auth');
     }
 
@@ -848,7 +754,6 @@
       stopTimer();
       if (currentUser) showPage('dashboard');
       else {
-        switchTab('register');
         showPage('auth');
       }
     }
