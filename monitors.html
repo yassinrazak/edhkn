@@ -66,15 +66,11 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }
 
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-
     /* MONITOR UI STYLES */
     .monitor-container {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       height: 48vh;
       min-height: 360px;
       transition: height 0.3s ease;
@@ -122,6 +118,54 @@
       filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.85));
     }
 
+    /* STATUS INDICATORS ROW BELOW ECG CANVAS */
+    .monitor-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 32px;
+      font-family: monospace;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    .status-cpr {
+      background: rgba(46, 160, 67, 0.25);
+      border: 1px solid #2ea043;
+      color: #2ea043;
+      animation: pulse 1s infinite;
+    }
+    .sync-badge {
+      border: 1px solid var(--neon-red);
+      background: rgba(255, 59, 48, 0.2);
+      color: var(--neon-red);
+      animation: pulse 1s infinite;
+    }
+    .pacer-badge {
+      border: 1px solid var(--neon-blue);
+      background: rgba(0, 229, 255, 0.2);
+      color: var(--neon-blue);
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+    }
+    .defib-badge {
+      border: 1px solid var(--neon-red);
+      background: rgba(255, 59, 48, 0.25);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 59, 48, 0.7);
+    }
+    .shock-delivered-badge {
+      background: rgba(255, 59, 48, 0.9) !important;
+      border-color: #ffffff !important;
+      animation: pulse 0.3s infinite;
+    }
+
     .huge-vitals-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -156,77 +200,6 @@
       font-weight: 800;
       line-height: 1.1;
       text-shadow: 0 0 10px currentColor;
-    }
-
-    .status-overlay {
-      position: absolute;
-      top: 10px; right: 10px;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-weight: bold;
-      font-family: monospace;
-      font-size: 1.1rem;
-      display: none;
-      z-index: 20;
-    }
-    .status-cpr {
-      background: rgba(46, 160, 67, 0.25);
-      border: 2px solid #2ea043;
-      color: #2ea043;
-      display: block;
-      animation: pulse 1s infinite;
-    }
-    .sync-indicator {
-      position: absolute;
-      top: 10px; left: 10px;
-      padding: 4px 10px;
-      border: 2px solid var(--neon-red);
-      background: rgba(255, 59, 48, 0.2);
-      color: var(--neon-red);
-      border-radius: 4px;
-      font-weight: bold;
-      font-family: monospace;
-      font-size: 1rem;
-      display: none;
-      z-index: 20;
-      animation: pulse 1s infinite;
-    }
-    .pacer-indicator {
-      position: absolute;
-      top: 10px; left: 130px;
-      padding: 4px 10px;
-      border: 2px solid var(--neon-blue);
-      background: rgba(0, 229, 255, 0.2);
-      color: var(--neon-blue);
-      border-radius: 4px;
-      font-weight: bold;
-      font-family: monospace;
-      font-size: 0.9rem;
-      display: none;
-      z-index: 20;
-      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
-    }
-    .defib-status {
-      position: absolute;
-      top: 10px; left: 50%;
-      transform: translateX(-50%);
-      padding: 6px 18px;
-      border: 2px solid var(--neon-red);
-      background: rgba(255, 59, 48, 0.25);
-      color: #ffffff;
-      border-radius: 6px;
-      font-weight: bold;
-      font-family: monospace;
-      font-size: 1.2rem;
-      display: none;
-      white-space: nowrap;
-      z-index: 30;
-      box-shadow: 0 0 20px rgba(255, 59, 48, 0.85);
-    }
-    .shock-delivered-banner {
-      background: rgba(255, 59, 48, 0.9) !important;
-      border-color: #ffffff !important;
-      animation: pulse 0.3s infinite;
     }
 
     .controller-container {
@@ -416,12 +389,17 @@
           </div>
         </div>
 
+        <!-- ECG CANVAS CONTAINER (PURE WAVE - NO TEXT OVERLAY) -->
         <div class="canvas-container">
-          <div id="m-status-overlay" class="status-overlay">CPR IN PROGRESS</div>
-          <div id="m-sync-mode" class="sync-indicator">SYNC MODE</div>
-          <div id="m-pacer-mode" class="pacer-indicator">PACER ACTIVE</div>
-          <div id="m-defib-status" class="defib-status"></div>
           <canvas id="ecgCanvas"></canvas>
+        </div>
+
+        <!-- ALL MONITOR TEXT / STATUS BADGES VIEWED STRICTLY BELOW THE ECG WAVE -->
+        <div class="monitor-status-bar">
+          <div id="m-status-overlay" class="status-badge status-cpr hidden">🟢 CPR IN PROGRESS</div>
+          <div id="m-sync-mode" class="status-badge sync-badge hidden">SYNC MODE</div>
+          <div id="m-pacer-mode" class="status-badge pacer-badge hidden">PACER ACTIVE</div>
+          <div id="m-defib-status" class="status-badge defib-badge hidden"></div>
         </div>
 
         <div class="huge-vitals-grid">
@@ -699,6 +677,8 @@
       stopAudio(); // Stop audio playback immediately on log off
       clearTimeout(defibTimeout);
       clearInterval(chargeInterval);
+      clearInterval(cprAudioTimer);
+      cprAudioTimer = null;
       document.getElementById('page-app').classList.add('hidden');
       document.getElementById('page-app').classList.remove('flex');
       document.getElementById('nav-user-info').classList.add('hidden');
@@ -807,6 +787,17 @@
       const btn = document.getElementById('btn-cpr');
       btn.innerText = state.cprActive ? '🟢 CPR: ON' : '🟢 CPR: OFF';
       btn.className = state.cprActive ? 'w-full py-1 bg-green-950 border border-green-500 text-green-400 font-bold rounded text-xs' : 'w-full py-1 bg-gray-800 text-gray-300 font-bold rounded text-xs';
+      
+      if (state.cprActive) {
+        ensureAudio();
+        if (!cprAudioTimer) {
+          cprAudioTimer = setInterval(playCprThump, 545); // ~110 BPM chest compression sound
+        }
+      } else {
+        clearInterval(cprAudioTimer);
+        cprAudioTimer = null;
+      }
+
       logEvent(state.cprActive ? 'CPR Started' : 'CPR Stopped');
       pushState();
     }
@@ -909,7 +900,7 @@
 
     // --- CANVAS & ECG ANIMATION ENGINE ---
     let canvas, ctx, paperCanvas, paperCtx, xOffset = 0, previousWaveY = null, animId = null, globalX = 0;
-    let audioContext = null, rhythmAudioTimer = null, rhythmAudioStopped = true, chargeInterval = null, shockBannerTimeout = null, defibTimeout = null;
+    let audioContext = null, rhythmAudioTimer = null, rhythmAudioStopped = true, chargeInterval = null, shockBannerTimeout = null, defibTimeout = null, cprAudioTimer = null;
 
     function initCanvas() {
       canvas = document.getElementById('ecgCanvas'); ctx = canvas.getContext('2d');
@@ -1072,26 +1063,24 @@
             let pEnd = effectiveGap - 10 - prOffset;
             if (isP && pStart > 0 && cycle >= pStart && cycle <= pEnd) {
               let pProg = (cycle - pStart) / (pEnd - pStart);
-              y -= Math.sin(pProg * Math.PI) * 8; // Normal P wave
+              y -= Math.sin(pProg * Math.PI) * 8;
             }
 
-            // Wide RBBB QRS Complex (rsR' pattern with slurred S)
             if (cycle >= 0 && cycle < 3) {
-              y -= qrsDepth * 0.35; // Small initial r wave
+              y -= qrsDepth * 0.35;
             } else if (cycle >= 3 && cycle < 6) {
-              y += qrsDepth * 0.2; // Small s notch
+              y += qrsDepth * 0.2;
             } else if (cycle >= 6 && cycle < 14) {
               let rPrimeProg = (cycle - 6) / 8;
-              y -= Math.sin(rPrimeProg * Math.PI) * (qrsDepth * 1.3); // Tall, broad slurred R' peak ("rabbit ear")
+              y -= Math.sin(rPrimeProg * Math.PI) * (qrsDepth * 1.3);
             } else if (cycle >= 14 && cycle < 20) {
               let sProg = (cycle - 14) / 6;
-              y += Math.sin(sProg * Math.PI) * 16; // Slurred S wave below baseline
+              y += Math.sin(sProg * Math.PI) * 16;
             }
 
-            // Discordant T-wave inversion
             if (cycle >= 22 && cycle < 38) {
               let tProg = (cycle - 22) / 16;
-              y += Math.sin(tProg * Math.PI) * 12; // Inverted T wave (discordant)
+              y += Math.sin(tProg * Math.PI) * 12;
             }
           }
 
@@ -1101,27 +1090,25 @@
             let pEnd = effectiveGap - 10 - prOffset;
             if (isP && pStart > 0 && cycle >= pStart && cycle <= pEnd) {
               let pProg = (cycle - pStart) / (pEnd - pStart);
-              y -= Math.sin(pProg * Math.PI) * 8; // Normal P wave
+              y -= Math.sin(pProg * Math.PI) * 8;
             }
 
-            // Broad, Notched M-shaped R Wave (LBBB)
             if (cycle >= 0 && cycle < 5) {
               let r1Prog = cycle / 5;
-              y -= Math.sin(r1Prog * Math.PI) * (qrsDepth * 1.1); // Peak 1 of M-notch
+              y -= Math.sin(r1Prog * Math.PI) * (qrsDepth * 1.1);
             } else if (cycle >= 5 && cycle < 8) {
-              y -= qrsDepth * 0.82; // Central notch dip
+              y -= qrsDepth * 0.82;
             } else if (cycle >= 8 && cycle < 15) {
               let r2Prog = (cycle - 8) / 7;
-              y -= Math.sin(r2Prog * Math.PI) * (qrsDepth * 1.35); // Peak 2 of M-notch
+              y -= Math.sin(r2Prog * Math.PI) * (qrsDepth * 1.35);
             } else if (cycle >= 15 && cycle < 22) {
               let descentProg = (cycle - 15) / 7;
-              y += Math.sin(descentProg * Math.PI) * 10; // Slow descent to ST segment
+              y += Math.sin(descentProg * Math.PI) * 10;
             }
 
-            // Secondary ST depression & Discordant inverted T-wave
             if (cycle >= 22 && cycle < 40) {
               let tProg = (cycle - 22) / 18;
-              y += Math.sin(tProg * Math.PI) * 15; // Inverted T wave with ST depression
+              y += Math.sin(tProg * Math.PI) * 15;
             }
           }
 
@@ -1154,14 +1141,13 @@
           drawPacerSpike(xOffset, y);
         }
 
-        // If Pacing is Active & Output current (Amp) >= 50mA (Threshold Capture), drive paced beat
         if (state.pacerActive && state.pacerAmp >= 50) {
           if (pacerCycle >= 0 && pacerCycle < 14) {
             let pProg = pacerCycle / 14;
-            y -= Math.sin(pProg * Math.PI) * (qrsDepth * 1.4); // Wide ventricular capture QRS
+            y -= Math.sin(pProg * Math.PI) * (qrsDepth * 1.4);
           } else if (pacerCycle >= 14 && pacerCycle < 24) {
             let tProg = (pacerCycle - 14) / 10;
-            y += Math.sin(tProg * Math.PI) * 14; // Discordant T wave
+            y += Math.sin(tProg * Math.PI) * 14;
           }
         }
       }
@@ -1175,19 +1161,26 @@
 
     // --- MONITOR DISPLAY UPDATER ---
     function updateMonitorDisplay() {
-      document.getElementById('m-sync-mode').style.display = state.syncMode ? 'block' : 'none';
+      // Sync Mode Indicator (Below Canvas)
+      const syncEl = document.getElementById('m-sync-mode');
+      if (state.syncMode) {
+        syncEl.classList.remove('hidden');
+      } else {
+        syncEl.classList.add('hidden');
+      }
       
+      // Transcutaneous Pacer Indicator (Below Canvas)
       const pacerEl = document.getElementById('m-pacer-mode');
       if (state.pacerActive) {
-        pacerEl.style.display = 'block';
+        pacerEl.classList.remove('hidden');
         pacerEl.innerText = `PACER: ${state.pacerRate} PPM @ ${state.pacerAmp} mA [${state.pacerMode}]`;
       } else {
-        pacerEl.style.display = 'none';
+        pacerEl.classList.add('hidden');
       }
 
       if (state.rhythm === 'OFF') {
         ['m-v-hr', 'm-v-bp', 'm-v-spo2', 'm-v-etco2', 'm-v-rr'].forEach(id => document.getElementById(id).innerText = '--');
-        document.getElementById('m-status-overlay').style.display = 'none';
+        document.getElementById('m-status-overlay').classList.add('hidden');
         return;
       }
 
@@ -1210,10 +1203,13 @@
         document.getElementById('m-v-rr').innerText = state.vitals.rr;
       }
 
+      // CPR Status Indicator (Below Canvas)
       const overlay = document.getElementById('m-status-overlay');
       if (state.cprActive) {
-        overlay.innerText = "🟢 CPR IN PROGRESS"; overlay.className = 'status-overlay status-cpr'; overlay.style.display = 'block';
-      } else overlay.style.display = 'none';
+        overlay.classList.remove('hidden');
+      } else {
+        overlay.classList.add('hidden');
+      }
     }
 
     // --- AUDIO & DEFIB VISUALS ---
@@ -1223,9 +1219,12 @@
       rhythmAudioStopped = false;
       if (!rhythmAudioTimer) rhythmAudioTimer = setInterval(playRhythmTone, 250);
     }
+
     function stopAudio() { 
       rhythmAudioStopped = true; 
       if (audioContext) audioContext.suspend(); 
+      clearInterval(cprAudioTimer);
+      cprAudioTimer = null;
     }
 
     function playRhythmTone() {
@@ -1245,6 +1244,37 @@
       osc.connect(gain).connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime + 0.13);
     }
 
+    // CPR Chest Compression Sound Hit
+    function playCprThump() {
+      if (!audioContext || audioContext.state !== 'running' || !state.cprActive) return;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(140, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(32, audioContext.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.45, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
+      osc.connect(gain).connect(audioContext.destination);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.13);
+    }
+
+    // Auto-Disarm Tone Sound
+    function playDisarmSound() {
+      ensureAudio();
+      if (!audioContext || audioContext.state !== 'running') return;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(750, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(140, audioContext.currentTime + 0.38);
+      gain.gain.setValueAtTime(0.35, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.38);
+      osc.connect(gain).connect(audioContext.destination);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.40);
+    }
+
     function playDefibChargeSound(joules) {
       ensureAudio();
       const osc = audioContext.createOscillator(), gain = audioContext.createGain(), dur = 5.5;
@@ -1257,14 +1287,15 @@
       clearTimeout(shockBannerTimeout);
       clearTimeout(defibTimeout);
       const el = document.getElementById('m-defib-status');
-      el.style.display = 'block'; el.className = 'defib-status text-blink';
+      el.classList.remove('hidden'); 
+      el.className = 'status-badge defib-badge text-blink';
       const startTime = Date.now(), duration = 5500;
       clearInterval(chargeInterval);
       chargeInterval = setInterval(() => {
         let elapsed = Date.now() - startTime;
         if (elapsed >= duration) {
           clearInterval(chargeInterval); 
-          el.className = 'defib-status'; 
+          el.className = 'status-badge defib-badge'; 
           el.innerHTML = `DEFIB READY: ${targetJoules} J`;
           
           // Set 5-second automatic discharge safety timeout
@@ -1282,22 +1313,25 @@
       clearTimeout(defibTimeout);
       clearInterval(chargeInterval);
 
+      // Play Disarm Sound
+      playDisarmSound();
+
       // Blink screen GREEN x 1 on auto-discharge
       document.body.style.background = '#00ff66';
       setTimeout(() => { document.body.style.background = '#030712'; }, 150);
 
       const el = document.getElementById('m-defib-status');
-      el.style.display = 'block'; 
-      el.className = 'defib-status';
+      el.classList.remove('hidden'); 
+      el.className = 'status-badge defib-badge';
       el.style.borderColor = '#00ff66';
       el.style.color = '#00ff66';
       el.innerHTML = `⚠️ AUTO DISARMED (5s TIMEOUT)`;
 
-      logEvent('⚠️ Defibrillator disarmed automatically (shock not pressed in 5 seconds).');
+      logEvent('⚠️ Defibrillator disarmed automatically (shock button not pressed within 5s).');
 
       clearTimeout(shockBannerTimeout);
       shockBannerTimeout = setTimeout(() => {
-        el.style.display = 'none';
+        el.classList.add('hidden');
         el.style.borderColor = '';
         el.style.color = '';
       }, 2500);
@@ -1316,12 +1350,12 @@
       setTimeout(() => { document.body.style.background = '#030712'; }, 150);
 
       const el = document.getElementById('m-defib-status');
-      el.style.display = 'block'; 
-      el.className = 'defib-status shock-delivered-banner'; 
+      el.classList.remove('hidden'); 
+      el.className = 'status-badge defib-badge shock-delivered-badge'; 
       el.style.borderColor = '';
       el.style.color = '';
       el.innerHTML = `⚡ SHOCK DELIVERED: ${joules || 200} J`;
-      clearTimeout(shockBannerTimeout); shockBannerTimeout = setTimeout(() => { el.style.display = 'none'; }, 2500);
+      clearTimeout(shockBannerTimeout); shockBannerTimeout = setTimeout(() => { el.classList.add('hidden'); }, 2500);
     }
 
     // Initialize System
