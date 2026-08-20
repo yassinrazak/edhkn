@@ -36,31 +36,9 @@
     }
   </script>
   <style>
-    /* PREVENT TEXT SELECTION & TOUCH CALLOUTS */
     body { 
       font-family: 'Plus Jakarta Sans', sans-serif; 
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      transition: filter 0.2s ease;
     }
-
-    /* BLUR SCREEN WHEN SCREENSHOT TOOL OR OTHER APP IS ACTIVATED */
-    .blur-protection {
-      filter: blur(25px) grayscale(100%) !important;
-      pointer-events: none !important;
-    }
-
-    /* PREVENT PRINTING & PDF SAVING */
-    @media print {
-      html, body {
-        display: none !important;
-      }
-    }
-
     .glass-card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
@@ -71,7 +49,7 @@
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   </style>
 </head>
-<body id="app-body" class="bg-slate-900 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-none">
+<body id="app-body" class="bg-slate-900 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white">
 
   <!-- HEADER / NAVIGATION (Visible on all pages) -->
   <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
@@ -79,7 +57,7 @@
       <!-- HEADER LOGO -->
       <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
         <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/20">
-          <img id="img-header-logo" src="YOUR_TOP_LOGO_URL" alt="MOH Logo" class="max-h-full max-w-full object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
+          <img id="img-header-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
         </div>
         <div>
           <span class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
@@ -116,7 +94,7 @@
         
         <!-- TOP LANDING PAGE LOGO -->
         <div class="mb-6">
-          <img id="img-landing-logo" src="YOUR_TOP_LOGO_URL" alt="BLS Certification Logo" class="h-20 w-auto mx-auto object-contain drop-shadow-md" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
+          <img id="img-landing-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="BLS Certification Logo" class="h-20 w-auto mx-auto object-contain drop-shadow-md">
         </div>
 
         <div class="mb-6">
@@ -175,7 +153,7 @@
       <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
         <!-- TOP DASHBOARD LOGO -->
         <div class="mb-2">
-          <img id="img-dashboard-logo" src="YOUR_TOP_LOGO_URL" alt="Logo" class="h-20 w-auto mx-auto object-contain drop-shadow" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
+          <img id="img-dashboard-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Logo" class="h-20 w-auto mx-auto object-contain drop-shadow">
         </div>
 
         <div>
@@ -203,12 +181,12 @@
         </div>
 
         <div class="bg-amber-50 border border-amber-200/60 rounded-2xl p-4 text-left flex items-start space-x-3">
-          <i class="fa-solid fa-shield-halved text-amber-500 text-lg mt-0.5"></i>
+          <i class="fa-solid fa-circle-info text-amber-500 text-lg mt-0.5"></i>
           <div class="text-xs text-amber-800 space-y-1">
-            <p class="font-bold">Assessment Rules:</p>
-            <p>• 45-minute strict countdown timer enabled.</p>
-            <p>• 30 questions randomly selected per session from master bank.</p>
-            <p>• Anti-screenshot security and focus-blur monitoring are active.</p>
+            <p class="font-bold">Assessment Instructions:</p>
+            <p>• A 45-minute timer will run during your session.</p>
+            <p>• 30 questions are randomly selected from the master question bank.</p>
+            <p>• Use the Question Grid at any time to jump to specific questions.</p>
           </div>
         </div>
 
@@ -360,9 +338,9 @@
       
       <!-- 2 FOOTER LOGOS FROM GOOGLE DRIVE -->
       <div class="flex items-center space-x-3 bg-white/5 p-2 rounded-xl border border-white/10">
-        <img id="img-footer-logo-1" src="YOUR_FOOTER_LOGO_1_URL" alt="Footer Logo 1" class="h-8 w-auto object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
+        <img id="img-footer-logo-1" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1" class="h-8 w-auto object-contain">
         <div class="h-5 w-px bg-slate-800"></div>
-        <img id="img-footer-logo-2" src="YOUR_FOOTER_LOGO_2_URL" alt="Footer Logo 2" class="h-8 w-auto object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
+        <img id="img-footer-logo-2" src="https://lh3.googleusercontent.com/d/1LdMRx-PF49CWOcrjthClGLJg-yQoJ2mt" alt="Footer Logo 2" class="h-8 w-auto object-contain">
       </div>
 
       <div class="flex items-center space-x-2">
@@ -376,57 +354,8 @@
 
   <!-- SCRIPT, TIMERS & CONFIGURATION -->
   <script>
-    // =================================---------------------------------
-    // CONFIGURATION: PASTE YOUR GOOGLE DRIVE IMAGE LINKS HERE
-    // =================================---------------------------------
-    // Note: Use direct link format: https://lh3.googleusercontent.com/d/YOUR_FILE_ID
-    const GOOGLE_DRIVE_TOP_LOGO = "YOUR_TOP_LOGO_URL";
-    const GOOGLE_DRIVE_FOOTER_LOGO_1 = "YOUR_FOOTER_LOGO_1_URL";
-    const GOOGLE_DRIVE_FOOTER_LOGO_2 = "YOUR_FOOTER_LOGO_2_URL";
-
     // GOOGLE APPS SCRIPT WEBHOOK DEPLOYMENT URL
-    const GOOGLE_SHEET_WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
-
-    // Update image tags dynamically if URLs are provided
-    if (GOOGLE_DRIVE_TOP_LOGO && !GOOGLE_DRIVE_TOP_LOGO.includes("YOUR_TOP_LOGO_URL")) {
-      document.getElementById('img-header-logo').src = GOOGLE_DRIVE_TOP_LOGO;
-      document.getElementById('img-landing-logo').src = GOOGLE_DRIVE_TOP_LOGO;
-      document.getElementById('img-dashboard-logo').src = GOOGLE_DRIVE_TOP_LOGO;
-    }
-    if (GOOGLE_DRIVE_FOOTER_LOGO_1 && !GOOGLE_DRIVE_FOOTER_LOGO_1.includes("YOUR_FOOTER_LOGO_1_URL")) {
-      document.getElementById('img-footer-logo-1').src = GOOGLE_DRIVE_FOOTER_LOGO_1;
-    }
-    if (GOOGLE_DRIVE_FOOTER_LOGO_2 && !GOOGLE_DRIVE_FOOTER_LOGO_2.includes("YOUR_FOOTER_LOGO_2_URL")) {
-      document.getElementById('img-footer-logo-2').src = GOOGLE_DRIVE_FOOTER_LOGO_2;
-    }
-
-    // ------------------------------------------------------------------
-    // ANTI-SCREENSHOT & SECURITY PROTECTION LAYER
-    // ------------------------------------------------------------------
-    const bodyEl = document.getElementById('app-body');
-
-    document.addEventListener('contextmenu', (e) => e.preventDefault());
-
-    document.addEventListener('keydown', (e) => {
-      if (
-        e.key === 'PrintScreen' ||
-        (e.ctrlKey && ['p', 's', 'u', 'c', 'a'].includes(e.key.toLowerCase())) ||
-        (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(e.key.toLowerCase())) ||
-        e.key === 'F12'
-      ) {
-        e.preventDefault();
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText('');
-        }
-      }
-    });
-
-    window.addEventListener('blur', () => bodyEl.classList.add('blur-protection'));
-    window.addEventListener('focus', () => bodyEl.classList.remove('blur-protection'));
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) bodyEl.classList.add('blur-protection');
-      else bodyEl.classList.remove('blur-protection');
-    });
+    const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwtKz7PDx-cvT01XU4lkPSTlF-7zYKh5j0mhu7Cdu23SdqC6HdF-Ux09yq1xAYoX3kAGQ/exec";
 
     // ------------------------------------------------------------------
     // MASTER 200 MCQ QUESTION POOL
@@ -665,7 +594,7 @@
     // 45-MINUTE COUNTDOWN TIMER LOGIC
     function startTimer() {
       stopTimer();
-      timeLeft = 45 * 60; // Reset to 45 mins
+      timeLeft = 45 * 60;
       updateTimerDisplay();
 
       timerInterval = setInterval(() => {
@@ -692,7 +621,7 @@
       if (timerText) timerText.innerText = display;
 
       const badge = document.getElementById('timer-badge');
-      if (timeLeft <= 300) { // Less than 5 mins left
+      if (timeLeft <= 300) {
         badge.className = "flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 font-bold px-3 py-1 rounded-full text-xs animate-pulse";
       } else {
         badge.className = "flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 font-bold px-3 py-1 rounded-full text-xs shadow-sm";
@@ -876,7 +805,7 @@
       bookmarkedQuestions.clear();
       renderQuestion();
       showPage('quiz');
-      startTimer(); // Start 45-minute countdown
+      startTimer();
     }
 
     function renderQuestion() {
@@ -1014,7 +943,7 @@
     }
 
     async function calculateResults() {
-      stopTimer(); // Stop 45-min timer
+      stopTimer();
       let correct = 0;
       let incorrect = 0;
       let skipped = 0;
