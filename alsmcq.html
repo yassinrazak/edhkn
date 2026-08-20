@@ -153,7 +153,14 @@
         explanation
       };
     }
+ <!-- SCRIPT, TIMERS & CONFIGURATION -->
+  <script>
+    // GOOGLE APPS SCRIPT WEBHOOK DEPLOYMENT URL
+    const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwKLAGcxIj5Z1GhbHgeOEKIRLvb0oNG8g2xrCNtF5tgaHUKjlvkJKw0XUNIAeRkfpfd/exec";
 
+    // ------------------------------------------------------------------
+    // MASTER 200 MCQ QUESTION POOL
+    // ------------------------------------------------------------------
     const rawQuestionsData = [
       createQuestion(1,"Airway","What is the recommended chest compression rate during adult CPR according to ALS guidelines?",["80–100 per minute","100–120 per minute","120–140 per minute","60–80 per minute"],"100–120 per minute","High-quality CPR requires a compression rate of 100 to 120 compressions per minute."),
       createQuestion(2,"Airway","What is the target compression depth for an adult cardiac arrest patient?",["2 to 3 cm","3 to 4 cm","5 to 6 cm","At least 7 cm"],"5 to 6 cm","Chest compressions should be at a depth of 5 to 6 cm (approx 2 to 2.4 inches) in adults."),
