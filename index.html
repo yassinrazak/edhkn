@@ -160,16 +160,26 @@
 
         <div class="grid grid-cols-3 gap-4 py-4 border-y border-slate-100">
           <div class="p-3 bg-slate-50 rounded-2xl">
-            <span class="block text-2xl font-extrabold text-brand-600">200</span>
-            <span class="text-xs font-semibold text-slate-500 uppercase">Questions</span>
+            <span class="block text-2xl font-extrabold text-brand-600">30</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase">Random MCQs</span>
           </div>
           <div class="p-3 bg-slate-50 rounded-2xl">
             <span class="block text-2xl font-extrabold text-accent-500">80%</span>
             <span class="text-xs font-semibold text-slate-500 uppercase">Pass Mark</span>
           </div>
           <div class="p-3 bg-slate-50 rounded-2xl">
-            <span class="block text-2xl font-extrabold text-purple-600">200</span>
+            <span class="block text-2xl font-extrabold text-purple-600">30</span>
             <span class="text-xs font-semibold text-slate-500 uppercase">Total Marks</span>
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200/60 rounded-2xl p-4 text-left flex items-start space-x-3">
+          <i class="fa-solid fa-circle-info text-amber-500 text-lg mt-0.5"></i>
+          <div class="text-xs text-amber-800 space-y-1">
+            <p class="font-bold">Instructions:</p>
+            <p>• Each test session randomly selects 30 questions from our 200-question pool.</p>
+            <p>• You can navigate between questions freely using the Question Grid.</p>
+            <p>• Answers can be changed at any time prior to final submission.</p>
           </div>
         </div>
 
@@ -186,11 +196,11 @@
       <!-- TOP STATUS & PROGRESS -->
       <div class="glass-card rounded-2xl p-4 shadow-sm space-y-3">
         <div class="flex items-center justify-between text-xs font-bold text-slate-500">
-          <span id="quiz-progress-text" class="text-brand-600">Question 1 of 200</span>
+          <span id="quiz-progress-text" class="text-brand-600">Question 1 of 30</span>
           <span id="quiz-answered-count" class="bg-slate-100 px-3 py-1 rounded-full text-slate-700">0 Answered</span>
         </div>
         <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
-          <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-accent-500 rounded-full transition-all duration-300" style="width: 0.5%;"></div>
+          <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-accent-500 rounded-full transition-all duration-300" style="width: 3.33%;"></div>
         </div>
       </div>
 
@@ -248,7 +258,7 @@
           <div class="flex justify-around items-center">
             <div>
               <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Total Marks</span>
-              <span id="res-score" class="text-4xl font-extrabold text-slate-900">0 / 200</span>
+              <span id="res-score" class="text-4xl font-extrabold text-slate-900">0 / 30</span>
             </div>
             <div class="h-12 w-px bg-slate-200"></div>
             <div>
@@ -275,7 +285,7 @@
         <div class="pt-4 flex flex-col sm:flex-row gap-3">
           <button onclick="retest()" class="flex-1 py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold rounded-xl shadow-lg shadow-brand-500/25 hover:opacity-95 transition flex items-center justify-center gap-2">
             <i class="fa-solid fa-rotate-right"></i>
-            <span>Re-Test Assessment</span>
+            <span>Re-Test Assessment (New 30 Questions)</span>
           </button>
         </div>
       </div>
@@ -289,7 +299,7 @@
       <div class="p-6 border-b border-slate-100 flex items-center justify-between">
         <div>
           <h3 class="text-lg font-bold text-slate-900">Question Navigator</h3>
-          <p class="text-xs text-slate-500">Jump directly to any of the 200 questions</p>
+          <p class="text-xs text-slate-500">Jump directly to any of the 30 active session questions</p>
         </div>
         <button onclick="toggleGridModal()" class="text-slate-400 hover:text-slate-600 p-2">
           <i class="fa-solid fa-xmark text-xl"></i>
@@ -297,7 +307,7 @@
       </div>
       
       <div class="p-6 overflow-y-auto custom-scrollbar flex-grow">
-        <div id="grid-container" class="grid grid-cols-5 sm:grid-cols-10 gap-2"></div>
+        <div id="grid-container" class="grid grid-cols-5 sm:grid-cols-6 gap-2"></div>
       </div>
 
       <div class="p-4 bg-slate-50 border-t border-slate-100 text-xs font-semibold text-slate-500 flex justify-around">
@@ -324,7 +334,7 @@
     // PASTE YOUR GOOGLE APPS SCRIPT WEB APP DEPLOYMENT URL HERE
     const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwtKz7PDx-cvT01XU4lkPSTlF-7zYKh5j0mhu7Cdu23SdqC6HdF-Ux09yq1xAYoX3kAGQ/exec";
 
-    // 200 MCQ QUESTION DATASET
+    // MASTER 200 MCQ QUESTION POOL
     const questionsData = [
       { id: 1, q: "Who developed the NCORT Basic Life Support Training Manual Second Edition?", options: ["American Heart Association", "BLS Subcommittee, National Committee on Resuscitation Training (NCORT)", "European Resuscitation Council", "World Health Organization"], ans: 1 },
       { id: 2, q: "What is the national emergency response number dialed via MERS in Malaysia?", options: ["911", "999", "112", "994"], ans: 1 },
@@ -530,8 +540,9 @@
 
     // STATE MANAGEMENT
     let currentUser = null;
+    let activeQuestions = [];
     let currentIndex = 0;
-    let userAnswers = new Array(questionsData.length).fill(null);
+    let userAnswers = [];
     let bookmarkedQuestions = new Set();
 
     // DOM ELEMENTS
@@ -553,16 +564,26 @@
       }
     };
 
+    // FISHER-YATES SHUFFLE ALGORITHM FOR RANDOM SELECTION
+    function getRandomQuestions(sourcePool, count = 30) {
+      const poolCopy = [...sourcePool];
+      for (let i = poolCopy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [poolCopy[i], poolCopy[j]] = [poolCopy[j], poolCopy[i]];
+      }
+      return poolCopy.slice(0, count);
+    }
+
     // API WEBHOOK CALLER
     async function sendWebhookRequest(payload) {
       if (!GOOGLE_SHEET_WEBHOOK_URL || GOOGLE_SHEET_WEBHOOK_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL")) {
-        console.warn("Google Sheet Webhook URL not set. Falling back to local storage execution.");
+        console.warn("Google Sheet Webhook URL not configured. Local fallback execution.");
         return null;
       }
       try {
         const res = await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight issues with Apps Script
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
         return await res.json();
@@ -572,7 +593,7 @@
       }
     }
 
-    // HELPER: Get all registered users array from localStorage
+    // HELPER: Get registered users from localStorage
     function getRegisteredUsers() {
       const users = localStorage.getItem('bls_registered_users');
       return users ? JSON.parse(users) : [];
@@ -590,7 +611,6 @@
       const dept = document.getElementById('reg-dept').value.trim();
       const pass = document.getElementById('reg-pass').value;
 
-      // Local Validation
       const users = getRegisteredUsers();
       const existingUser = users.find(u => u.id.toLowerCase() === id.toLowerCase());
       if (existingUser) {
@@ -602,21 +622,16 @@
         return;
       }
 
-      // Save locally
       const newUser = { id, name, dept, pass };
       users.push(newUser);
       localStorage.setItem('bls_registered_users', JSON.stringify(users));
 
-      // Sync with Google Sheet Webhook
-      const remoteRes = await sendWebhookRequest({ action: 'register', id, name, dept, pass });
-      if (remoteRes && remoteRes.success === false) {
-        alert(remoteRes.message || "Registration error on Google Sheet.");
-      }
+      await sendWebhookRequest({ action: 'register', id, name, dept, pass });
 
       currentUser = { id: newUser.id, name: newUser.name, dept: newUser.dept };
       localStorage.setItem('bls_active_session', JSON.stringify(currentUser));
 
-      alert("Registration successful! Synced with Google Sheet.");
+      alert("Registration successful! Welcome to the BLS Assessment Platform.");
       btn.disabled = false;
       btn.innerHTML = `<span>Register Practitioner</span>`;
       updateNavUser();
@@ -633,7 +648,6 @@
       const id = document.getElementById('login-id').value.trim();
       const pass = document.getElementById('login-pass').value;
 
-      // First try Google Sheet Webhook if configured
       let loginSuccess = false;
       const remoteRes = await sendWebhookRequest({ action: 'login', id, pass });
       
@@ -641,7 +655,6 @@
         currentUser = remoteRes.user;
         loginSuccess = true;
       } else {
-        // Fallback to local storage validation
         const users = getRegisteredUsers();
         const foundUser = users.find(
           u => u.id.toLowerCase() === id.toLowerCase() && u.pass === pass
@@ -718,26 +731,28 @@
       else showPage('auth');
     }
 
-    // QUIZ ENGINE
+    // QUIZ ENGINE SETUP
     function startQuiz() {
+      // Pick 30 Random Questions from 200 pool
+      activeQuestions = getRandomQuestions(questionsData, 30);
       currentIndex = 0;
-      userAnswers = new Array(questionsData.length).fill(null);
+      userAnswers = new Array(activeQuestions.length).fill(null);
       bookmarkedQuestions.clear();
       renderQuestion();
       showPage('quiz');
     }
 
     function renderQuestion() {
-      const q = questionsData[currentIndex];
-      document.getElementById('quiz-progress-text').innerText = `Question ${currentIndex + 1} of ${questionsData.length}`;
+      const q = activeQuestions[currentIndex];
+      document.getElementById('quiz-progress-text').innerText = `Question ${currentIndex + 1} of ${activeQuestions.length}`;
       
       const answeredCount = userAnswers.filter(a => a !== null).length;
       document.getElementById('quiz-answered-count').innerText = `${answeredCount} Answered`;
 
-      const progressPercent = ((currentIndex + 1) / questionsData.length) * 100;
+      const progressPercent = ((currentIndex + 1) / activeQuestions.length) * 100;
       document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
 
-      document.getElementById('q-text').innerText = `${q.id}. ${q.q}`;
+      document.getElementById('q-text').innerText = `${currentIndex + 1}. ${q.q}`;
 
       // Render Options
       const optionsContainer = document.getElementById('q-options');
@@ -776,7 +791,7 @@
       // Next / Submit Buttons
       const btnNext = document.getElementById('btn-next');
       const btnSubmit = document.getElementById('btn-submit');
-      if (currentIndex === questionsData.length - 1) {
+      if (currentIndex === activeQuestions.length - 1) {
         btnNext.classList.add('hidden');
         btnSubmit.classList.remove('hidden');
       } else {
@@ -795,7 +810,7 @@
     }
 
     function nextQuestion() {
-      if (currentIndex < questionsData.length - 1) {
+      if (currentIndex < activeQuestions.length - 1) {
         currentIndex++;
         renderQuestion();
       }
@@ -832,7 +847,7 @@
       const container = document.getElementById('grid-container');
       container.innerHTML = '';
 
-      questionsData.forEach((q, idx) => {
+      activeQuestions.forEach((q, idx) => {
         const btn = document.createElement('button');
         btn.onclick = () => {
           currentIndex = idx;
@@ -866,7 +881,7 @@
       let incorrect = 0;
       let skipped = 0;
 
-      questionsData.forEach((q, idx) => {
+      activeQuestions.forEach((q, idx) => {
         if (userAnswers[idx] === null) {
           skipped++;
         } else if (userAnswers[idx] === q.ans) {
@@ -877,10 +892,11 @@
       });
 
       const totalScore = correct; // 1 mark per question
-      const percentage = Math.round((correct / questionsData.length) * 100);
+      const totalPossible = activeQuestions.length; // 30
+      const percentage = Math.round((correct / totalPossible) * 100);
       const status = percentage >= 80 ? "PASSED" : "FAILED";
 
-      document.getElementById('res-score').innerText = `${totalScore} / 200`;
+      document.getElementById('res-score').innerText = `${totalScore} / ${totalPossible}`;
       document.getElementById('res-percent').innerText = `${percentage}%`;
       document.getElementById('res-correct').innerText = correct;
       document.getElementById('res-incorrect').innerText = incorrect;
@@ -899,17 +915,17 @@
         badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-rose-100 text-rose-600 border-4 border-rose-300";
         badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
         title.innerText = "Assessment Not Cleared";
-        sub.innerText = "Passing threshold is 80%. Please review the manual and attempt re-test.";
+        sub.innerText = "Passing threshold is 80% (24/30). Please review the manual and attempt re-test.";
       }
 
-      // Sync results with Google Sheet Webhook
+      // Sync result to Google Sheet Webhook
       if (currentUser) {
         await sendWebhookRequest({
           action: 'saveResult',
           id: currentUser.id,
           name: currentUser.name,
           dept: currentUser.dept || 'N/A',
-          score: `${totalScore} / 200`,
+          score: `${totalScore} / ${totalPossible}`,
           percentage: percentage,
           status: status
         });
