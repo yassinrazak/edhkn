@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +37,18 @@
             text-align: center;
             border-bottom: 5px solid var(--accent-red);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-logo {
+            max-height: 110px;
+            width: auto;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .main-logo:hover {
+            transform: scale(1.03);
         }
 
         .hospital-badge {
@@ -191,6 +202,8 @@
 <body>
 
     <header>
+        <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Hospital Kuala Nerang Logo" class="main-logo">
+        <br>
         <span class="hospital-badge">Jabatan Kecemasan & Trauma</span>
         <h1>Hospital Kuala Nerang</h1>
         <p>Training & Clinical Simulation Learning Portal</p>
@@ -211,7 +224,7 @@
                 </div>
                 <div class="card-body">
                     <p>Basic Life Support modules covering CPR algorithms, AED operations, airway management, and high-quality resuscitation fundamentals.</p>
-                    <a href="blsmcq.html" class="btn btn-bls">Enter BLS Portal &rarr;</a>
+                    <a href="bls/index.html" class="btn btn-bls">Enter BLS Portal &rarr;</a>
                 </div>
             </div>
 
@@ -235,5 +248,3 @@
 
 </body>
 </html>
-
-```
