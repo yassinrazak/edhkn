@@ -189,13 +189,89 @@
             background-color: #065f46;
         }
 
+        /* Footer Styles */
         footer {
-            background-color: #0f172a;
+            background-color: #020617;
+            border-top: 1px solid rgba(30, 41, 59, 0.8);
+            padding: 1.5rem 1rem;
             color: #94a3b8;
-            text-align: center;
-            padding: 1.5rem;
             font-size: 0.85rem;
             margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .footer-container {
+                flex-direction: row;
+            }
+        }
+
+        .footer-logos {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 0.75rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-logos img {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-divider {
+            height: 20px;
+            width: 1px;
+            background-color: #334155;
+        }
+
+        .footer-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        .footer-copyright {
+            color: #cbd5e1;
+            font-weight: 600;
+            letter-spacing: 0.025em;
         }
     </style>
 </head>
@@ -242,25 +318,24 @@
         </div>
     </main>
 
- <!-- FOOTER (Visible on all pages with 2 Footer Logos) -->
-  <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      
-      <!-- 2 FOOTER LOGOS FROM GOOGLE DRIVE -->
-      <div class="flex items-center space-x-3 bg-white/5 p-2 rounded-xl border border-white/10">
-        <img id="img-footer-logo-1" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1" class="h-8 w-auto object-contain">
-        <div class="h-5 w-px bg-slate-800"></div>
-        <img id="img-footer-logo-2" src="https://lh3.googleusercontent.com/d/1LdMRx-PF49CWOcrjthClGLJg-yQoJ2mt" alt="Footer Logo 2" class="h-8 w-auto object-contain">
-      </div>
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <!-- 2 FOOTER LOGOS -->
+            <div class="footer-logos">
+                <img id="img-footer-logo-1" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1">
+                <div class="logo-divider"></div>
+                <img id="img-footer-logo-2" src="https://lh3.googleusercontent.com/d/1LdMRx-PF49CWOcrjthClGLJg-yQoJ2mt" alt="Footer Logo 2">
+            </div>
 
-      <div class="flex items-center space-x-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>Basic Life Support Training System</span>
-      </div>
+            <div class="footer-status">
+                <span class="pulse-dot"></span>
+                <span>Basic Life Support Training System</span>
+            </div>
 
-      <p class="text-slate-300 font-semibold tracking-wide">copyright Yassin Razak @ 2026</p>
-    </div>
-  </footer>
+            <p class="footer-copyright">copyright Yassin Razak @ 2026</p>
+        </div>
+    </footer>
 
 </body>
 </html>
