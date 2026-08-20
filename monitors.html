@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOH Malaysia ALS Training & Clinical Monitor System</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              900: '#134e4a',
+              950: '#042f2e',
+            },
+            accent: {
+              500: '#0284c7',
+              600: '#0369a1',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-dark: #030712;
+      --panel-bg: rgba(15, 23, 42, 0.75);
+      --neon-green: #00ff66;
+      --neon-blue: #00e5ff;
+      --neon-red: #ff3b30;
+      --neon-yellow: #ffcc00;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: #f3f4f6;
+      min-height: 100vh;
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+    /* MONITOR UI STYLES */
+    .monitor-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      height: 48vh;
+      min-height: 360px;
+      transition: height 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    body.fullscreen-monitor header,
+    body.fullscreen-monitor .controller-container,
+    body.fullscreen-monitor footer {
+      display: none !important;
+    }
+    body.fullscreen-monitor .monitor-container {
+      height: 100vh !important;
+    }
+
+    .monitor-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(180deg, #161c24 0%, #0d1117 100%);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.95rem;
+      border: 1px solid #30363d;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 140px;
+      background: #020406;
+      border: 2px solid #1a2332;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 229, 255, 0.1);
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.85));
+    }
+
+    .huge-vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      height: 12vh;
+      min-height: 80px;
+    }
+
+    .huge-vital-card {
+      background: linear-gradient(145deg, #0f141c 0%, #080a0f 100%);
+      border: 1px solid #21262d;
+      border-top: 2px solid #30363d;
+      border-radius: 6px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: monospace;
+      position: relative;
+    }
+
+    .huge-vital-title {
+      font-size: 0.75rem;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .huge-vital-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.1;
+      text-shadow: 0 0 10px currentColor;
+    }
+
+    .status-overlay {
+      position: absolute;
+      top: 10px; right: 10px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: monospace;
+      font-size: 1.1rem;
+      display: none;
+      z-index: 20;
+    }
+    .status-cpr {
+      background: rgba(46, 160, 67, 0.25);
+      border: 2px solid #2ea043;
+      color: #2ea043;
+      display: block;
+      animation: pulse 1s infinite;
+    }
+    .sync-indicator {
+      position: absolute;
+      top: 10px; left: 10px;
+      padding: 4px 10px;
+      border: 2px solid var(--neon-red);
+      background: rgba(255, 59, 48, 0.2);
+      color: var(--neon-red);
+      border-radius: 4px;
+      font-weight: bold;
+      font-family: monospace;
+      font-size: 1rem;
+      display: none;
+      z-index: 20;
+      animation: pulse 1s infinite;
+    }
+    .defib-status {
+      position: absolute;
+      top: 10px; left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 18px;
+      border: 2px solid var(--neon-red);
+      background: rgba(255, 59, 48, 0.25);
+      color: #ffffff;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: monospace;
+      font-size: 1.2rem;
+      display: none;
+      white-space: nowrap;
+      z-index: 30;
+      box-shadow: 0 0 20px rgba(255, 59, 48, 0.85);
+    }
+    .shock-delivered-banner {
+      background: rgba(255, 59, 48, 0.9) !important;
+      border-color: #ffffff !important;
+      animation: pulse 0.3s infinite;
+    }
+
+    .controller-container {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 8px;
+      min-height: 320px;
+      margin-top: 12px;
+    }
+
+    .ctrl-card {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-top: 2px solid #30363d;
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+    }
+
+    .ctrl-title {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #00e5ff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn-rhythm {
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      text-align: left;
+      font-family: monospace;
+    }
+    .btn-rhythm:hover { background: #21262d; color: #fff; border-color: #58a6ff; }
+    .btn-rhythm.active {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: #00e5ff;
+      color: #00e5ff;
+      font-weight: bold;
+    }
+
+    .btn-drug {
+      background: #1b1f24;
+      border: 1px solid #30363d;
+      color: #38dbe8;
+      padding: 6px;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-family: monospace;
+    }
+    .btn-drug:hover { background: #232830; border-color: #38dbe8; }
+
+    @keyframes pulse { 50% { opacity: 0.4; } }
+    .text-blink { animation: pulse 0.35s linear infinite; }
+  </style>
+</head>
+<body id="app-body" class="bg-black text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+
+  <!-- BACKGROUND AMBIENT GLOW EFFECT -->
+  <div class="fixed top-0 left-1/4 -translate-x-1/2 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+  <div class="fixed bottom-0 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+  <!-- HEADER / NAVIGATION -->
+  <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
+        <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/10">
+          <img id="img-header-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
+        </div>
+        <div>
+          <span class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            MOH ALS <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30">2nd Edition</span>
+          </span>
+          <p class="text-xs text-slate-400 font-medium">Advanced Life Support Assessment Platform</p>
+        </div>
+      </div>
+
+      <!-- USER PROFILE / CONTROLS (VISIBLE AFTER LOG IN) -->
+      <div id="nav-user-info" class="hidden flex items-center space-x-3 sm:space-x-4">
+        <div class="text-right hidden sm:block">
+          <p id="user-display-name" class="text-sm font-bold text-white">Practitioner Mode</p>
+          <p id="user-display-id" class="text-xs text-slate-400">ID: MOH-ACTIVE</p>
+        </div>
+
+        <a href="https://www.moh.gov.my/images/04-penerbitan/polisi/1.pdf" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-semibold rounded-lg border border-rose-500/30 transition flex items-center gap-2" title="Study ALS Training Manual PDF">
+          <i class="fa-solid fa-file-pdf text-rose-400"></i>
+          <span class="hidden md:inline">ALS Manual PDF</span>
+        </a>
+
+        <button onclick="toggleGridModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg border border-slate-800 transition flex items-center gap-2">
+          <i class="fa-solid fa-border-all"></i>
+          <span>Question Grid</span>
+        </button>
+        <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Log Out">
+          <i class="fa-solid fa-right-from-bracket text-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col justify-center relative z-10">
+
+    <!-- PAGE 1: LANDING & AUTH PAGE -->
+    <div id="page-auth" class="w-full max-w-md mx-auto my-auto">
+      <div class="glass-card rounded-3xl p-8 shadow-2xl relative overflow-hidden text-center">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-brand-500/20 rounded-full blur-2xl"></div>
+        
+        <div class="mb-6">
+          <img id="img-landing-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="ALS Certification Logo" class="h-20 w-auto mx-auto object-contain drop-shadow-md">
+        </div>
+
+        <div class="mb-6">
+          <h2 class="text-2xl font-extrabold text-white">Healthcare Worker Portal</h2>
+          <p class="text-xs text-slate-400 mt-1">Malaysia Ministry of Health ALS Certification</p>
+        </div>
+
+        <!-- AUTH TABS -->
+        <div class="flex rounded-xl bg-slate-950/80 p-1 mb-6 border border-slate-800/80">
+          <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm">Register</button>
+          <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white">Log In</button>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left" autocomplete="off">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
+            <input type="text" id="reg-name" required placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
+            <input type="text" id="reg-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Department / Facility</label>
+            <input type="text" id="reg-dept" required placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Create Password</label>
+            <input type="password" id="reg-pass" required placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition flex items-center justify-center gap-2">
+            <span>Register Practitioner</span>
+          </button>
+        </form>
+
+        <!-- LOGIN FORM -->
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left hidden" autocomplete="off">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
+            <input type="text" id="login-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Access Password</label>
+            <input type="password" id="login-pass" required placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition flex items-center justify-center gap-2">
+            <span>Access Assessment & Monitor</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE 2: CLINICAL APPLICATION (MONITOR & CONTROLLER) -->
+    <div id="page-app" class="hidden flex-col gap-4">
+      
+      <!-- CLINICAL MONITOR SECTION -->
+      <div class="monitor-container">
+        <div class="monitor-header-bar">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span id="m-patient" style="color:#8b949e;">PATIENT: 65M (CAD, HTN, DM2)</span>
+            <span class="text-xs bg-cyan-950 border border-cyan-800 text-cyan-400 px-2 py-0.5 rounded">MODE: STANDALONE SYNC</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="ensureAudio()" class="px-2 py-1 bg-slate-800 border border-slate-700 text-xs rounded hover:bg-slate-700">🔊 Sound ON</button>
+            <button onclick="stopAudio()" class="px-2 py-1 bg-slate-800 border border-slate-700 text-xs rounded hover:bg-slate-700">🔇 Sound OFF</button>
+            <button onclick="toggleFullscreenMonitor()" class="px-2 py-1 bg-blue-900 border border-blue-700 text-blue-200 text-xs rounded hover:bg-blue-800">🖥️ Toggle Fullscreen Monitor</button>
+          </div>
+        </div>
+
+        <div class="canvas-container">
+          <div id="m-status-overlay" class="status-overlay">CPR IN PROGRESS</div>
+          <div id="m-sync-mode" class="sync-indicator">SYNC MODE</div>
+          <div id="m-defib-status" class="defib-status"></div>
+          <canvas id="ecgCanvas"></canvas>
+        </div>
+
+        <div class="huge-vitals-grid">
+          <div class="huge-vital-card"><div class="huge-vital-title">Heart Rate</div><div class="huge-vital-value" id="m-v-hr" style="color: #00ff66;">--</div></div>
+          <div class="huge-vital-card"><div class="huge-vital-title">BP (Sys/Dia)</div><div class="huge-vital-value" id="m-v-bp" style="color: #00e5ff;">--/--</div></div>
+          <div class="huge-vital-card"><div class="huge-vital-title">SpO2 (%)</div><div class="huge-vital-value" id="m-v-spo2" style="color: #ffcc00;">--</div></div>
+          <div class="huge-vital-card"><div class="huge-vital-title">Resp Rate</div><div class="huge-vital-value" id="m-v-rr" style="color: #ffffff;">--</div></div>
+          <div class="huge-vital-card"><div class="huge-vital-title">EtCO2 (mmHg)</div><div class="huge-vital-value" id="m-v-etco2" style="color: #cc99ff;">--</div></div>
+        </div>
+      </div>
+
+      <!-- INSTRUCTOR CONTROLLER SECTION -->
+      <div class="controller-container">
+
+        <!-- RHYTHMS (4 Cols) -->
+        <div class="ctrl-card col-span-12 lg:col-span-4">
+          <div class="ctrl-title">
+            <span>1. Rhythm Selector</span>
+            <span id="active-rhythm-badge" class="text-yellow-400">NSR</span>
+          </div>
+          <div class="space-y-2 overflow-y-auto pr-1">
+            <div>
+              <div class="text-[10px] font-bold text-red-500 uppercase">Arrest Rhythms</div>
+              <div class="grid grid-cols-2 gap-1">
+                <button class="btn-rhythm" onclick="setRhythm('VFIB')">VFib (Coarse)</button>
+                <button class="btn-rhythm" onclick="setRhythm('VTACH')">Pulseless VTach</button>
+                <button class="btn-rhythm" onclick="setRhythm('POLYMORPHIC_VT')">Torsades / Poly VT</button>
+                <button class="btn-rhythm" onclick="setRhythm('PEA')">PEA</button>
+                <button class="btn-rhythm" onclick="setRhythm('ASYSTOLE')">Asystole</button>
+                <button class="btn-rhythm" onclick="setRhythm('OFF')">Monitor OFF</button>
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-yellow-400 uppercase">Tachycardias</div>
+              <div class="grid grid-cols-2 gap-1">
+                <button class="btn-rhythm" onclick="setRhythm('SVT')">SVT (Narrow)</button>
+                <button class="btn-rhythm" onclick="setRhythm('MONOMORPHIC_VT')">Stable VTach</button>
+                <button class="btn-rhythm" onclick="setRhythm('AFIB')">A-Fib w/ RVR</button>
+                <button class="btn-rhythm" onclick="setRhythm('AFLUTTER')">A-Flutter</button>
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-blue-400 uppercase">Bradycardias & Blocks</div>
+              <div class="grid grid-cols-2 gap-1">
+                <button class="btn-rhythm" onclick="setRhythm('AV_FIRST')">1st Degree Block</button>
+                <button class="btn-rhythm" onclick="setRhythm('AV_SECOND_I')">2nd Deg Wenckebach</button>
+                <button class="btn-rhythm" onclick="setRhythm('AV_SECOND_II')">2nd Deg Mobitz II</button>
+                <button class="btn-rhythm" onclick="setRhythm('AV_THIRD')">3rd Deg Complete</button>
+                <button class="btn-rhythm" onclick="setRhythm('JUNCTIONAL')">Junction</button>
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold text-green-400 uppercase">Sinus & Ectopic</div>
+              <div class="grid grid-cols-2 gap-1">
+                <button class="btn-rhythm" onclick="setRhythm('NSR')">Normal Sinus</button>
+                <button class="btn-rhythm" onclick="setRhythm('SINUS_ARRHYTHMIA')">Sinus Arrhythmia</button>
+                <button class="btn-rhythm" onclick="setRhythm('PAC')">PAC Beats</button>
+                <button class="btn-rhythm" onclick="setRhythm('PVC')">PVC Frequent</button>
+                <button class="btn-rhythm" onclick="setRhythm('RBBB')">RBBB</button>
+                <button class="btn-rhythm" onclick="setRhythm('LBBB')">LBBB</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VITALS & STATUS (3 Cols) -->
+        <div class="ctrl-card col-span-12 sm:col-span-6 lg:col-span-3">
+          <div class="ctrl-title">2. Vital Signs Controls</div>
+          <div class="space-y-1 text-xs font-mono">
+            <div class="flex justify-between items-center"><label class="text-green-400">HR (BPM):</label><input type="number" id="v-hr" value="75" class="w-14 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div>
+            <div class="flex justify-between items-center"><label class="text-cyan-400">BP Sys/Dia:</label><div class="flex gap-1"><input type="number" id="v-bpsys" value="120" class="w-10 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"><span class="text-gray-500">/</span><input type="number" id="v-bpdia" value="80" class="w-10 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div></div>
+            <div class="flex justify-between items-center"><label class="text-yellow-400">SpO2 (%):</label><input type="number" id="v-spo2" value="98" class="w-14 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div>
+            <div class="flex justify-between items-center"><label class="text-white">Resp Rate:</label><input type="number" id="v-rr" value="16" class="w-14 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div>
+            <div class="flex justify-between items-center"><label class="text-purple-400">EtCO2 (mmHg):</label><input type="number" id="v-etco2" value="38" class="w-14 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div>
+          </div>
+
+          <div class="border-t border-gray-800 my-1 pt-1">
+            <div class="ctrl-title">Interventions</div>
+            <div class="flex flex-col gap-1">
+              <button id="btn-cpr" onclick="toggleCPR()" class="w-full py-1 bg-gray-800 text-gray-300 font-bold rounded text-xs hover:bg-gray-700">🟢 CPR: OFF</button>
+              <button id="btn-intubated" onclick="toggleIntubation()" class="w-full py-1 bg-gray-800 text-gray-300 font-bold rounded text-xs hover:bg-gray-700">🫁 ADVANCED AIRWAY: NO</button>
+            </div>
+          </div>
+
+          <div class="mt-auto">
+            <div class="text-[10px] text-gray-400 mb-1">Quick Scenarios:</div>
+            <div class="grid grid-cols-2 gap-1 text-[10px]">
+              <button onclick="applyPreset('normal')" class="p-1 bg-gray-800 hover:bg-gray-700 rounded">Normal</button>
+              <button onclick="applyPreset('shock')" class="p-1 bg-red-950 text-red-300 hover:bg-red-900 rounded">Shock</button>
+              <button onclick="applyPreset('brady')" class="p-1 bg-blue-950 text-blue-300 hover:bg-blue-900 rounded">Brady</button>
+              <button onclick="applyPreset('arrest')" class="p-1 bg-black text-gray-400 hover:bg-gray-900 rounded">Arrest</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEFIBRILLATOR (2 Cols) -->
+        <div class="ctrl-card col-span-12 sm:col-span-6 lg:col-span-2 border-red-900/50 bg-red-950/10">
+          <div class="ctrl-title border-red-900 text-red-400">3. Defib / Cardioverter</div>
+          <div class="space-y-2 font-mono">
+            <div>
+              <label class="text-[10px] text-gray-400 block mb-0.5">Joules:</label>
+              <select id="defib-joules" class="w-full text-center text-sm font-bold text-yellow-400 bg-slate-900 border border-slate-700 rounded py-1" onchange="pushState()">
+                <option value="50">50 J</option>
+                <option value="100">100 J</option>
+                <option value="150">150 J</option>
+                <option value="200" selected>200 J</option>
+                <option value="300">300 J</option>
+                <option value="360">360 J</option>
+              </select>
+            </div>
+            <button id="btn-sync" onclick="toggleSyncMode()" class="w-full py-1 bg-gray-800 text-red-400 font-bold rounded text-xs hover:bg-gray-700">SYNC MODE: OFF</button>
+            <button onclick="triggerCharge()" class="w-full py-2 bg-yellow-600 hover:bg-yellow-500 text-black font-extrabold rounded text-xs shadow">⚡ CHARGE</button>
+            <button onclick="triggerShock()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded text-xs tracking-wider shadow animate-pulse">💥 DELIVER SHOCK</button>
+          </div>
+        </div>
+
+        <!-- PHARMACY & LOG (3 Cols) -->
+        <div class="ctrl-card col-span-12 lg:col-span-3">
+          <div class="ctrl-title">4. Pharmacy & Live Log</div>
+          <div class="grid grid-cols-2 gap-1 mb-1">
+            <button onclick="administerDrug('Epinephrine', '1mg IV')" class="btn-drug">Epi 1mg</button>
+            <button onclick="administerDrug('Amiodarone', '300mg IV')" class="btn-drug">Amio 300mg</button>
+            <button onclick="administerDrug('Atropine', '1mg IV')" class="btn-drug">Atropine 1mg</button>
+            <button onclick="administerDrug('Adenosine', '6mg Rapid IVP')" class="btn-drug">Adenosine 6mg</button>
+            <button onclick="administerDrug('Adenosine', '12mg Rapid IVP')" class="btn-drug">Adenosine 12mg</button>
+            <button onclick="administerDrug('Mg Sulfate', '2g IV')" class="btn-drug">Mg Sulfate 2g</button>
+          </div>
+          <div id="event-log" class="flex-1 bg-black/60 border border-gray-800 rounded p-1.5 text-[10px] font-mono text-gray-300 overflow-y-auto space-y-0.5">
+            <div class="text-gray-600">[System] Standalone Monitor Ready.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- QUESTION GRID MODAL -->
+  <div id="modal-grid" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-2xl w-full rounded-2xl p-6 relative">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-border-all text-brand-400"></i> ALS Assessment Question Grid
+        </h3>
+        <button onclick="toggleGridModal()" class="text-slate-400 hover:text-white text-xl">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-5 sm:grid-cols-10 gap-2 mb-4 max-h-60 overflow-y-auto custom-scrollbar p-1">
+        <script>
+          for (let i = 1; i <= 30; i++) {
+            document.write(`<button class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:border-brand-500 font-mono text-xs text-center">${i}</button>`);
+          }
+        </script>
+      </div>
+      <p class="text-xs text-slate-400">Select any question number to review scenarios and clinical questions.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400 relative z-10 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      
+      <div class="flex items-center space-x-3 bg-white/5 p-2 rounded-xl border border-white/10">
+        <img id="img-footer-logo-1" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1" class="h-8 w-auto object-contain">
+        <div class="h-5 w-px bg-slate-800"></div>
+        <img id="img-footer-logo-2" src="https://lh3.googleusercontent.com/d/1LdMRx-PF49CWOcrjthClGLJg-yQoJ2mt" alt="Footer Logo 2" class="h-8 w-auto object-contain">
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Advanced Life Support Training System</span>
+      </div>
+
+      <p class="text-slate-300 font-semibold tracking-wide">copyright Yassin Razak @ 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    // --- AUTHENTICATION & NAVIGATION HANDLERS ---
+    function switchTab(tab) {
+      const regBtn = document.getElementById('tab-register-btn');
+      const loginBtn = document.getElementById('tab-login-btn');
+      const regForm = document.getElementById('form-register');
+      const loginForm = document.getElementById('form-login');
+
+      if (tab === 'register') {
+        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
+        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+        regForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+      } else {
+        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
+        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+        loginForm.classList.remove('hidden');
+        regForm.classList.add('hidden');
+      }
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const staffId = document.getElementById('reg-id').value;
+      loginUser(name, staffId);
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const staffId = document.getElementById('login-id').value;
+      loginUser("Practitioner", staffId);
+    }
+
+    function loginUser(name, id) {
+      document.getElementById('user-display-name').innerText = name;
+      document.getElementById('user-display-id').innerText = "ID: " + id;
+      document.getElementById('page-auth').classList.add('hidden');
+      document.getElementById('page-app').classList.remove('hidden');
+      document.getElementById('page-app').classList.add('flex');
+      document.getElementById('nav-user-info').classList.remove('hidden');
+      document.getElementById('nav-user-info').classList.add('flex');
+      resizeCanvas();
+    }
+
+    function logout() {
+      document.getElementById('page-app').classList.add('hidden');
+      document.getElementById('page-app').classList.remove('flex');
+      document.getElementById('nav-user-info').classList.add('hidden');
+      document.getElementById('nav-user-info').classList.remove('flex');
+      document.getElementById('page-auth').classList.remove('hidden');
+    }
+
+    function goHome() {
+      if (!document.getElementById('page-app').classList.contains('hidden')) {
+        toggleGridModal();
+      }
+    }
+
+    function toggleGridModal() {
+      const modal = document.getElementById('modal-grid');
+      modal.classList.toggle('hidden');
+    }
+
+    // --- STATE MANAGEMENT ---
+    let state = {
+      rhythm: 'NSR',
+      connected: true,
+      cprActive: false,
+      intubated: false,
+      syncMode: false,
+      defibJoules: 200,
+      chargeEvent: null,
+      shockEvent: null,
+      vitals: { hr: '75', bpSys: '120', bpDia: '80', spo2: '98', etco2: '38', rr: '16' },
+      patient: { age: '65', gender: 'M', comorbidities: ['CAD', 'HTN', 'DM2'] }
+    };
+
+    const arrestRhythms = ['VFIB', 'VTACH', 'POLYMORPHIC_VT', 'MONOMORPHIC_VT', 'PEA', 'ASYSTOLE'];
+
+    // BroadcastChannel Sync Across Tabs
+    const syncChannel = new BroadcastChannel('acls_standalone_sync');
+
+    syncChannel.onmessage = (e) => {
+      if (e.data) {
+        state = e.data;
+        updateUIFromState();
+      }
+    };
+
+    function pushState() {
+      state.vitals.hr = document.getElementById('v-hr').value || '75';
+      state.vitals.bpSys = document.getElementById('v-bpsys').value || '120';
+      state.vitals.bpDia = document.getElementById('v-bpdia').value || '80';
+      state.vitals.spo2 = document.getElementById('v-spo2').value || '98';
+      state.vitals.rr = document.getElementById('v-rr').value || '16';
+      state.vitals.etco2 = document.getElementById('v-etco2').value || '38';
+      state.defibJoules = parseInt(document.getElementById('defib-joules').value, 10);
+
+      syncChannel.postMessage(state);
+      updateUIFromState();
+    }
+
+    function updateUIFromState() {
+      document.getElementById('active-rhythm-badge').innerText = state.rhythm;
+      updateMonitorDisplay();
+      
+      if (state.chargeEvent && state.chargeEvent !== window.lastChargeEvent) {
+        window.lastChargeEvent = state.chargeEvent;
+        playDefibChargeSound(state.defibJoules || 200);
+        startChargeVisuals(state.defibJoules || 200);
+      }
+      
+      if (state.shockEvent && state.shockEvent !== window.lastShockEvent) {
+        window.lastShockEvent = state.shockEvent;
+        if (typeof chargeInterval !== 'undefined') clearInterval(chargeInterval);
+        triggerShockVisuals(state.defibJoules || 200);
+      }
+    }
+
+    // --- CONTROLLER ACTIONS ---
+    function setRhythm(rhythmName) {
+      if (state.rhythm !== rhythmName) previousWaveY = null;
+      state.rhythm = rhythmName;
+      document.querySelectorAll('.btn-rhythm').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick').includes(rhythmName));
+      });
+      logEvent(`Rhythm set to: ${rhythmName}`);
+      pushState();
+    }
+
+    function toggleCPR() {
+      state.cprActive = !state.cprActive;
+      const btn = document.getElementById('btn-cpr');
+      btn.innerText = state.cprActive ? '🟢 CPR: ON' : '🟢 CPR: OFF';
+      btn.className = state.cprActive ? 'w-full py-1 bg-green-950 border border-green-500 text-green-400 font-bold rounded text-xs' : 'w-full py-1 bg-gray-800 text-gray-300 font-bold rounded text-xs';
+      logEvent(state.cprActive ? 'CPR Started' : 'CPR Stopped');
+      pushState();
+    }
+
+    function toggleIntubation() {
+      state.intubated = !state.intubated;
+      const btn = document.getElementById('btn-intubated');
+      btn.innerText = state.intubated ? '🫁 ADVANCED AIRWAY: YES' : '🫁 ADVANCED AIRWAY: NO';
+      btn.className = state.intubated ? 'w-full py-1 bg-purple-950 border border-purple-500 text-purple-300 font-bold rounded text-xs' : 'w-full py-1 bg-gray-800 text-gray-300 font-bold rounded text-xs';
+      logEvent(state.intubated ? 'Advanced Airway Placed' : 'Advanced Airway Removed');
+      pushState();
+    }
+
+    function toggleSyncMode() {
+      state.syncMode = !state.syncMode;
+      const btn = document.getElementById('btn-sync');
+      btn.innerText = state.syncMode ? 'SYNC MODE: ON' : 'SYNC MODE: OFF';
+      btn.className = state.syncMode ? 'w-full py-1 bg-red-900 text-white font-bold rounded text-xs animate-pulse' : 'w-full py-1 bg-gray-800 text-red-400 font-bold rounded text-xs';
+      logEvent(`Sync Mode: ${state.syncMode ? 'ENABLED' : 'DISABLED'}`);
+      pushState();
+    }
+
+    function triggerCharge() {
+      state.chargeEvent = Date.now();
+      logEvent(`Defib CHARGING to ${state.defibJoules}J`);
+      pushState();
+    }
+
+    function triggerShock() {
+      state.shockEvent = Date.now();
+      logEvent(`⚡ SHOCK DELIVERED: ${state.defibJoules}J (Sync: ${state.syncMode ? 'ON' : 'OFF'})`);
+      pushState();
+    }
+
+    function administerDrug(drug, dose) {
+      logEvent(`💉 ADMINISTERED: ${drug} (${dose})`);
+      pushState();
+    }
+
+    function applyPreset(preset) {
+      if (preset === 'normal') {
+        document.getElementById('v-hr').value = 75; document.getElementById('v-bpsys').value = 120; document.getElementById('v-bpdia').value = 80;
+        document.getElementById('v-spo2').value = 98; document.getElementById('v-rr').value = 16; document.getElementById('v-etco2').value = 38;
+        setRhythm('NSR');
+      } else if (preset === 'shock') {
+        document.getElementById('v-hr').value = 135; document.getElementById('v-bpsys').value = 78; document.getElementById('v-bpdia').value = 45;
+        document.getElementById('v-spo2').value = 89; document.getElementById('v-rr').value = 28; document.getElementById('v-etco2').value = 26;
+        setRhythm('SVT');
+      } else if (preset === 'brady') {
+        document.getElementById('v-hr').value = 32; document.getElementById('v-bpsys').value = 70; document.getElementById('v-bpdia').value = 40;
+        document.getElementById('v-spo2').value = 91; document.getElementById('v-rr').value = 10; document.getElementById('v-etco2').value = 30;
+        setRhythm('AV_THIRD');
+      } else if (preset === 'arrest') {
+        document.getElementById('v-hr').value = 0; document.getElementById('v-bpsys').value = 0; document.getElementById('v-bpdia').value = 0;
+        document.getElementById('v-spo2').value = 0; document.getElementById('v-rr').value = 0; document.getElementById('v-etco2').value = 12;
+        setRhythm('VFIB');
+      }
+    }
+
+    function logEvent(msg) {
+      const logEl = document.getElementById('event-log');
+      const time = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.innerHTML = `<span class="text-gray-500">[${time}]</span> ${msg}`;
+      logEl.prepend(div);
+    }
+
+    function toggleFullscreenMonitor() {
+      document.body.classList.toggle('fullscreen-monitor');
+      resizeCanvas();
+    }
+
+    // --- CANVAS & ECG ANIMATION ENGINE ---
+    let canvas, ctx, paperCanvas, paperCtx, xOffset = 0, previousWaveY = null, animId = null, globalX = 0;
+    let audioContext = null, rhythmAudioTimer = null, rhythmAudioStopped = true, chargeInterval = null, shockBannerTimeout = null;
+
+    function initCanvas() {
+      canvas = document.getElementById('ecgCanvas'); ctx = canvas.getContext('2d');
+      paperCanvas = document.createElement('canvas'); paperCtx = paperCanvas.getContext('2d');
+      resizeCanvas(); if (!animId) drawECG();
+    }
+
+    function resizeCanvas() {
+      if (!canvas) return; const rect = canvas.parentElement.getBoundingClientRect();
+      const w = Math.max(320, Math.floor(rect.width)), h = Math.max(140, Math.floor(rect.height));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = paperCanvas.width = w; canvas.height = paperCanvas.height = h;
+        xOffset = 0; previousWaveY = null;
+        paperCtx.fillStyle = '#020406'; paperCtx.fillRect(0, 0, w, h);
+        paperCtx.lineWidth = 1; paperCtx.strokeStyle = 'rgba(0, 229, 255, 0.08)';
+        for (let x = 0; x <= w; x += 25) { paperCtx.beginPath(); paperCtx.moveTo(x, 0); paperCtx.lineTo(x, h); paperCtx.stroke(); }
+        for (let y = 0; y <= h; y += 25) { paperCtx.beginPath(); paperCtx.moveTo(0, y); paperCtx.lineTo(w, y); paperCtx.stroke(); }
+        ctx.drawImage(paperCanvas, 0, 0);
+      }
+    }
+
+    function drawSyncSpike(x, y) {
+      ctx.save(); ctx.beginPath(); ctx.strokeStyle = '#ff3b30'; ctx.lineWidth = 4; ctx.shadowColor = '#ff3b30'; ctx.shadowBlur = 10;
+      ctx.moveTo(x, y - 80); ctx.lineTo(x, y + 25); ctx.stroke(); ctx.restore(); ctx.beginPath(); ctx.moveTo(x, y);
+    }
+
+    function drawECG() {
+      resizeCanvas();
+      const prevX = xOffset, nextX = xOffset + 3, wrapped = nextX >= canvas.width;
+      xOffset = nextX % canvas.width; globalX += 3;
+
+      const eraseWidth = 35, eraseX = xOffset;
+      if (eraseX + eraseWidth <= canvas.width) {
+        ctx.drawImage(paperCanvas, eraseX, 0, eraseWidth, canvas.height, eraseX, 0, eraseWidth, canvas.height);
+      } else {
+        const part1 = canvas.width - eraseX;
+        ctx.drawImage(paperCanvas, eraseX, 0, part1, canvas.height, eraseX, 0, part1, canvas.height);
+        ctx.drawImage(paperCanvas, 0, 0, eraseWidth - part1, canvas.height, 0, 0, eraseWidth - part1, canvas.height);
+      }
+
+      ctx.lineWidth = 3; ctx.strokeStyle = '#00ff66'; ctx.shadowColor = '#00ff66'; ctx.shadowBlur = 8;
+      let y = canvas.height / 2; const elapsed = Date.now() / 1000;
+
+      if (state.rhythm === 'OFF') {
+        y = canvas.height / 2;
+      } else {
+        const drift = Math.sin(elapsed * 1.7 + xOffset * 0.012) * 2;
+        let r = state.rhythm, currentHR = parseInt(state.vitals.hr, 10) || 60;
+        let beatGap = Math.max(15, 5400 / currentHR);
+
+        if (r === 'VFIB') {
+          y += drift - (Math.sin(elapsed * 15) * 0.4 + Math.sin(elapsed * 8.5) * 0.3 + (Math.random() - 0.5) * 0.25) * (canvas.height * 0.2);
+        } else if (r === 'VTACH' || r === 'MONOMORPHIC_VT') {
+          let t = elapsed * (17.5 * (currentHR / 185)), wave = Math.sin(t) + 0.45 * Math.sin(2 * t + 1.2);
+          y += drift - wave * (canvas.height * 0.15);
+          if (state.syncMode && (t % (Math.PI * 2)) <= 0.2) drawSyncSpike(xOffset, y);
+        } else if (r === 'POLYMORPHIC_VT') {
+          let t = elapsed * (20 * (currentHR / 210)), wave = Math.sin(t) + 0.6 * Math.sin(1.3 * t + elapsed * 2);
+          y += drift - wave * (canvas.height * 0.18) * Math.sin(elapsed * 0.9);
+          if (state.syncMode && Math.random() < 0.02) drawSyncSpike(xOffset, y);
+        } else if (r === 'ASYSTOLE') {
+          y += drift * 0.45 + (Math.random() - 0.5) * 3;
+        } else if (r === 'AV_THIRD') {
+          let qrsDepth = canvas.height * 0.25, pCycle = globalX % (5400 / 75), qCycle = globalX % (5400 / Math.min(45, Math.max(25, currentHR)));
+          y += drift;
+          if (pCycle < 8) y -= Math.sin((pCycle / 8) * Math.PI) * 10;
+          if (qCycle < 3) y += 6; else if (qCycle < 8) y -= qrsDepth * 1.25; else if (qCycle < 13) y += 12; else if (qCycle >= 20 && qCycle < 36) y -= Math.sin(((qCycle - 20) / 16) * Math.PI) * 12;
+          if (state.syncMode && qCycle >= 3 && qCycle <= 5) drawSyncSpike(xOffset, y);
+        } else {
+          let isQRS = true, isP = true, isT = true, pOffset = 0, qrsDepth = canvas.height * 0.25;
+          if (r === 'AFIB') { isP = false; beatGap += Math.sin(elapsed * 2.3) * (beatGap * 0.2); y += (Math.random() - 0.5) * 3; }
+          else if (r === 'AFLUTTER') { isP = false; isT = false; y += Math.sin(xOffset * 0.25) * 6; }
+          else if (r === 'SVT' || r === 'JUNCTIONAL') { isP = false; }
+          else if (r === 'AV_FIRST') { pOffset = -35; }
+
+          let cycle = xOffset % Math.round(beatGap), prevCycle = prevX % Math.round(beatGap);
+          y += drift;
+          let pStart = beatGap - 18 + pOffset, pEnd = beatGap - 10 + pOffset;
+
+          if (isP && cycle >= pStart && cycle <= pEnd) y -= 8;
+          if (isQRS) {
+            if (cycle < 2) y += 8; else if (cycle < 6) y -= qrsDepth; else if (cycle < 10) y += 12;
+          }
+          if (isT && isQRS && cycle >= 14 && cycle <= 28) y -= 12;
+          if (state.syncMode && isQRS && prevCycle <= 2 && cycle > 2) drawSyncSpike(xOffset, y);
+        }
+      }
+
+      ctx.beginPath();
+      if (wrapped || previousWaveY === null || Math.abs(xOffset - prevX) > 10) ctx.moveTo(xOffset, y);
+      else { ctx.moveTo(prevX, previousWaveY); ctx.lineTo(xOffset, y); }
+      ctx.stroke(); previousWaveY = y;
+      animId = requestAnimationFrame(drawECG);
+    }
+
+    // --- MONITOR DISPLAY UPDATER ---
+    function updateMonitorDisplay() {
+      document.getElementById('m-sync-mode').style.display = state.syncMode ? 'block' : 'none';
+      if (state.rhythm === 'OFF') {
+        ['m-v-hr', 'm-v-bp', 'm-v-spo2', 'm-v-etco2', 'm-v-rr'].forEach(id => document.getElementById(id).innerText = '--');
+        document.getElementById('m-status-overlay').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('m-v-hr').innerText = state.vitals.hr || '--';
+      const isArrest = arrestRhythms.includes(state.rhythm);
+      const showVitals = !state.cprActive && !isArrest;
+
+      if (!showVitals) {
+        ['m-v-bp', 'm-v-spo2', 'm-v-etco2', 'm-v-rr'].forEach(id => document.getElementById(id).innerText = '--');
+      } else {
+        document.getElementById('m-v-bp').innerText = `${state.vitals.bpSys}/${state.vitals.bpDia}`;
+        document.getElementById('m-v-spo2').innerText = state.vitals.spo2.includes('%') ? state.vitals.spo2 : `${state.vitals.spo2}%`;
+        document.getElementById('m-v-etco2').innerText = state.intubated ? state.vitals.etco2 : '--';
+        document.getElementById('m-v-rr').innerText = state.vitals.rr;
+      }
+
+      const overlay = document.getElementById('m-status-overlay');
+      if (state.cprActive) {
+        overlay.innerText = "🟢 CPR IN PROGRESS"; overlay.className = 'status-overlay status-cpr'; overlay.style.display = 'block';
+      } else overlay.style.display = 'none';
+    }
+
+    // --- AUDIO & DEFIB VISUALS ---
+    function ensureAudio() {
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioContext.state === 'suspended') audioContext.resume();
+      rhythmAudioStopped = false;
+      if (!rhythmAudioTimer) rhythmAudioTimer = setInterval(playRhythmTone, 250);
+    }
+    function stopAudio() { rhythmAudioStopped = true; if (audioContext) audioContext.suspend(); }
+
+    function playRhythmTone() {
+      if (rhythmAudioStopped || !audioContext || audioContext.state !== 'running' || state.rhythm === 'OFF') return;
+      const hr = parseInt(state.vitals.hr, 10) || 60, interval = Math.max(180, Math.min(1400, 60000 / hr));
+      if (Date.now() % Math.round(interval) > 280) return;
+      const osc = audioContext.createOscillator(), gain = audioContext.createGain();
+      osc.type = (state.rhythm === 'VFIB' || state.rhythm === 'POLYMORPHIC_VT') ? 'sawtooth' : 'sine';
+      osc.frequency.value = state.rhythm === 'ASYSTOLE' ? 180 : 520;
+      gain.gain.setValueAtTime(0.0001, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(0.07, audioContext.currentTime + 0.01); gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.12);
+      osc.connect(gain).connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime + 0.13);
+    }
+
+    function playDefibChargeSound(joules) {
+      ensureAudio();
+      const osc = audioContext.createOscillator(), gain = audioContext.createGain(), dur = 5.5;
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(620, audioContext.currentTime); osc.frequency.exponentialRampToValueAtTime(1500 + (joules * 3.8), audioContext.currentTime + dur);
+      gain.gain.setValueAtTime(0.0001, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(0.09, audioContext.currentTime + 0.08); gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + dur);
+      osc.connect(gain).connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime + dur + 0.02);
+    }
+
+    function startChargeVisuals(targetJoules) {
+      clearTimeout(shockBannerTimeout);
+      const el = document.getElementById('m-defib-status');
+      el.style.display = 'block'; el.className = 'defib-status text-blink';
+      const startTime = Date.now(), duration = 5500;
+      clearInterval(chargeInterval);
+      chargeInterval = setInterval(() => {
+        let elapsed = Date.now() - startTime;
+        if (elapsed >= duration) {
+          clearInterval(chargeInterval); el.className = 'defib-status'; el.innerHTML = `DEFIB READY: ${targetJoules} J`;
+        } else {
+          el.innerHTML = `CHARGING: ${Math.max(1, Math.floor((elapsed / duration) * targetJoules))} J`;
+        }
+      }, 50);
+    }
+
+    function triggerShockVisuals(joules) {
+      ensureAudio();
+      const osc = audioContext.createOscillator(), gain = audioContext.createGain();
+      osc.type = 'square'; osc.frequency.setValueAtTime(140, audioContext.currentTime); osc.frequency.exponentialRampToValueAtTime(70, audioContext.currentTime + 0.28);
+      gain.gain.setValueAtTime(0.0001, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(0.42, audioContext.currentTime + 0.012); gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.32);
+      osc.connect(gain).connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime + 0.34);
+
+      document.body.style.background = '#fff'; setTimeout(() => { document.body.style.background = '#030712'; }, 150);
+      const el = document.getElementById('m-defib-status');
+      el.style.display = 'block'; el.className = 'defib-status shock-delivered-banner'; el.innerHTML = `⚡ SHOCK DELIVERED: ${joules || 200} J`;
+      clearTimeout(shockBannerTimeout); shockBannerTimeout = setTimeout(() => { el.style.display = 'none'; }, 2500);
+    }
+
+    // Initialize System
+    setInterval(updateMonitorDisplay, 1000);
+    initCanvas();
+    setRhythm('NSR');
+  </script>
+</body>
+</html>
