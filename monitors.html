@@ -99,6 +99,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
     }
 
+    /* PURE WAVE CANVAS CONTAINER - NO OVERLAY TEXT PERMITTED INSIDE */
     .canvas-container {
       position: relative;
       width: 100%;
@@ -118,7 +119,7 @@
       filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.85));
     }
 
-    /* STATUS INDICATORS ROW BELOW ECG CANVAS */
+    /* DEDICATED STATUS BAR STRICTLY BELOW ECG CANVAS */
     .monitor-status-bar {
       display: flex;
       align-items: center;
@@ -389,12 +390,12 @@
           </div>
         </div>
 
-        <!-- ECG CANVAS CONTAINER (PURE WAVE - NO TEXT OVERLAY) -->
+        <!-- PURE WAVE ECG CANVAS (NO FLOATING OVERLAYS) -->
         <div class="canvas-container">
           <canvas id="ecgCanvas"></canvas>
         </div>
 
-        <!-- ALL MONITOR TEXT / STATUS BADGES VIEWED STRICTLY BELOW THE ECG WAVE -->
+        <!-- STATUS BADGES VIEWED STRICTLY BELOW THE ECG CANVAS -->
         <div class="monitor-status-bar">
           <div id="m-status-overlay" class="status-badge status-cpr hidden">🟢 CPR IN PROGRESS</div>
           <div id="m-sync-mode" class="status-badge sync-badge hidden">SYNC MODE</div>
@@ -1250,9 +1251,9 @@
       const osc = audioContext.createOscillator();
       const gain = audioContext.createGain();
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(140, audioContext.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(32, audioContext.currentTime + 0.12);
-      gain.gain.setValueAtTime(0.45, audioContext.currentTime);
+      osc.frequency.setValueAtTime(130, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(30, audioContext.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.5, audioContext.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
       osc.connect(gain).connect(audioContext.destination);
       osc.start();
