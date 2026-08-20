@@ -6,14 +6,17 @@
     <title>Emergency & Trauma Department | Hospital Kuala Nerang</title>
     <style>
         :root {
-            --primary: #0f172a;
-            --accent-red: #dc2626;
-            --bls-color: #1d4ed8;
-            --als-color: #047857;
-            --tls-color: #0284c7;
-            --bg-light: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #334155;
+            --bg-dark: #030712;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --card-border: rgba(56, 189, 248, 0.2);
+            --card-border-hover: rgba(56, 189, 248, 0.6);
+            --accent-red: #ef4444;
+            --accent-cyan: #38bdf8;
+            --accent-blue: #3b82f6;
+            --accent-emerald: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --btn-dark-bg: linear-gradient(135deg, #0f172a 0%, #020617 100%);
         }
 
         * {
@@ -24,7 +27,10 @@
         }
 
         body {
-            background-color: var(--bg-light);
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(30, 58, 138, 0.25) 0%, transparent 60%),
+                radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.1) 0%, transparent 40%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -32,48 +38,59 @@
         }
 
         header {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             color: white;
             padding: 2.5rem 1rem;
             text-align: center;
-            border-bottom: 5px solid var(--accent-red);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-bottom: 2px solid rgba(239, 68, 68, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.2);
         }
 
         .main-logo {
             max-height: 110px;
             width: auto;
             margin-bottom: 1rem;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
+            transition: transform 0.3s ease, filter 0.3s ease;
         }
 
         .main-logo:hover {
-            transform: scale(1.03);
+            transform: scale(1.04);
+            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.7));
         }
 
         .hospital-badge {
             display: inline-block;
-            background-color: var(--accent-red);
+            background: linear-gradient(135deg, #dc2626, #991b1b);
             color: white;
             font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 1.5px;
-            padding: 0.25rem 0.75rem;
+            letter-spacing: 2px;
+            padding: 0.35rem 1rem;
             border-radius: 20px;
             text-transform: uppercase;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
+            box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         header h1 {
-            font-size: 2rem;
-            letter-spacing: 0.5px;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
             margin-bottom: 0.5rem;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
         }
 
         header p {
-            font-size: 1.1rem;
-            color: #94a3b8;
+            font-size: 1.05rem;
+            color: var(--accent-cyan);
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
         }
 
         .container {
@@ -85,17 +102,20 @@
 
         .portal-heading {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
         }
 
         .portal-heading h2 {
-            font-size: 1.6rem;
-            color: var(--primary);
+            font-size: 1.8rem;
+            color: #ffffff;
             margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .portal-heading p {
-            color: #64748b;
+            color: var(--text-muted);
+            font-size: 1rem;
         }
 
         .portal-grid {
@@ -104,110 +124,150 @@
             gap: 2rem;
         }
 
+        /* --- FUTURISTIC CARDS --- */
         .card {
-            background: var(--card-bg);
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #e2e8f0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            position: relative;
         }
 
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+            border-color: var(--card-border-hover);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.25);
         }
 
         .card-header {
-            padding: 2.5rem 2rem 1.5rem;
-            color: white;
+            padding: 2.2rem 2rem 1.5rem;
             text-align: center;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
+        /* Distinct Title Glows contrasting with dark background */
         .card-bls .card-header {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(180deg, rgba(30, 58, 138, 0.5) 0%, rgba(15, 23, 42, 0) 100%);
         }
 
         .card-als .card-header {
-            background: linear-gradient(135deg, #059669, #047857);
+            background: linear-gradient(180deg, rgba(6, 78, 59, 0.5) 0%, rgba(15, 23, 42, 0) 100%);
         }
 
         .card-tls .card-header {
-            background: linear-gradient(135deg, #0284c7, #0369a1);
+            background: linear-gradient(180deg, rgba(12, 74, 110, 0.5) 0%, rgba(15, 23, 42, 0) 100%);
         }
 
         .card-icon {
             font-size: 3rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
         }
 
         .card-title {
             font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
         }
 
+        .card-bls .card-title { color: #60a5fa; text-shadow: 0 0 12px rgba(96, 165, 250, 0.5); }
+        .card-als .card-title { color: #34d399; text-shadow: 0 0 12px rgba(52, 211, 153, 0.5); }
+        .card-tls .card-title { color: #38bdf8; text-shadow: 0 0 12px rgba(56, 189, 248, 0.5); }
+
+        /* --- DARK BLUE / BLACK BUTTON AREA --- */
         .card-body {
             padding: 2rem;
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
         }
 
         .card-body p {
             font-size: 0.95rem;
             line-height: 1.6;
-            color: #64748b;
+            color: var(--text-muted);
             margin-bottom: 2rem;
             text-align: center;
         }
 
+        /* --- STYLISH FUTURISTIC BUTTONS --- */
         .btn {
             display: block;
             width: 100%;
             text-align: center;
-            padding: 0.9rem 1.5rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             text-decoration: none;
-            color: white;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            background: var(--btn-dark-bg);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
+        /* High-contrast neon colored outlines & button text */
         .btn-bls {
-            background-color: var(--bls-color);
+            color: #60a5fa;
+            border-color: rgba(96, 165, 250, 0.4);
         }
 
         .btn-bls:hover {
-            background-color: #1e40af;
+            background: linear-gradient(135deg, #1d4ed8 0%, #0f172a 100%);
+            color: #ffffff;
+            border-color: #60a5fa;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.6);
+            transform: scale(1.02);
         }
 
         .btn-als {
-            background-color: var(--als-color);
+            color: #34d399;
+            border-color: rgba(52, 211, 153, 0.4);
         }
 
         .btn-als:hover {
-            background-color: #065f46;
+            background: linear-gradient(135deg, #047857 0%, #0f172a 100%);
+            color: #ffffff;
+            border-color: #34d399;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+            transform: scale(1.02);
         }
 
         .btn-tls {
-            background-color: var(--tls-color);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.4);
         }
 
         .btn-tls:hover {
-            background-color: #0369a1;
+            background: linear-gradient(135deg, #0284c7 0%, #0f172a 100%);
+            color: #ffffff;
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.6);
+            transform: scale(1.02);
         }
 
         /* --- FOOTER STYLES --- */
         footer {
             background-color: #020617;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.25rem 1.5rem;
-            color: #94a3b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1.5rem 1.5rem;
+            color: var(--text-muted);
             font-size: 0.85rem;
             margin-top: auto;
         }
@@ -232,7 +292,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.03);
             padding: 0.5rem 1rem;
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -242,6 +302,7 @@
             height: 44px;
             width: auto;
             object-fit: contain;
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
         }
 
         .logo-divider {
@@ -256,15 +317,16 @@
             gap: 0.6rem;
             font-weight: 500;
             color: #cbd5e1;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
         }
 
         .pulse-dot {
             width: 9px;
             height: 9px;
             border-radius: 50%;
-            background-color: #10b981;
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            background-color: var(--accent-emerald);
+            box-shadow: 0 0 10px var(--accent-emerald);
             animation: pulse 2s infinite;
         }
 
@@ -284,7 +346,7 @@
         }
 
         .footer-copyright {
-            color: #94a3b8;
+            color: var(--text-muted);
             font-weight: 500;
             font-size: 0.8rem;
             letter-spacing: 0.02em;
