@@ -54,6 +54,7 @@
       background-color: var(--bg-dark);
       color: #f3f4f6;
       min-height: 100vh;
+      transition: background 0.15s ease;
     }
 
     .glass-card {
@@ -288,7 +289,7 @@
   <!-- HEADER / NAVIGATION -->
   <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
+      <div class="flex items-center space-x-3 cursor-pointer">
         <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/10">
           <img id="img-header-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
         </div>
@@ -312,10 +313,6 @@
           <span class="hidden md:inline">ALS Manual PDF</span>
         </a>
 
-        <button onclick="toggleGridModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg border border-slate-800 transition flex items-center gap-2">
-          <i class="fa-solid fa-border-all"></i>
-          <span>Question Grid</span>
-        </button>
         <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Log Out">
           <i class="fa-solid fa-right-from-bracket text-lg"></i>
         </button>
@@ -473,15 +470,47 @@
           </div>
         </div>
 
-        <!-- VITALS & STATUS (3 Cols) -->
+        <!-- VITALS & STATUS SLIDERS (3 Cols) -->
         <div class="ctrl-card col-span-12 sm:col-span-6 lg:col-span-3">
           <div class="ctrl-title">2. Vital Signs Controls</div>
-          <div class="space-y-1 text-xs font-mono">
-            <div class="flex justify-between items-center"><label class="text-green-400">HR (BPM):</label><input type="number" id="v-hr" value="75" class="w-14 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div>
-            <div class="flex justify-between items-center"><label class="text-cyan-400">BP Sys/Dia:</label><div class="flex gap-1"><input type="number" id="v-bpsys" value="120" class="w-10 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"><span class="text-gray-500">/</span><input type="number" id="v-bpdia" value="80" class="w-10 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div></div>
-            <div class="flex justify-between items-center"><label class="text-yellow-400">SpO2 (%):</label><input type="number" id="v-spo2" value="98" class="w-14 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div>
-            <div class="flex justify-between items-center"><label class="text-white">Resp Rate:</label><input type="number" id="v-rr" value="16" class="w-14 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div>
-            <div class="flex justify-between items-center"><label class="text-purple-400">EtCO2 (mmHg):</label><input type="number" id="v-etco2" value="38" class="w-14 text-right bg-slate-900 border border-slate-700 rounded px-1" onchange="pushState()"></div>
+          <div class="space-y-2 text-xs font-mono">
+            <div>
+              <div class="flex justify-between items-center mb-0.5">
+                <label class="text-green-400 font-bold">HR (BPM): <span id="v-hr-val" class="text-white">75</span></label>
+              </div>
+              <input type="range" id="v-hr" min="0" max="220" value="75" class="w-full accent-green-500 cursor-pointer" oninput="updateVitalLabels(); pushState();">
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-0.5">
+                <label class="text-cyan-400 font-bold">BP Sys: <span id="v-bpsys-val" class="text-white">120</span> / Dia: <span id="v-bpdia-val" class="text-white">80</span></label>
+              </div>
+              <div class="flex gap-2">
+                <input type="range" id="v-bpsys" min="0" max="250" value="120" class="w-1/2 accent-cyan-500 cursor-pointer" oninput="updateVitalLabels(); pushState();">
+                <input type="range" id="v-bpdia" min="0" max="150" value="80" class="w-1/2 accent-cyan-500 cursor-pointer" oninput="updateVitalLabels(); pushState();">
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-0.5">
+                <label class="text-yellow-400 font-bold">SpO2 (%): <span id="v-spo2-val" class="text-white">98</span></label>
+              </div>
+              <input type="range" id="v-spo2" min="0" max="100" value="98" class="w-full accent-yellow-500 cursor-pointer" oninput="updateVitalLabels(); pushState();">
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-0.5">
+                <label class="text-white font-bold">Resp Rate: <span id="v-rr-val" class="text-white">16</span></label>
+              </div>
+              <input type="range" id="v-rr" min="0" max="60" value="16" class="w-full accent-slate-300 cursor-pointer" oninput="updateVitalLabels(); pushState();">
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-0.5">
+                <label class="text-purple-400 font-bold">EtCO2 (mmHg): <span id="v-etco2-val" class="text-white">38</span></label>
+              </div>
+              <input type="range" id="v-etco2" min="0" max="100" value="38" class="w-full accent-purple-500 cursor-pointer" oninput="updateVitalLabels(); pushState();">
+            </div>
           </div>
 
           <div class="border-t border-gray-800 my-1 pt-1">
@@ -545,28 +574,6 @@
 
   </main>
 
-  <!-- QUESTION GRID MODAL -->
-  <div id="modal-grid" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="glass-card max-w-2xl w-full rounded-2xl p-6 relative">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-border-all text-brand-400"></i> ALS Assessment Question Grid
-        </h3>
-        <button onclick="toggleGridModal()" class="text-slate-400 hover:text-white text-xl">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="grid grid-cols-5 sm:grid-cols-10 gap-2 mb-4 max-h-60 overflow-y-auto custom-scrollbar p-1">
-        <script>
-          for (let i = 1; i <= 30; i++) {
-            document.write(`<button class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:border-brand-500 font-mono text-xs text-center">${i}</button>`);
-          }
-        </script>
-      </div>
-      <p class="text-xs text-slate-400">Select any question number to review scenarios and clinical questions.</p>
-    </div>
-  </div>
-
   <!-- FOOTER -->
   <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400 relative z-10 mt-auto">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -629,10 +636,14 @@
       document.getElementById('page-app').classList.add('flex');
       document.getElementById('nav-user-info').classList.remove('hidden');
       document.getElementById('nav-user-info').classList.add('flex');
+      updateVitalLabels();
       resizeCanvas();
     }
 
     function logout() {
+      stopAudio(); // Stop audio playback immediately on log off
+      clearTimeout(defibTimeout);
+      clearInterval(chargeInterval);
       document.getElementById('page-app').classList.add('hidden');
       document.getElementById('page-app').classList.remove('flex');
       document.getElementById('nav-user-info').classList.add('hidden');
@@ -640,15 +651,13 @@
       document.getElementById('page-auth').classList.remove('hidden');
     }
 
-    function goHome() {
-      if (!document.getElementById('page-app').classList.contains('hidden')) {
-        toggleGridModal();
-      }
-    }
-
-    function toggleGridModal() {
-      const modal = document.getElementById('modal-grid');
-      modal.classList.toggle('hidden');
+    function updateVitalLabels() {
+      document.getElementById('v-hr-val').innerText = document.getElementById('v-hr').value;
+      document.getElementById('v-bpsys-val').innerText = document.getElementById('v-bpsys').value;
+      document.getElementById('v-bpdia-val').innerText = document.getElementById('v-bpdia').value;
+      document.getElementById('v-spo2-val').innerText = document.getElementById('v-spo2').value;
+      document.getElementById('v-rr-val').innerText = document.getElementById('v-rr').value;
+      document.getElementById('v-etco2-val').innerText = document.getElementById('v-etco2').value;
     }
 
     // --- STATE MANAGEMENT ---
@@ -702,6 +711,7 @@
       
       if (state.shockEvent && state.shockEvent !== window.lastShockEvent) {
         window.lastShockEvent = state.shockEvent;
+        clearTimeout(defibTimeout);
         if (typeof chargeInterval !== 'undefined') clearInterval(chargeInterval);
         triggerShockVisuals(state.defibJoules || 200);
       }
@@ -752,6 +762,7 @@
     }
 
     function triggerShock() {
+      clearTimeout(defibTimeout);
       state.shockEvent = Date.now();
       logEvent(`⚡ SHOCK DELIVERED: ${state.defibJoules}J (Sync: ${state.syncMode ? 'ON' : 'OFF'})`);
       pushState();
@@ -780,6 +791,8 @@
         document.getElementById('v-spo2').value = 0; document.getElementById('v-rr').value = 0; document.getElementById('v-etco2').value = 12;
         setRhythm('VFIB');
       }
+      updateVitalLabels();
+      pushState();
     }
 
     function logEvent(msg) {
@@ -797,7 +810,7 @@
 
     // --- CANVAS & ECG ANIMATION ENGINE ---
     let canvas, ctx, paperCanvas, paperCtx, xOffset = 0, previousWaveY = null, animId = null, globalX = 0;
-    let audioContext = null, rhythmAudioTimer = null, rhythmAudioStopped = true, chargeInterval = null, shockBannerTimeout = null;
+    let audioContext = null, rhythmAudioTimer = null, rhythmAudioStopped = true, chargeInterval = null, shockBannerTimeout = null, defibTimeout = null;
 
     function initCanvas() {
       canvas = document.getElementById('ecgCanvas'); ctx = canvas.getContext('2d');
@@ -846,8 +859,57 @@
       } else {
         const drift = Math.sin(elapsed * 1.7 + xOffset * 0.012) * 2;
         let r = state.rhythm, currentHR = parseInt(state.vitals.hr, 10) || 60;
-        let beatGap = Math.max(15, 5400 / currentHR);
+        let baseBeatGap = Math.max(20, 5400 / currentHR);
+        
+        let isQRS = true, isP = true, isT = true;
+        let prOffset = 0;
+        let qrsDepth = canvas.height * 0.25;
+        let effectiveGap = baseBeatGap;
 
+        // --- 1. SINUS ARRHYTHMIA ---
+        if (r === 'SINUS_ARRHYTHMIA') {
+          let respCycle = Math.sin(elapsed * 1.2);
+          effectiveGap = baseBeatGap * (1 + 0.28 * respCycle);
+        }
+
+        // --- 2. PVC (Premature Ventricular Contraction) ---
+        let isPvcBeat = false;
+        if (r === 'PVC') {
+          let totalPatternGap = baseBeatGap * 3.5;
+          let patternPos = globalX % totalPatternGap;
+          if (patternPos > baseBeatGap * 2.2 && patternPos < baseBeatGap * 3.1) {
+            isPvcBeat = true;
+          }
+        }
+
+        // --- 3. 1st DEGREE AV BLOCK ---
+        if (r === 'AV_FIRST') {
+          prOffset = 22;
+        }
+
+        // --- 4. 2nd DEGREE AV BLOCK TYPE 1 (Wenckebach) ---
+        if (r === 'AV_SECOND_I') {
+          let wenckCycle = Math.floor(globalX / baseBeatGap) % 4;
+          if (wenckCycle === 0) prOffset = 0;
+          else if (wenckCycle === 1) prOffset = 14;
+          else if (wenckCycle === 2) prOffset = 28;
+          else if (wenckCycle === 3) {
+            isQRS = false;
+            isT = false;
+          }
+        }
+
+        // --- 5. 2nd DEGREE AV BLOCK TYPE 2 (Mobitz II) ---
+        if (r === 'AV_SECOND_II') {
+          let mobitzCycle = Math.floor(globalX / baseBeatGap) % 3;
+          prOffset = 8;
+          if (mobitzCycle === 2) {
+            isQRS = false;
+            isT = false;
+          }
+        }
+
+        // --- RHYTHM CALCULATIONS ---
         if (r === 'VFIB') {
           y += drift - (Math.sin(elapsed * 15) * 0.4 + Math.sin(elapsed * 8.5) * 0.3 + (Math.random() - 0.5) * 0.25) * (canvas.height * 0.2);
         } else if (r === 'VTACH' || r === 'MONOMORPHIC_VT') {
@@ -861,28 +923,74 @@
         } else if (r === 'ASYSTOLE') {
           y += drift * 0.45 + (Math.random() - 0.5) * 3;
         } else if (r === 'AV_THIRD') {
-          let qrsDepth = canvas.height * 0.25, pCycle = globalX % (5400 / 75), qCycle = globalX % (5400 / Math.min(45, Math.max(25, currentHR)));
+          let pCycle = globalX % (5400 / 75), qCycle = globalX % (5400 / Math.min(45, Math.max(25, currentHR)));
           y += drift;
           if (pCycle < 8) y -= Math.sin((pCycle / 8) * Math.PI) * 10;
           if (qCycle < 3) y += 6; else if (qCycle < 8) y -= qrsDepth * 1.25; else if (qCycle < 13) y += 12; else if (qCycle >= 20 && qCycle < 36) y -= Math.sin(((qCycle - 20) / 16) * Math.PI) * 12;
           if (state.syncMode && qCycle >= 3 && qCycle <= 5) drawSyncSpike(xOffset, y);
         } else {
-          let isQRS = true, isP = true, isT = true, pOffset = 0, qrsDepth = canvas.height * 0.25;
-          if (r === 'AFIB') { isP = false; beatGap += Math.sin(elapsed * 2.3) * (beatGap * 0.2); y += (Math.random() - 0.5) * 3; }
+          let cycle = globalX % Math.round(effectiveGap);
+          let prevCycle = (globalX - 3) % Math.round(effectiveGap);
+          y += drift;
+
+          if (r === 'AFIB') { isP = false; effectiveGap += Math.sin(elapsed * 2.3) * (effectiveGap * 0.2); y += (Math.random() - 0.5) * 3; }
           else if (r === 'AFLUTTER') { isP = false; isT = false; y += Math.sin(xOffset * 0.25) * 6; }
           else if (r === 'SVT' || r === 'JUNCTIONAL') { isP = false; }
-          else if (r === 'AV_FIRST') { pOffset = -35; }
 
-          let cycle = xOffset % Math.round(beatGap), prevCycle = prevX % Math.round(beatGap);
-          y += drift;
-          let pStart = beatGap - 18 + pOffset, pEnd = beatGap - 10 + pOffset;
-
-          if (isP && cycle >= pStart && cycle <= pEnd) y -= 8;
-          if (isQRS) {
-            if (cycle < 2) y += 8; else if (cycle < 6) y -= qrsDepth; else if (cycle < 10) y += 12;
+          if (isPvcBeat) {
+            isP = false;
+            let pvcC = cycle % Math.round(baseBeatGap * 0.8);
+            if (pvcC >= 0 && pvcC < 4) y += 8;
+            else if (pvcC >= 4 && pvcC < 12) y -= qrsDepth * 1.35;
+            else if (pvcC >= 12 && pvcC < 22) y += qrsDepth * 0.9;
+            else if (pvcC >= 26 && pvcC < 44) y += Math.sin(((pvcC - 26)/18) * Math.PI) * 16;
           }
-          if (isT && isQRS && cycle >= 14 && cycle <= 28) y -= 12;
-          if (state.syncMode && isQRS && prevCycle <= 2 && cycle > 2) drawSyncSpike(xOffset, y);
+          else if (r === 'RBBB') {
+            let pStart = effectiveGap - 18 - prOffset;
+            let pEnd = effectiveGap - 10 - prOffset;
+            if (isP && cycle >= pStart && cycle <= pEnd) y -= Math.sin(((cycle - pStart) / 8) * Math.PI) * 9;
+
+            if (cycle >= 0 && cycle < 3) y += 5;
+            else if (cycle >= 3 && cycle < 7) y -= qrsDepth * 0.5;
+            else if (cycle >= 7 && cycle < 10) y += 6;
+            else if (cycle >= 10 && cycle < 16) y -= qrsDepth * 1.15;
+            else if (cycle >= 16 && cycle < 22) y += 14;
+            if (cycle >= 24 && cycle < 38) y += Math.sin(((cycle - 24) / 14) * Math.PI) * 10;
+          }
+          else if (r === 'LBBB') {
+            let pStart = effectiveGap - 18 - prOffset;
+            let pEnd = effectiveGap - 10 - prOffset;
+            if (isP && cycle >= pStart && cycle <= pEnd) y -= Math.sin(((cycle - pStart) / 8) * Math.PI) * 9;
+
+            if (cycle >= 0 && cycle < 4) y -= qrsDepth * 0.45;
+            else if (cycle >= 4 && cycle < 8) y -= qrsDepth * 1.1;
+            else if (cycle >= 8 && cycle < 11) y -= qrsDepth * 0.85;
+            else if (cycle >= 11 && cycle < 16) y -= qrsDepth * 1.25;
+            else if (cycle >= 16 && cycle < 22) y += 12;
+            if (cycle >= 24 && cycle < 40) y += Math.sin(((cycle - 24) / 16) * Math.PI) * 12;
+          }
+          else {
+            let pStart = effectiveGap - 18 - prOffset;
+            let pEnd = effectiveGap - 10 - prOffset;
+
+            if (isP && pStart > 0 && cycle >= pStart && cycle <= pEnd) {
+              let pProg = (cycle - pStart) / (pEnd - pStart);
+              y -= Math.sin(pProg * Math.PI) * 8;
+            }
+
+            if (isQRS) {
+              if (cycle >= 0 && cycle < 2) y += 8;
+              else if (cycle >= 2 && cycle < 6) y -= qrsDepth;
+              else if (cycle >= 6 && cycle < 10) y += 12;
+            }
+
+            if (isT && isQRS && cycle >= 14 && cycle <= 28) {
+              let tProg = (cycle - 14) / 14;
+              y -= Math.sin(tProg * Math.PI) * 12;
+            }
+
+            if (state.syncMode && isQRS && prevCycle <= 2 && cycle > 2) drawSyncSpike(xOffset, y);
+          }
         }
       }
 
@@ -928,7 +1036,10 @@
       rhythmAudioStopped = false;
       if (!rhythmAudioTimer) rhythmAudioTimer = setInterval(playRhythmTone, 250);
     }
-    function stopAudio() { rhythmAudioStopped = true; if (audioContext) audioContext.suspend(); }
+    function stopAudio() { 
+      rhythmAudioStopped = true; 
+      if (audioContext) audioContext.suspend(); 
+    }
 
     function playRhythmTone() {
       if (rhythmAudioStopped || !audioContext || audioContext.state !== 'running' || state.rhythm === 'OFF') return;
@@ -951,6 +1062,7 @@
 
     function startChargeVisuals(targetJoules) {
       clearTimeout(shockBannerTimeout);
+      clearTimeout(defibTimeout);
       const el = document.getElementById('m-defib-status');
       el.style.display = 'block'; el.className = 'defib-status text-blink';
       const startTime = Date.now(), duration = 5500;
@@ -958,23 +1070,64 @@
       chargeInterval = setInterval(() => {
         let elapsed = Date.now() - startTime;
         if (elapsed >= duration) {
-          clearInterval(chargeInterval); el.className = 'defib-status'; el.innerHTML = `DEFIB READY: ${targetJoules} J`;
+          clearInterval(chargeInterval); 
+          el.className = 'defib-status'; 
+          el.innerHTML = `DEFIB READY: ${targetJoules} J`;
+          
+          // Set 5-second automatic discharge safety timeout
+          clearTimeout(defibTimeout);
+          defibTimeout = setTimeout(() => {
+            autoDischargeDefib();
+          }, 5000);
         } else {
           el.innerHTML = `CHARGING: ${Math.max(1, Math.floor((elapsed / duration) * targetJoules))} J`;
         }
       }, 50);
     }
 
+    function autoDischargeDefib() {
+      clearTimeout(defibTimeout);
+      clearInterval(chargeInterval);
+
+      // Blink screen GREEN x 1 on auto-discharge
+      document.body.style.background = '#00ff66';
+      setTimeout(() => { document.body.style.background = '#030712'; }, 150);
+
+      const el = document.getElementById('m-defib-status');
+      el.style.display = 'block'; 
+      el.className = 'defib-status';
+      el.style.borderColor = '#00ff66';
+      el.style.color = '#00ff66';
+      el.innerHTML = `⚠️ AUTO DISARMED (5s TIMEOUT)`;
+
+      logEvent('⚠️ Defibrillator disarmed automatically (shock not pressed in 5 seconds).');
+
+      clearTimeout(shockBannerTimeout);
+      shockBannerTimeout = setTimeout(() => {
+        el.style.display = 'none';
+        el.style.borderColor = '';
+        el.style.color = '';
+      }, 2500);
+    }
+
     function triggerShockVisuals(joules) {
+      clearTimeout(defibTimeout);
       ensureAudio();
       const osc = audioContext.createOscillator(), gain = audioContext.createGain();
       osc.type = 'square'; osc.frequency.setValueAtTime(140, audioContext.currentTime); osc.frequency.exponentialRampToValueAtTime(70, audioContext.currentTime + 0.28);
       gain.gain.setValueAtTime(0.0001, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(0.42, audioContext.currentTime + 0.012); gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.32);
       osc.connect(gain).connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime + 0.34);
 
-      document.body.style.background = '#fff'; setTimeout(() => { document.body.style.background = '#030712'; }, 150);
+      // Flash background RED once on shock delivery
+      document.body.style.background = '#ff3b30'; 
+      setTimeout(() => { document.body.style.background = '#030712'; }, 150);
+
       const el = document.getElementById('m-defib-status');
-      el.style.display = 'block'; el.className = 'defib-status shock-delivered-banner'; el.innerHTML = `⚡ SHOCK DELIVERED: ${joules || 200} J`;
+      el.style.display = 'block'; 
+      el.className = 'defib-status shock-delivered-banner'; 
+      el.style.borderColor = '';
+      el.style.color = '';
+      el.innerHTML = `⚡ SHOCK DELIVERED: ${joules || 200} J`;
       clearTimeout(shockBannerTimeout); shockBannerTimeout = setTimeout(() => { el.style.display = 'none'; }, 2500);
     }
 
