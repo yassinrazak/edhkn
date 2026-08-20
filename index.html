@@ -36,7 +36,31 @@
     }
   </script>
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    /* PREVENT TEXT SELECTION & TOUCH CALLOUTS */
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      transition: filter 0.2s ease;
+    }
+
+    /* BLUR SCREEN WHEN SCREENSHOT TOOL OR OTHER APP IS ACTIVATED */
+    .blur-protection {
+      filter: blur(25px) grayscale(100%) !important;
+      pointer-events: none !important;
+    }
+
+    /* PREVENT PRINTING & PDF SAVING */
+    @media print {
+      html, body {
+        display: none !important;
+      }
+    }
+
     .glass-card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
@@ -47,18 +71,15 @@
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white">
+<body id="app-body" class="bg-slate-900 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-none">
 
   <!-- HEADER / NAVIGATION (Visible on all pages) -->
   <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <!-- LOGO -->
+      <!-- HEADER LOGO -->
       <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
-        <div class="w-11 h-11 bg-gradient-to-tr from-brand-600 to-accent-500 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20 ring-2 ring-white/10">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
-          </svg>
+        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/20">
+          <img id="img-header-logo" src="YOUR_TOP_LOGO_URL" alt="MOH Logo" class="max-h-full max-w-full object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
         </div>
         <div>
           <span class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
@@ -90,13 +111,15 @@
 
     <!-- PAGE 1: LANDING & AUTH PAGE -->
     <div id="page-auth" class="w-full max-w-md mx-auto">
-      <div class="glass-card rounded-3xl p-8 shadow-2xl border border-slate-800/50 relative overflow-hidden">
+      <div class="glass-card rounded-3xl p-8 shadow-2xl border border-slate-800/50 relative overflow-hidden text-center">
         <div class="absolute -right-10 -top-10 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl"></div>
         
-        <div class="text-center mb-8">
-          <div class="inline-flex p-3 rounded-2xl bg-brand-50 text-brand-600 mb-3">
-            <i class="fa-solid fa-user-shield text-2xl"></i>
-          </div>
+        <!-- TOP LANDING PAGE LOGO -->
+        <div class="mb-6">
+          <img id="img-landing-logo" src="YOUR_TOP_LOGO_URL" alt="BLS Certification Logo" class="h-20 w-auto mx-auto object-contain drop-shadow-md" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
+        </div>
+
+        <div class="mb-6">
           <h2 class="text-2xl font-extrabold text-slate-900">Healthcare Worker Portal</h2>
           <p class="text-xs text-slate-500 mt-1">Malaysia Ministry of Health BLS Certification</p>
         </div>
@@ -108,7 +131,7 @@
         </div>
 
         <!-- LOGIN FORM -->
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left">
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
             <input type="text" id="login-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
@@ -123,7 +146,7 @@
         </form>
 
         <!-- REGISTER FORM -->
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left hidden">
           <div>
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
             <input type="text" id="reg-name" required placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
@@ -150,18 +173,24 @@
     <!-- PAGE 2: QUIZ DASHBOARD / START SCREEN -->
     <div id="page-dashboard" class="hidden max-w-2xl mx-auto w-full">
       <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
-        <div class="w-20 h-20 bg-brand-50 text-brand-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
-          <i class="fa-solid fa-heart-pulse"></i>
+        <!-- TOP DASHBOARD LOGO -->
+        <div class="mb-2">
+          <img id="img-dashboard-logo" src="YOUR_TOP_LOGO_URL" alt="Logo" class="h-20 w-auto mx-auto object-contain drop-shadow" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
         </div>
+
         <div>
           <h1 class="text-3xl font-extrabold text-slate-900">BLS Theory Assessment</h1>
           <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto">Based on the Ministry of Health Malaysia Basic Life Support Training Manual (2nd Edition, 2023).</p>
         </div>
 
-        <div class="grid grid-cols-3 gap-4 py-4 border-y border-slate-100">
+        <div class="grid grid-cols-4 gap-3 py-4 border-y border-slate-100">
           <div class="p-3 bg-slate-50 rounded-2xl">
             <span class="block text-2xl font-extrabold text-brand-600">30</span>
-            <span class="text-xs font-semibold text-slate-500 uppercase">Random MCQs</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase">MCQs</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-amber-600">45m</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase">Timer</span>
           </div>
           <div class="p-3 bg-slate-50 rounded-2xl">
             <span class="block text-2xl font-extrabold text-accent-500">80%</span>
@@ -174,12 +203,12 @@
         </div>
 
         <div class="bg-amber-50 border border-amber-200/60 rounded-2xl p-4 text-left flex items-start space-x-3">
-          <i class="fa-solid fa-circle-info text-amber-500 text-lg mt-0.5"></i>
+          <i class="fa-solid fa-shield-halved text-amber-500 text-lg mt-0.5"></i>
           <div class="text-xs text-amber-800 space-y-1">
-            <p class="font-bold">Instructions:</p>
-            <p>• Each test session randomly selects 30 questions from our 200-question pool.</p>
-            <p>• You can navigate between questions freely using the Question Grid.</p>
-            <p>• Answers can be changed at any time prior to final submission.</p>
+            <p class="font-bold">Assessment Rules:</p>
+            <p>• 45-minute strict countdown timer enabled.</p>
+            <p>• 30 questions randomly selected per session from master bank.</p>
+            <p>• Anti-screenshot security and focus-blur monitoring are active.</p>
           </div>
         </div>
 
@@ -193,10 +222,17 @@
     <!-- PAGE 3: ACTIVE QUIZ SCREEN -->
     <div id="page-quiz" class="hidden space-y-6">
       
-      <!-- TOP STATUS & PROGRESS -->
+      <!-- TOP STATUS, TIMER & PROGRESS -->
       <div class="glass-card rounded-2xl p-4 shadow-sm space-y-3">
         <div class="flex items-center justify-between text-xs font-bold text-slate-500">
           <span id="quiz-progress-text" class="text-brand-600">Question 1 of 30</span>
+          
+          <!-- 45-MINUTE LIVE TIMER DISPLAY -->
+          <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 font-bold px-3 py-1 rounded-full text-xs shadow-sm" id="timer-badge">
+            <i class="fa-solid fa-clock animate-pulse"></i>
+            <span id="quiz-timer-text">45:00</span>
+          </div>
+
           <span id="quiz-answered-count" class="bg-slate-100 px-3 py-1 rounded-full text-slate-700">0 Answered</span>
         </div>
         <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
@@ -318,23 +354,83 @@
     </div>
   </div>
 
-  <!-- FOOTER (Visible on all pages) -->
+  <!-- FOOTER (Visible on all pages with 2 Footer Logos) -->
   <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      
+      <!-- 2 FOOTER LOGOS FROM GOOGLE DRIVE -->
+      <div class="flex items-center space-x-3 bg-white/5 p-2 rounded-xl border border-white/10">
+        <img id="img-footer-logo-1" src="YOUR_FOOTER_LOGO_1_URL" alt="Footer Logo 1" class="h-8 w-auto object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
+        <div class="h-5 w-px bg-slate-800"></div>
+        <img id="img-footer-logo-2" src="YOUR_FOOTER_LOGO_2_URL" alt="Footer Logo 2" class="h-8 w-auto object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/JKR_Logo.svg/1200px-JKR_Logo.svg.png';">
+      </div>
+
       <div class="flex items-center space-x-2">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         <span>Basic Life Support Training System</span>
       </div>
+
       <p class="text-slate-300 font-semibold tracking-wide">copyright Yassin Razak @ 2026</p>
     </div>
   </footer>
 
-  <!-- SCRIPT & WEBHOOK INTEGRATION -->
+  <!-- SCRIPT, TIMERS & CONFIGURATION -->
   <script>
-    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP DEPLOYMENT URL HERE
-    const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwtKz7PDx-cvT01XU4lkPSTlF-7zYKh5j0mhu7Cdu23SdqC6HdF-Ux09yq1xAYoX3kAGQ/exec";
+    // =================================---------------------------------
+    // CONFIGURATION: PASTE YOUR GOOGLE DRIVE IMAGE LINKS HERE
+    // =================================---------------------------------
+    // Note: Use direct link format: https://lh3.googleusercontent.com/d/YOUR_FILE_ID
+    const GOOGLE_DRIVE_TOP_LOGO = "YOUR_TOP_LOGO_URL";
+    const GOOGLE_DRIVE_FOOTER_LOGO_1 = "YOUR_FOOTER_LOGO_1_URL";
+    const GOOGLE_DRIVE_FOOTER_LOGO_2 = "YOUR_FOOTER_LOGO_2_URL";
 
+    // GOOGLE APPS SCRIPT WEBHOOK DEPLOYMENT URL
+    const GOOGLE_SHEET_WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+
+    // Update image tags dynamically if URLs are provided
+    if (GOOGLE_DRIVE_TOP_LOGO && !GOOGLE_DRIVE_TOP_LOGO.includes("YOUR_TOP_LOGO_URL")) {
+      document.getElementById('img-header-logo').src = GOOGLE_DRIVE_TOP_LOGO;
+      document.getElementById('img-landing-logo').src = GOOGLE_DRIVE_TOP_LOGO;
+      document.getElementById('img-dashboard-logo').src = GOOGLE_DRIVE_TOP_LOGO;
+    }
+    if (GOOGLE_DRIVE_FOOTER_LOGO_1 && !GOOGLE_DRIVE_FOOTER_LOGO_1.includes("YOUR_FOOTER_LOGO_1_URL")) {
+      document.getElementById('img-footer-logo-1').src = GOOGLE_DRIVE_FOOTER_LOGO_1;
+    }
+    if (GOOGLE_DRIVE_FOOTER_LOGO_2 && !GOOGLE_DRIVE_FOOTER_LOGO_2.includes("YOUR_FOOTER_LOGO_2_URL")) {
+      document.getElementById('img-footer-logo-2').src = GOOGLE_DRIVE_FOOTER_LOGO_2;
+    }
+
+    // ------------------------------------------------------------------
+    // ANTI-SCREENSHOT & SECURITY PROTECTION LAYER
+    // ------------------------------------------------------------------
+    const bodyEl = document.getElementById('app-body');
+
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    document.addEventListener('keydown', (e) => {
+      if (
+        e.key === 'PrintScreen' ||
+        (e.ctrlKey && ['p', 's', 'u', 'c', 'a'].includes(e.key.toLowerCase())) ||
+        (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(e.key.toLowerCase())) ||
+        e.key === 'F12'
+      ) {
+        e.preventDefault();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText('');
+        }
+      }
+    });
+
+    window.addEventListener('blur', () => bodyEl.classList.add('blur-protection'));
+    window.addEventListener('focus', () => bodyEl.classList.remove('blur-protection'));
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) bodyEl.classList.add('blur-protection');
+      else bodyEl.classList.remove('blur-protection');
+    });
+
+    // ------------------------------------------------------------------
     // MASTER 200 MCQ QUESTION POOL
+    // ------------------------------------------------------------------
     const questionsData = [
       { id: 1, q: "Who developed the NCORT Basic Life Support Training Manual Second Edition?", options: ["American Heart Association", "BLS Subcommittee, National Committee on Resuscitation Training (NCORT)", "European Resuscitation Council", "World Health Organization"], ans: 1 },
       { id: 2, q: "What is the national emergency response number dialed via MERS in Malaysia?", options: ["911", "999", "112", "994"], ans: 1 },
@@ -436,6 +532,7 @@
       { id: 98, q: "When providing Bag-Valve-Mask (BVM) ventilations during a pandemic, rescuers must:", options: ["Use a standard mask without filters", "Attach a HEPA/viral filter and use a 2-hand tight E-C seal", "Ventilate rapidly", "Avoid using oxygen"], ans: 1 },
       { id: 99, q: "If BVM ventilation is not being provided during pandemic CPR, what should be done to the victim's face?", options: ["Leave exposed", "Cover the victim's mouth and nose with a face mask, cloth, or plastic sheet", "Spray with alcohol", "Keep jaw pulled down"], ans: 1 },
       { id: 100, q: "BLS teams who are uncomfortable or less skilled with BVM seal during a pandemic should:", options: ["Perform mouth-to-mouth", "Place an oxygen mask at 6 L/min on the victim and perform compression-only CPR", "Withhold all resuscitation", "Give 30:2 without mask seal"], ans: 1 },
+      { id: 101, q: "According to the BLS Training Manual recommended module schedule, what activity occurs between 08:30 and 09:15?", options: ["Practical sessions", "Registration", "Video/Lecture on BLS", "Tea break"], ans: 2 },
       { id: 102, q: "What is the maximum recommended time allowed for checking normal breathing and pulse simultaneously in adult BLS?", options: ["5 seconds", "10 seconds", "15 seconds", "20 seconds"], ans: 1 },
       { id: 103, q: "What component of the heart is specifically responsible for coordinating the contraction of heart muscles?", options: ["Heart valves", "Heart chambers", "Conduction system", "Coronary blood vessels"], ans: 2 },
       { id: 104, q: "At what heart rate does a heart pump fail to maintain adequate blood flow due to being excessively fast?", options: ["More than 100/min", "More than 120/min", "More than 150/min", "More than 180/min"], ans: 2 },
@@ -543,6 +640,8 @@
     let currentIndex = 0;
     let userAnswers = [];
     let bookmarkedQuestions = new Set();
+    let timerInterval = null;
+    let timeLeft = 45 * 60; // 45 minutes in seconds
 
     // DOM ELEMENTS
     const pageAuth = document.getElementById('page-auth');
@@ -562,6 +661,43 @@
         showPage('auth');
       }
     };
+
+    // 45-MINUTE COUNTDOWN TIMER LOGIC
+    function startTimer() {
+      stopTimer();
+      timeLeft = 45 * 60; // Reset to 45 mins
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+
+        if (timeLeft <= 0) {
+          stopTimer();
+          alert("Time is up! Your assessment will now be submitted automatically.");
+          calculateResults();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      const timerText = document.getElementById('quiz-timer-text');
+      if (timerText) timerText.innerText = display;
+
+      const badge = document.getElementById('timer-badge');
+      if (timeLeft <= 300) { // Less than 5 mins left
+        badge.className = "flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 font-bold px-3 py-1 rounded-full text-xs animate-pulse";
+      } else {
+        badge.className = "flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 font-bold px-3 py-1 rounded-full text-xs shadow-sm";
+      }
+    }
 
     // FISHER-YATES SHUFFLE ALGORITHM FOR RANDOM SELECTION
     function getRandomQuestions(sourcePool, count = 30) {
@@ -719,6 +855,7 @@
     }
 
     function logout() {
+      stopTimer();
       localStorage.removeItem('bls_active_session');
       currentUser = null;
       updateNavUser();
@@ -726,19 +863,20 @@
     }
 
     function goHome() {
+      stopTimer();
       if (currentUser) showPage('dashboard');
       else showPage('auth');
     }
 
     // QUIZ ENGINE SETUP
     function startQuiz() {
-      // Pick 30 Random Questions from 200 pool
       activeQuestions = getRandomQuestions(questionsData, 30);
       currentIndex = 0;
       userAnswers = new Array(activeQuestions.length).fill(null);
       bookmarkedQuestions.clear();
       renderQuestion();
       showPage('quiz');
+      startTimer(); // Start 45-minute countdown
     }
 
     function renderQuestion() {
@@ -876,6 +1014,7 @@
     }
 
     async function calculateResults() {
+      stopTimer(); // Stop 45-min timer
       let correct = 0;
       let incorrect = 0;
       let skipped = 0;
