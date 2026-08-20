@@ -480,8 +480,8 @@
                 <button class="btn-rhythm" onclick="setRhythm('SINUS_ARRHYTHMIA')">Sinus Arrhythmia</button>
                 <button class="btn-rhythm" onclick="setRhythm('PAC')">PAC Beats</button>
                 <button class="btn-rhythm" onclick="setRhythm('PVC')">PVC Frequent</button>
-                <button class="btn-rhythm" onclick="setRhythm('RBBB')">RBBB</button>
-                <button class="btn-rhythm" onclick="setRhythm('LBBB')">LBBB</button>
+                <button class="btn-rhythm" onclick="setRhythm('RBBB')">RBBB (Rabbit Ears)</button>
+                <button class="btn-rhythm" onclick="setRhythm('LBBB')">LBBB (Broad M-Notch)</button>
               </div>
             </div>
           </div>
@@ -731,7 +731,7 @@
       chargeEvent: null,
       shockEvent: null,
       pacerActive: false,
-      pacerMode: 'DEMAND', // 'DEMAND' or 'FIXED'
+      pacerMode: 'DEMAND',
       pacerRate: 60,
       pacerAmp: 0,
       vitals: { hr: '75', bpSys: '120', bpDia: '80', spo2: '98', etco2: '38', rr: '16' },
@@ -791,7 +791,14 @@
       document.querySelectorAll('.btn-rhythm').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('onclick').includes(rhythmName));
       });
-      logEvent(`Rhythm set to: ${rhythmName}`);
+
+      if (rhythmName === 'RBBB') {
+        logEvent(`RBBB Activated: Wide QRS (>120ms), rsR' ("rabbit ears") pattern, slurred terminal S wave, discordant ST-T changes.`);
+      } else if (rhythmName === 'LBBB') {
+        logEvent(`LBBB Activated: Wide QRS (>120ms), broad notched "M-shaped" R wave, absent Q waves, discordant ST-T depression/T-wave inversion.`);
+      } else {
+        logEvent(`Rhythm set to: ${rhythmName}`);
+      }
       pushState();
     }
 
@@ -1058,30 +1065,66 @@
             else if (pvcC >= 12 && pvcC < 22) y += qrsDepth * 0.9;
             else if (pvcC >= 26 && pvcC < 44) y += Math.sin(((pvcC - 26)/18) * Math.PI) * 16;
           }
+
+          // HIGH-DETAIL RIGHT BUNDLE BRANCH BLOCK (RBBB)
           else if (r === 'RBBB') {
-            let pStart = effectiveGap - 18 - prOffset;
+            let pStart = effectiveGap - 20 - prOffset;
             let pEnd = effectiveGap - 10 - prOffset;
-            if (isP && cycle >= pStart && cycle <= pEnd) y -= Math.sin(((cycle - pStart) / 8) * Math.PI) * 9;
+            if (isP && pStart > 0 && cycle >= pStart && cycle <= pEnd) {
+              let pProg = (cycle - pStart) / (pEnd - pStart);
+              y -= Math.sin(pProg * Math.PI) * 8; // Normal P wave
+            }
 
-            if (cycle >= 0 && cycle < 3) y += 5;
-            else if (cycle >= 3 && cycle < 7) y -= qrsDepth * 0.5;
-            else if (cycle >= 7 && cycle < 10) y += 6;
-            else if (cycle >= 10 && cycle < 16) y -= qrsDepth * 1.15;
-            else if (cycle >= 16 && cycle < 22) y += 14;
-            if (cycle >= 24 && cycle < 38) y += Math.sin(((cycle - 24) / 14) * Math.PI) * 10;
+            // Wide RBBB QRS Complex (rsR' pattern with slurred S)
+            if (cycle >= 0 && cycle < 3) {
+              y -= qrsDepth * 0.35; // Small initial r wave
+            } else if (cycle >= 3 && cycle < 6) {
+              y += qrsDepth * 0.2; // Small s notch
+            } else if (cycle >= 6 && cycle < 14) {
+              let rPrimeProg = (cycle - 6) / 8;
+              y -= Math.sin(rPrimeProg * Math.PI) * (qrsDepth * 1.3); // Tall, broad slurred R' peak ("rabbit ear")
+            } else if (cycle >= 14 && cycle < 20) {
+              let sProg = (cycle - 14) / 6;
+              y += Math.sin(sProg * Math.PI) * 16; // Slurred S wave below baseline
+            }
+
+            // Discordant T-wave inversion
+            if (cycle >= 22 && cycle < 38) {
+              let tProg = (cycle - 22) / 16;
+              y += Math.sin(tProg * Math.PI) * 12; // Inverted T wave (discordant)
+            }
           }
+
+          // HIGH-DETAIL LEFT BUNDLE BRANCH BLOCK (LBBB)
           else if (r === 'LBBB') {
-            let pStart = effectiveGap - 18 - prOffset;
+            let pStart = effectiveGap - 20 - prOffset;
             let pEnd = effectiveGap - 10 - prOffset;
-            if (isP && cycle >= pStart && cycle <= pEnd) y -= Math.sin(((cycle - pStart) / 8) * Math.PI) * 9;
+            if (isP && pStart > 0 && cycle >= pStart && cycle <= pEnd) {
+              let pProg = (cycle - pStart) / (pEnd - pStart);
+              y -= Math.sin(pProg * Math.PI) * 8; // Normal P wave
+            }
 
-            if (cycle >= 0 && cycle < 4) y -= qrsDepth * 0.45;
-            else if (cycle >= 4 && cycle < 8) y -= qrsDepth * 1.1;
-            else if (cycle >= 8 && cycle < 11) y -= qrsDepth * 0.85;
-            else if (cycle >= 11 && cycle < 16) y -= qrsDepth * 1.25;
-            else if (cycle >= 16 && cycle < 22) y += 12;
-            if (cycle >= 24 && cycle < 40) y += Math.sin(((cycle - 24) / 16) * Math.PI) * 12;
+            // Broad, Notched M-shaped R Wave (LBBB)
+            if (cycle >= 0 && cycle < 5) {
+              let r1Prog = cycle / 5;
+              y -= Math.sin(r1Prog * Math.PI) * (qrsDepth * 1.1); // Peak 1 of M-notch
+            } else if (cycle >= 5 && cycle < 8) {
+              y -= qrsDepth * 0.82; // Central notch dip
+            } else if (cycle >= 8 && cycle < 15) {
+              let r2Prog = (cycle - 8) / 7;
+              y -= Math.sin(r2Prog * Math.PI) * (qrsDepth * 1.35); // Peak 2 of M-notch
+            } else if (cycle >= 15 && cycle < 22) {
+              let descentProg = (cycle - 15) / 7;
+              y += Math.sin(descentProg * Math.PI) * 10; // Slow descent to ST segment
+            }
+
+            // Secondary ST depression & Discordant inverted T-wave
+            if (cycle >= 22 && cycle < 40) {
+              let tProg = (cycle - 22) / 18;
+              y += Math.sin(tProg * Math.PI) * 15; // Inverted T wave with ST depression
+            }
           }
+
           else {
             let pStart = effectiveGap - 18 - prOffset;
             let pEnd = effectiveGap - 10 - prOffset;
