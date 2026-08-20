@@ -10,6 +10,7 @@
             --accent-red: #dc2626;
             --bls-color: #1d4ed8;
             --als-color: #047857;
+            --tls-color: #0284c7;
             --bg-light: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #334155;
@@ -76,7 +77,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 4rem auto;
             padding: 0 1.5rem;
             flex: 1;
@@ -99,8 +100,8 @@
 
         .portal-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
         .card {
@@ -133,13 +134,17 @@
             background: linear-gradient(135deg, #059669, #047857);
         }
 
+        .card-tls .card-header {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+        }
+
         .card-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
@@ -189,7 +194,15 @@
             background-color: #065f46;
         }
 
-        /* --- UPDATED FOOTER STYLES --- */
+        .btn-tls {
+            background-color: var(--tls-color);
+        }
+
+        .btn-tls:hover {
+            background-color: #0369a1;
+        }
+
+        /* --- FOOTER STYLES --- */
         footer {
             background-color: #020617;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -226,7 +239,7 @@
         }
 
         .footer-logos img {
-            height: 44px; /* Increased logo height */
+            height: 44px;
             width: auto;
             object-fit: contain;
         }
@@ -316,6 +329,18 @@
                 <div class="card-body">
                     <p>Advanced Life Support scenario generators, ECG interpretation, emergency pharmacology, and interactive team-based resuscitation algorithms.</p>
                     <a href="als/index.html" class="btn btn-als">Enter ALS Simulator &rarr;</a>
+                </div>
+            </div>
+
+            <!-- ALS Online Learning Card -->
+            <div class="card card-tls">
+                <div class="card-header">
+                    <div class="card-icon">📚</div>
+                    <h3 class="card-title">ALS ONLINE LEARNING</h3>
+                </div>
+                <div class="card-body">
+                    <p>Interactive Advanced Life Support MCQ question bank featuring 200 comprehensive scenarios, timed 45-minute exam mode, and instant scoring feedback.</p>
+                    <a href="alsmcq.html" class="btn btn-tls">Enter ALS MCQ Portal &rarr;</a>
                 </div>
             </div>
         </div>
