@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOH Malaysia ALS Training Assessment</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              900: '#134e4a',
+              950: '#042f2e',
+            },
+            accent: {
+              500: '#0284c7',
+              600: '#0369a1',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background-color: #030712;
+      color: #f3f4f6;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  </style>
+</head>
+<body id="app-body" class="bg-black text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+
+  <!-- BACKGROUND AMBIENT GLOW EFFECT -->
+  <div class="fixed top-0 left-1/4 -translate-x-1/2 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+  <div class="fixed bottom-0 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+  <!-- HEADER / NAVIGATION (Visible on all pages) -->
+  <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- HEADER LOGO -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
+        <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/10">
+          <img id="img-header-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
+        </div>
+        <div>
+          <span class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            MOH ALS <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30">2nd Edition</span>
+          </span>
+          <p class="text-xs text-slate-400 font-medium">Advanced Life Support Assessment Platform</p>
+        </div>
+      </div>
+
+      <!-- USER PROFILE / CONTROLS (VISIBLE AFTER LOG IN) -->
+      <div id="nav-user-info" class="hidden flex items-center space-x-3 sm:space-x-4">
+        <div class="text-right hidden sm:block">
+          <p id="user-display-name" class="text-sm font-bold text-white"></p>
+          <p id="user-display-id" class="text-xs text-slate-400"></p>
+        </div>
+
+        <!-- LINK TO ALS LEARNING MANUAL PDF -->
+        <a href="https://drive.google.com/file/d/1qfVM54zWCNEev4kop51deJLtucg8LDus/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-semibold rounded-lg border border-rose-500/30 transition flex items-center gap-2" title="Study ALS Training Manual PDF">
+          <i class="fa-solid fa-file-pdf text-rose-400"></i>
+          <span class="hidden md:inline">ALS Manual PDF</span>
+        </a>
+
+        <button onclick="toggleGridModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg border border-slate-800 transition flex items-center gap-2">
+          <i class="fa-solid fa-border-all"></i>
+          <span>Question Grid</span>
+        </button>
+        <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Log Out">
+          <i class="fa-solid fa-right-from-bracket text-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 flex flex-col justify-center relative z-10">
+
+    <!-- PAGE 1: LANDING & AUTH PAGE -->
+    <div id="page-auth" class="w-full max-w-md mx-auto">
+      <div class="glass-card rounded-3xl p-8 shadow-2xl relative overflow-hidden text-center">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-brand-500/20 rounded-full blur-2xl"></div>
+        
+        <!-- TOP LANDING PAGE LOGO -->
+        <div class="mb-6">
+          <img id="img-landing-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="ALS Certification Logo" class="h-20 w-auto mx-auto object-contain drop-shadow-md">
+        </div>
+
+        <div class="mb-6">
+          <h2 class="text-2xl font-extrabold text-white">Healthcare Worker Portal</h2>
+          <p class="text-xs text-slate-400 mt-1">Malaysia Ministry of Health ALS Certification</p>
+        </div>
+
+        <!-- AUTH TABS (REGISTER DEFAULT) -->
+        <div class="flex rounded-xl bg-slate-950/80 p-1 mb-6 border border-slate-800/80">
+          <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm">Register</button>
+          <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white">Log In</button>
+        </div>
+
+        <!-- REGISTER FORM (DEFAULT ACTIVE) -->
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left" autocomplete="off">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
+            <input type="text" id="reg-name" required autocomplete="off" placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
+            <input type="text" id="reg-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Department / Facility</label>
+            <input type="text" id="reg-dept" required autocomplete="off" placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Create Password</label>
+            <input type="password" id="reg-pass" required autocomplete="new-password" placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <button type="submit" id="btn-reg-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+            <span>Register Practitioner</span>
+          </button>
+        </form>
+
+        <!-- LOGIN FORM (HIDDEN BY DEFAULT) -->
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left hidden" autocomplete="off">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
+            <input type="text" id="login-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Access Password</label>
+            <input type="password" id="login-pass" required autocomplete="current-password" placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <button type="submit" id="btn-login-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+            <span>Access Assessment</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE 2: QUIZ DASHBOARD / START SCREEN (DISPLAYED AFTER LOG IN) -->
+    <div id="page-dashboard" class="hidden max-w-2xl mx-auto w-full">
+      <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
+        <!-- TOP DASHBOARD LOGO -->
+        <div class="mb-2">
+          <img id="img-dashboard-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Logo" class="h-20 w-auto mx-auto object-contain drop-shadow">
+        </div>
+
+        <div>
+          <h1 class="text-3xl font-extrabold text-white">ALS Theory Assessment</h1>
+          <p class="text-sm text-slate-400 mt-2 max-w-md mx-auto">Based on the Ministry of Health Malaysia Advanced Life Support Training Guidelines.</p>
+        </div>
+
+        <!-- LEARNING MATERIAL & PDF DOWNLOAD BUTTON -->
+        <div class="bg-slate-900/90 rounded-2xl p-5 text-left border border-slate-800 shadow-md space-y-3">
+          <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-rose-500/20 text-rose-400 rounded-xl">
+              <i class="fa-solid fa-book-bookmark text-xl"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-white">Advanced Life Support Study Reference</h4>
+              <p class="text-xs text-slate-400">Review the official training manual before taking the assessment</p>
+            </div>
+          </div>
+          <a href="https://drive.google.com/file/d/1qfVM54zWCNEev4kop51deJLtucg8LDus/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+            <i class="fa-solid fa-file-arrow-down text-sm"></i>
+            <span>Learning of Advanced Life Support & Download PDF Manual</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-70"></i>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 py-4 border-y border-slate-800/80">
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-brand-400">30</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase">MCQs</span>
+          </div>
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-amber-400">45m</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase">Timer</span>
+          </div>
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-accent-500">80%</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase">Pass Mark</span>
+          </div>
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-purple-400">30</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase">Total Marks</span>
+          </div>
+        </div>
+
+        <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 text-left flex items-start space-x-3">
+          <i class="fa-solid fa-circle-info text-amber-400 text-lg mt-0.5"></i>
+          <div class="text-xs text-amber-200/90 space-y-1">
+            <p class="font-bold text-amber-300">Assessment Instructions:</p>
+            <p>• A 45-minute timer will run during your session.</p>
+            <p>• 30 questions are randomly selected from the master 200-item question bank.</p>
+            <p>• Use the Question Grid at any time to jump to specific questions.</p>
+          </div>
+        </div>
+
+        <button onclick="startQuiz()" class="w-full py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-3">
+          <span>Begin Assessment</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- PAGE 3: ACTIVE QUIZ SCREEN -->
+    <div id="page-quiz" class="hidden space-y-6">
+      
+      <!-- TOP STATUS, TIMER & PROGRESS -->
+      <div class="glass-card rounded-2xl p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between text-xs font-bold text-slate-400">
+          <span id="quiz-progress-text" class="text-brand-400">Question 1 of 30</span>
+          
+          <!-- 45-MINUTE LIVE TIMER DISPLAY -->
+          <div class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold px-3 py-1 rounded-full text-xs shadow-sm" id="timer-badge">
+            <i class="fa-solid fa-clock animate-pulse"></i>
+            <span id="quiz-timer-text">45:00</span>
+          </div>
+
+          <span id="quiz-answered-count" class="bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-slate-300">0 Answered</span>
+        </div>
+        <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800">
+          <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-accent-500 rounded-full transition-all duration-300" style="width: 3.33%;"></div>
+        </div>
+      </div>
+
+      <!-- QUESTION CARD -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl space-y-6 relative">
+        <div class="flex items-center justify-between">
+          <span id="q-category" class="text-xs font-bold uppercase tracking-wider text-brand-400 bg-brand-500/10 border border-brand-500/30 px-3 py-1 rounded-lg">MOH ALS Manual 2nd Edition</span>
+          <button onclick="toggleBookmark()" id="btn-bookmark" class="text-slate-400 hover:text-amber-400 transition text-sm flex items-center gap-1.5 font-semibold">
+            <i class="fa-regular fa-bookmark"></i>
+            <span class="hidden sm:inline">Review Later</span>
+          </button>
+        </div>
+
+        <h3 id="q-text" class="text-lg sm:text-xl font-bold text-white leading-relaxed">
+          Loading Question...
+        </h3>
+
+        <!-- OPTIONS GRID -->
+        <div id="q-options" class="space-y-3"></div>
+
+        <!-- NAVIGATION CONTROLS -->
+        <div class="flex items-center justify-between pt-6 border-t border-slate-800">
+          <button onclick="prevQuestion()" id="btn-prev" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-sm border border-slate-800 transition flex items-center gap-2">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+            <span>Previous</span>
+          </button>
+          
+          <div class="flex items-center space-x-2">
+            <button onclick="nextQuestion()" id="btn-next" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl text-sm shadow-md shadow-brand-500/20 transition flex items-center gap-2">
+              <span>Next</span>
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+            <button onclick="confirmSubmit()" id="btn-submit" class="hidden px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-500/20 transition flex items-center gap-2">
+              <i class="fa-solid fa-check-circle"></i>
+              <span>Submit Assessment</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: RESULTS SCREEN -->
+    <div id="page-results" class="hidden max-w-2xl mx-auto w-full">
+      <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
+        
+        <div id="result-badge" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl"></div>
+
+        <div>
+          <h2 id="result-status-title" class="text-3xl font-extrabold text-white">Assessment Result</h2>
+          <p id="result-status-sub" class="text-sm text-slate-400 mt-1">Ministry of Health Malaysia ALS Standard</p>
+        </div>
+
+        <!-- SCORE SUMMARY CARD -->
+        <div class="bg-slate-900/90 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <div class="flex justify-around items-center">
+            <div>
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Total Marks</span>
+              <span id="res-score" class="text-4xl font-extrabold text-white">0 / 30</span>
+            </div>
+            <div class="h-12 w-px bg-slate-800"></div>
+            <div>
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Percentage</span>
+              <span id="res-percent" class="text-4xl font-extrabold text-brand-400">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- METRICS BREAKDOWN -->
+        <div class="grid grid-cols-3 gap-3 text-xs font-bold">
+          <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            <span class="block text-base font-extrabold" id="res-correct">0</span> Correct
+          </div>
+          <div class="p-3 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/30">
+            <span class="block text-base font-extrabold" id="res-incorrect">0</span> Incorrect
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900 text-slate-400 border border-slate-800">
+            <span class="block text-base font-extrabold" id="res-skipped">0</span> Skipped
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="pt-4 flex flex-col sm:flex-row gap-3">
+          <button onclick="retest()" class="flex-1 py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Re-Test Assessment (New 30 Questions)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- QUESTION GRID MODAL -->
+  <div id="modal-grid" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-white">
+      <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-white">Question Navigator</h3>
+          <p class="text-xs text-slate-400">Jump directly to any of the 30 active session questions</p>
+        </div>
+        <button onclick="toggleGridModal()" class="text-slate-400 hover:text-white p-2">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-grow">
+        <div id="grid-container" class="grid grid-cols-5 sm:grid-cols-6 gap-2"></div>
+      </div>
+
+      <div class="p-4 bg-slate-950 border-t border-slate-800 text-xs font-semibold text-slate-400 flex justify-around">
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-800 border border-slate-700"></span> Unanswered</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-brand-600"></span> Answered</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-400"></span> Marked</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      
+      <div class="flex items-center space-x-3 bg-white/5 p-2 rounded-xl border border-white/10">
+        <img id="img-footer-logo-1" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1" class="h-8 w-auto object-contain">
+        <div class="h-5 w-px bg-slate-800"></div>
+        <img id="img-footer-logo-2" src="https://lh3.googleusercontent.com/d/1LdMRx-PF49CWOcrjthClGLJg-yQoJ2mt" alt="Footer Logo 2" class="h-8 w-auto object-contain">
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Advanced Life Support Training System</span>
+      </div>
+
+      <p class="text-slate-300 font-semibold tracking-wide">copyright Yassin Razak @ 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT, TIMERS & CONFIGURATION -->
+  <script>
+    // GOOGLE APPS SCRIPT WEBHOOK DEPLOYMENT URL
+    const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwKLAGcxIj5Z1GhbHgeOEKIRLvb0oNG8g2xrCNtF5tgaHUKjlvkJKw0XUNIAeRkfpfd/exec";
+
+    // MASTER QUESTION BANK (200 QUESTIONS)
+    const rawQuestions = [
+      // SECTION 1: AIRWAY & VENTILATION (Q1 - Q35)
+      { id: 1, category: "Airway", question: "What is the recommended chest compression rate during adult CPR according to ALS guidelines?", options: ["80–100 per minute", "100–120 per minute", "120–140 per minute", "60–80 per minute"], answer: 1, explanation: "High-quality CPR requires a compression rate of 100 to 120 compressions per minute." },
+      { id: 2, category: "Airway", question: "What is the target compression depth for an adult cardiac arrest patient?", options: ["2 to 3 cm", "3 to 4 cm", "5 to 6 cm", " At least 7 cm"], answer: 2, explanation: "Chest compressions should be at a depth of 5 to 6 cm (approx 2 to 2.4 inches) in adults." },
+      { id: 3, category: "Airway", question: "When an endotracheal tube (ET) is inserted, what is the correct ventilation rate during continuous chest compressions?", options: ["1 breath every 2–3 seconds", "1 breath every 6 seconds (10 breaths/min)", "1 breath every 10 seconds", "2 breaths after every 15 compressions"], answer: 1, explanation: "Once an advanced airway is placed, deliver 1 breath every 6 seconds (10 breaths/min) while continuous chest compressions proceed." },
+      { id: 4, category: "Airway", question: "What is the gold standard method to confirm and continuously monitor ETT placement during CPR?", options: ["Five-point chest auscultation", "Bilateral chest expansion inspection", "Continuous quantitative waveform capnography", "Pulse oximetry reading"], answer: 2, explanation: "Continuous quantitative waveform capnography is the gold standard to confirm and monitor ETT placement." },
+      { id: 5, category: "Airway", question: "During CPR, a sudden persistent increase in PETCO2 to >35–40 mmHg indicates what clinical event?", options: ["Equipment failure", "Severe hyperventilation", "Return of Spontaneous Circulation (ROSC)", "Development of tension pneumothorax"], answer: 2, explanation: "A sudden, sustained rise in PETCO2 (typically >35-40 mmHg) is a reliable indicator of ROSC." },
+      { id: 6, category: "Airway", question: "What is the primary risk of hyperventilating a cardiac arrest patient during resuscitation?", options: ["Causes hyperkalemia", "Increases intrathoracic pressure and decreases venous return", "Induces hypothermia", "Triggers early ventricular fibrillation"], answer: 1, explanation: "Hyperventilation increases intrathoracic pressure, which impedes venous return to the heart and reduces cardiac output." },
+      { id: 7, category: "Airway", question: "How should an Oropharyngeal Airway (OPA) be sized correctly for an adult patient?", options: ["From corner of mouth to angle of the mandible", "From tip of nose to earlobe", "From center of incisors to sternal notch", "From chin to thyroid cartilage"], answer: 0, explanation: "An OPA is sized from the corner of the patient's mouth to the angle of the mandible." },
+      { id: 8, category: "Airway", question: "An Oropharyngeal Airway (OPA) is strictly contraindicated in which group of patients?", options: ["Unconscious patients without gag reflex", "Patient with trismus", "Conscious or semi-conscious patients with an intact gag reflex", "Patients with an endotracheal tube in place"], answer: 2, explanation: "OPAs can trigger vomiting and laryngospasm in conscious or semi-conscious patients with an intact gag reflex." },
+      { id: 9, category: "Airway", question: "When sizing a Nasopharyngeal Airway (NPA), what landmark measurement is used?", options: ["Corner of mouth to angle of jaw", "Tip of nose to tip of earlobe", "Nostril width only", "Interpupillary distance"], answer: 1, explanation: "An NPA is measured from the tip of the patient's nose to the tip of the earlobe." },
+      { id: 10, category: "Airway", question: "Which airway technique is preferred for an unconscious trauma patient with suspected cervical spine injury?", options: ["Head-tilt chin-lift", "Jaw thrust without neck extension", "Neck flexion technique", "Hyperextension of neck"], answer: 1, explanation: "Jaw thrust without neck extension maintains cervical spine alignment during airway positioning in suspected trauma." },
+      { id: 11, category: "Airway", question: "What is the maximum duration allowable for a single endotracheal intubation attempt during CPR?", options: ["10 seconds", "30 seconds", "45 seconds", "60 seconds"], answer: 1, explanation: "Intubation attempts should not interrupt chest compressions for more than 30 seconds." },
+      { id: 12, category: "Airway", question: "During bag-mask ventilation, what is the ideal suction setting for clearing thick blood/vomitus from the airway?", options: ["Low suction (-50 mmHg)", "Rigid Yankauer tip with strong suction (>-120 mmHg)", "Soft suction catheter at -20 mmHg", "Continuous low negative pressure"], answer: 1, explanation: "A wide-bore rigid suction tip (Yankauer) connected to high negative pressure (>-120 mmHg) is required for thick secretions or blood." },
+      { id: 13, category: "Airway", question: "What CPR chest compression-to-ventilation ratio is used in adults before an advanced airway is secured?", options: ["15:2", "30:2", "5:1", "50:2"], answer: 1, explanation: "The standard ratio for adult BLS/ALS prior to advanced airway insertion is 30 compressions to 2 ventilations." },
+      { id: 14, category: "Airway", question: "If the PETCO2 level remains consistently below 10 mmHg during high-quality CPR, what does this signify?", options: ["Excellent systemic perfusion", "Inadequate chest compression depth/quality or poor prognosis", "Normal baseline in cardiac arrest", "Patient has achieved ROSC"], answer: 1, explanation: "PETCO2 < 10 mmHg reflects low cardiac output and indicates compressions need optimization or portends poor resuscitation likelihood." },
+      { id: 15, category: "Airway", question: "Which of the following supraglottic airway devices (SGA) does not require a cuff to be inflated after insertion?", options: ["Laryngeal Mask Airway (LMA Classic)", "i-gel", "ProSeal LMA", "Endotracheal tube"], answer: 1, explanation: "The i-gel is a second-generation SGA made of a non-inflatable gel material that mirrors perilaryngeal structures." },
+      { id: 16, category: "Airway", question: "When performing 2-person bag-mask ventilation, what mask-holding technique is recommended?", options: ["E-C clamp technique using 1 hand", "Two-handed C-E technique while second provider squeezes bag", "Single hand over the mask pad", "Over-the-head single hand pressure"], answer: 1, explanation: "The two-person technique using the two-handed E-C clamp ensures superior mask seal and airway patency." },
+      { id: 17, category: "Airway", question: "What visual confirmation step must be performed immediately upon inserting an ETT before cuff inflation?", options: ["Observe passing of tube through vocal cords", "Chest X-ray", "Ultrasound neck", "Pulse oximetry pulse wave"], answer: 0, explanation: "Direct visualization of the ET tube passing through the vocal cords is the initial essential check during direct laryngoscopy." },
+      { id: 18, category: "Airway", question: "What is the recommended oxygen concentration delivered during active resuscitation of adult cardiac arrest?", options: ["21% (Room air)", "40% via Venturi", "100% FiO2 (High-flow supplementary oxygen)", "60% via simple face mask"], answer: 2, explanation: "100% oxygen (maximum available) should be supplied during adult active cardiac arrest resuscitation." },
+      { id: 19, category: "Airway", question: "If an ETT is placed too deeply into an adult patient's airway, which anatomical structure is it most likely to enter?", options: ["Left main bronchus", "Right main bronchus", "Esophagus", "Tracheal carina orifice"], answer: 1, explanation: "Because the right main bronchus is wider, shorter, and more vertical, misplaced tubes typically enter the right mainstem." },
+      { id: 20, category: "Airway", question: "A patient with ETT in place shows sudden drop in oxygen saturation and loss of breath sounds on the left. What is the most likely cause?", options: ["Right-sided tension pneumothorax", "Right mainstem hyper-intubation", "Bilateral pulmonary embolism", "Severe bronchospasm"], answer: 1, explanation: "Deep placement into the right main bronchus causes lack of ventilation to the left lung, leading to loss of left-sided breath sounds." },
+      { id: 21, category: "Airway", question: "What is the recommended cuff pressure for an endotracheal tube in adult resuscitation?", options: ["10–15 cmH2O", "20–30 cmH2O", "40–50 cmH2O", "60–70 cmH2O"], answer: 1, explanation: "ET tube cuff pressure should be kept between 20–30 cmH2O to prevent aspiration while avoiding mucosal ischemia." },
+      { id: 22, category: "Airway", question: "In a patient with severe asthma in cardiac arrest, why is a slightly lower ventilation rate (8–10 breaths/min) advised?", options: ["To reduce metabolic rate", "To allow adequate expiratory time and prevent air trapping (auto-PEEP)", "To prevent hypocapnia", "To increase cerebral perfusion"], answer: 1, explanation: "Asthmatic patients require longer expiration to prevent air trapping, auto-PEEP, and reduced venous return." },
+      { id: 23, category: "Airway", question: "Which airway adjunct should be lubricated with water-soluble gel prior to insertion through the nares?", options: ["Oropharyngeal airway", "Nasopharyngeal airway", "Endotracheal tube stylet", "Bag-valve mask"], answer: 1, explanation: "Nasopharyngeal airways require water-soluble lubrication to minimize nasal mucosal trauma during insertion." },
+      { id: 24, category: "Airway", question: "When using video laryngoscopy, what primary advantage does it offer over direct laryngoscopy?", options: ["Eliminates need for ETT cuff", "Provides superior glottic view in difficult airway scenarios", "Guarantees no esophageal intubation", "Faster than BVM ventilation"], answer: 1, explanation: "Video laryngoscopy improves vocal cord visualization, especially in restricted neck movement or difficult airway cases." },
+      { id: 25, category: "Airway", question: "What is the immediate action if quantitative capnography shows a flatline (zero PETCO2) after intubation?", options: ["Increase ventilation rate", "Assume esophageal intubation and re-evaluate tube placement", "Administer Adrenaline 1 mg", "Perform needle thoracocentesis"], answer: 1, explanation: "A flat capnography line after intubation indicates esophageal placement until proven otherwise; tube must be checked/removed." },
+      { id: 26, category: "Airway", question: "Which physical sign indicates successful bag-mask ventilation?", options: ["Stomach distension", "Visible bilateral chest rise and fall", "Condensation in the face mask only", "Pupillary constriction"], answer: 1, explanation: "Visible chest rise with each breath confirms effective tidal volume delivery during BVM ventilation." },
+      { id: 27, category: "Airway", question: "What is the primary risk of excessive tidal volume during BVM ventilation before intubation?", options: ["Hypoventilation", "Gastric inflation and subsequent regurgitation/aspiration", "Coronary artery spasm", "Metabolic acidosis"], answer: 1, explanation: "Over-ventilating or delivering large volumes forces air into the stomach, predisposing the patient to aspiration." },
+      { id: 28, category: "Airway", question: "How often should compressors rotate during CPR to prevent compressor fatigue?", options: ["Every 1 minute", "Every 2 minutes (or 5 cycles of 30:2)", "Every 5 minutes", "Every 10 minutes"], answer: 1, explanation: "Compressors should switch every 2 minutes (or after 5 CPR cycles) to maintain high compression quality." },
+      { id: 29, category: "Airway", question: "What is the recommended suctioning time limit per pass in an intubated patient to avoid hypoxia?", options: ["<10 seconds", "20 to 30 seconds", "45 seconds", "60 seconds"], answer: 0, explanation: "Suctioning passes should be limited to <10 seconds to prevent significant oxygen desaturation and vagal response." },
+      { id: 30, category: "Airway", question: "Which of the following is an absolute indicator for immediate surgical cricothyroidotomy?", options: ["Cannot intubate, cannot oxygenate scenario", "Unconscious patient with low GCS", "Severe asthma exacerbation", "Isolated bilateral rib fractures"], answer: 0, explanation: "Surgical cricothyroidotomy is the final emergency airway step in a 'Cannot Intubate, Cannot Oxygenate' (CICO) crisis." },
+      { id: 31, category: "Airway", question: "What color change indicates correct ETT placement on a colorimetric CO2 detector?", options: ["Purple to Yellow", "Yellow to Blue", "Blue to Red", "Green to Black"], answer: 0, explanation: "Colorimetric detectors change from purple (low CO2) to yellow (adequate CO2 exhaled) upon proper tracheal placement." },
+      { id: 32, category: "Airway", question: "What distance marker at the corner of teeth usually corresponds to proper ETT depth in adult males?", options: ["16-18 cm", "21-23 cm", "26-28 cm", "30-32 cm"], answer: 1, explanation: "In adult males, proper tube depth is typically 21 to 23 cm at the teeth (20-22 cm in females)." },
+      { id: 33, category: "Airway", question: "When using a Bougie (vascular/airway introducer), how do you confirm tracheal entry?", options: ["Feeling clicks as it passes over tracheal rings and distal obstruction/hold-up", "Free movement without resistance", "Aspirating gastric juice", "Hearing a high-pitched whistle"], answer: 0, explanation: "Feeling tactile tracheal ring clicks and distal hold-up at the bronchi confirms tracheal placement of a Bougie." },
+      { id: 34, category: "Airway", question: "In a patient with facial trauma and massive bleeding, which airway adjunct is contraindicated?", options: ["Oropharyngeal airway", "Nasopharyngeal airway", "Supraglottic airway", "Endotracheal tube"], answer: 1, explanation: "NPAs are contraindicated in basilar skull/facial trauma due to the risk of intracranial insertion." },
+      { id: 35, category: "Airway", question: "What is the primary role of Sellick's maneuver (cricoid pressure) in current ALS guidelines?", options: ["Routine recommendation for all intubations", "No longer routinely recommended due to non-proven benefit and potential airway obstruction", "Mandatory during BVM", "Required before Amiodarone administration"], answer: 1, explanation: "Routine cricoid pressure is not recommended as it may impede intubation view and airway management." },
+
+      // SECTION 2: VF & PULSELESS VT (Q36 - Q75)
+      { id: 36, category: "VF/pVT", question: "In adult cardiac arrest due to VF/pVT, when is the 1st dose of Adrenaline (1 mg IV) administered?", options: ["Immediately before first shock", "After 2nd shock (during CPR before 3rd shock check)", "After 5th shock", "Only if ROSC is achieved"], answer: 1, explanation: "In shockable rhythms (VF/pVT), Adrenaline 1 mg is given after the 2nd shock while CPR continues." },
+      { id: 37, category: "VF/pVT", question: "What is the initial recommended dose of Amiodarone IV/IO in refractory VF/pulseless VT?", options: ["150 mg IV bolus", "300 mg IV/IO bolus", "1 mg/kg IV push", "600 mg IV infusion over 1 hr"], answer: 1, explanation: "Amiodarone 300 mg IV/IO bolus is given after the 3rd shock for refractory VF/pVT." },
+      { id: 38, category: "VF/pVT", question: "If VF/pVT persists after the 3rd shock and initial Amiodarone, what is the second dose of Amiodarone?", options: ["100 mg", "150 mg IV/IO", "300 mg", "500 mg"], answer: 1, explanation: "A second dose of Amiodarone 150 mg IV/IO can be administered after the 5th shock if VF/pVT persists." },
+      { id: 39, category: "VF/pVT", question: "If Amiodarone is unavailable during VF/pVT cardiac arrest, what alternative antiarrhythmic drug can be used?", options: ["Atropine 1 mg", "Lidocaine (1.0 to 1.5 mg/kg IV initial)", "Adenosine 6 mg", "Diltiazem 15 mg"], answer: 1, explanation: "Lidocaine (1–1.5 mg/kg first dose, then 0.5–0.75 mg/kg second dose) is the recommended alternative to Amiodarone." },
+      { id: 40, category: "VF/pVT", question: "What is the standard initial biphasic energy level for adult defibrillation if manufacturer recommendation is unknown?", options: ["50 Joules", "100 Joules", "120 to 200 Joules (or maximum energy)", "360 Joules monophasic only"], answer: 2, explanation: "Initial biphasic energy should be 120–200 J (or maximum available setting on the defibrillator)." },
+      { id: 41, category: "VF/pVT", question: "What is the immediate next step after delivering a shock for VF/pulseless VT?", options: ["Check carotid pulse immediately", "Analyze rhythm immediately", "Resume high-quality CPR immediately for 2 minutes", "Administer Atropine"], answer: 2, explanation: "Immediately resume chest compressions after every shock without pausing for pulse or rhythm checks." },
+      { id: 42, category: "VF/pVT", question: "How often should Adrenaline 1 mg IV/IO be repeated during continuous cardiac arrest resuscitation?", options: ["Every 1 to 2 minutes", "Every 3 to 5 minutes", "Every 8 to 10 minutes", "Only once during resuscitation"], answer: 1, explanation: "Adrenaline 1 mg IV/IO is repeated every 3 to 5 minutes throughout the arrest protocol." },
+      { id: 43, category: "VF/pVT", question: "Which cardiac rhythm is characterized by chaotic, irregular waves with no identifiable QRS complexes or P waves?", options: ["Atrial Fibrillation", "Ventricular Fibrillation", "Asystole", "Third-Degree AV Block"], answer: 1, explanation: "Ventricular Fibrillation presents with chaotic, disorganized ventricular depolarizations lacking discrete QRS complexes." },
+      { id: 44, category: "VF/pVT", question: "What is the management for Polymorphic VT associated with QT prolongation (Torsades de Pointes)?", options: ["Amiodarone 300 mg IV", "IV Magnesium Sulfate (1 to 2 g diluted in 10 mL D5W over 15 min / bolus)", "Atropine 3 mg", "Adenosine 12 mg"], answer: 1, explanation: "IV Magnesium Sulfate (1-2 g) is the treatment of choice for Torsades de Pointes (polymorphic VT with long QT)." },
+      { id: 45, category: "VF/pVT", question: "When applying defibrillator self-adhesive pads on an adult, what is the standard anterolateral position?", options: ["Upper right sternum below clavicle & lower left apex/axilla", "Center of chest & back", "Left clavicle & right rib cage", "Bilateral shoulders"], answer: 0, explanation: "Standard placement: upper right infraclavicular area and lower left lateral chest wall (apex)." },
+      { id: 46, category: "VF/pVT", question: "During manual defibrillation, what precaution ensures team safety before shock delivery?", options: ["Administering oxygen mask", "Loudly shouting 'Clear!' and visually verifying all personnel are clear of the bed", "Turning off EKG monitor", "Holding ETT securely with hands"], answer: 1, explanation: "Ensuring visual confirmation and announcing physical clearance prevents electrical injury to team members." },
+      { id: 47, category: "VF/pVT", question: "What should be done if a fine VF rhythm resembles Asystole on the cardiac monitor?", options: ["Treat as shockable VF and shock immediately if in doubt", "Check gain settings and ensure leads are connected; if true doubt remains, treat as non-shockable to avoid delaying compressions", "Give Atropine 3 mg", "Apply transcutaneous pacing"], answer: 1, explanation: "Confirm gain and lead connections. If doubt exists between fine VF and asystole, continue CPR and treat non-shockable protocol." },
+      { id: 48, category: "VF/pVT", question: "In monophasic defibrillators, what is the standard energy selection for all shocks in adult cardiac arrest?", options: ["100 Joules", "200 Joules", "360 Joules", "150 Joules"], answer: 2, explanation: "Monophasic defibrillators deliver shocks at a fixed 360 Joules for all shocks." },
+      { id: 49, category: "VF/pVT", question: "When IV access cannot be established during cardiac arrest, what is the preferred alternative parenteral route?", options: ["Intramuscular (IM)", "Intraosseous (IO)", "Subcutaneous (SC)", "Endotracheal (ET) routine first-line"], answer: 1, explanation: "Intraosseous (IO) access is rapid, reliable, and the preferred alternative when IV access fails." },
+      { id: 50, category: "VF/pVT", question: "What flush volume should follow every IV push drug administration during resuscitation?", options: ["5 mL sterile water", "20 mL normal saline flush with limb elevation", "50 mL D5W", "No flush required"], answer: 1, explanation: "A 20 mL IV saline flush followed by brief limb elevation speeds drug delivery to the central circulation." },
+      { id: 51, category: "VF/pVT", question: "What is 'refractory' Ventricular Fibrillation?", options: ["VF that responds to 1 shock", "VF that persists or recurs after 3 or more consecutive shocks", "VF occurring in pediatric patients", "VF caused by hypothermia only"], answer: 1, explanation: "Refractory VF is defined as persistent or recurrent VF despite 3 or more shock attempts." },
+      { id: 52, category: "VF/pVT", question: "Which drug is NO LONGER routinely recommended in adult ALS cardiac arrest algorithms for any rhythm?", options: ["Adrenaline", "Atropine", "Amiodarone", "Lidocaine"], answer: 1, explanation: "Atropine was removed from routine cardiac arrest (PEA/Asystole) algorithms in guidelines." },
+      { id: 53, category: "VF/pVT", question: "During CPR, what maximum interruption time is permitted for rhythm analysis or shock delivery?", options: ["<10 seconds", "20 seconds", "30 seconds", "60 seconds"], answer: 0, explanation: "Chest compression pauses for rhythm check or shock delivery should be kept under 10 seconds." },
+      { id: 54, category: "VF/pVT", question: "What is the mechanism of action of Adrenaline in cardiac arrest?", options: ["Beta-2 bronchodilation primarily", "Alpha-1 mediated vasoconstriction increasing coronary and cerebral perfusion pressure", "Direct antiarrhythmic suppression", "Vagal nerve stimulation"], answer: 1, explanation: "Alpha-1 receptor stimulation causes vasoconstriction, raising aortic diastolic pressure and coronary perfusion." },
+      { id: 55, category: "VF/pVT", question: "When giving drugs via an Intraosseous (IO) needle, what is true regarding dosage?", options: ["Double the IV dose", "Half the IV dose", "Same dose and flush as IV route", "IO route cannot be used for Adrenaline"], answer: 2, explanation: "Intraosseous drug dosages and administration protocols are identical to intravenous dosages." },
+      { id: 56, category: "VF/pVT", question: "A patient in VF receives Shock 1, CPR 2 mins, Shock 2, CPR 2 mins with Adrenaline 1mg. Next check shows persistent VF. What is the next step?", options: ["Administer Shock 3, then resume CPR and give Amiodarone 300 mg", "Stop CPR and perform synchronized cardioversion", "Give Atropine 1 mg", "Transcutaneous pacing"], answer: 0, explanation: "Follow shockable algorithm: Shock 3 -> CPR 2 mins -> Amiodarone 300 mg IV/IO bolus." },
+      { id: 57, category: "VF/pVT", question: "Why is synchronized cardioversion inappropriate for Ventricular Fibrillation?", options: ["The energy is too low", "VF lacks distinct R-waves for the machine to synchronize with, leading to no shock delivery", "It causes hyperkalemia", "It is only used for bradycardia"], answer: 1, explanation: "Synchronizers require an R-wave; since VF has no organized R-wave, an unsynchronized shock (defibrillation) must be used." },
+      { id: 58, category: "VF/pVT", question: "What is the primary indicator that chest compressions are effective during resuscitation?", options: ["Presence of reactive pupils", "Arterial line diastolic pressure >20 mmHg or PETCO2 >10-15 mmHg", "Patient spontaneous gasping", "Skin temperature warmth"], answer: 1, explanation: "Coronary perfusion pressure (arterial diastolic >20 mmHg) or PETCO2 >10-15 mmHg measures compression efficacy." },
+      { id: 59, category: "VF/pVT", question: "Which physiological state lowers the threshold for VF and makes defibrillation less effective?", options: ["Hyperglycemia", "Severe hypokalemia and hypomagnesemia", "Mild hypertension", "Respiratory alkalosis"], answer: 1, explanation: "Electrolyte disturbances like severe hypokalemia/hypomagnesemia destabilize the myocardium and promote VF." },
+      { id: 60, category: "VF/pVT", question: "What is the second-dose requirement for Lidocaine in refractory VF/pVT if used instead of Amiodarone?", options: ["0.5 to 0.75 mg/kg IV push", "3 mg/kg IV push", "150 mg IV bolus", "10 mg/kg IV infusion"], answer: 0, explanation: "If Lidocaine is used, the second dose is 0.5 to 0.75 mg/kg IV push (max total dose 3 mg/kg)." },
+      { id: 61, category: "VF/pVT", question: "If a patient has an implanted cardiac pacemaker/ICD, where should defibrillation pads be placed?", options: ["Directly over the pacemaker device generator", "At least 8 cm (1 inch) away from the pacemaker generator unit", "On the posterior spine only", "Directly on the left clavicle"], answer: 1, explanation: "Avoid placing pads directly over implanted devices; position them at least 2.5–8 cm away." },
+      { id: 62, category: "VF/pVT", question: "What should be done if transdermal medication patches are present on the chest during pad placement?", options: ["Place pads directly over the patch", "Remove the patch and wipe the chest dry before placing pads", "Shock through the patch at double energy", "Avoid defibrillation"], answer: 1, explanation: "Remove transdermal patches and wipe the area clean to prevent electrical arcing or cutaneous burns." },
+      { id: 63, category: "VF/pVT", question: "During CPR, when should rhythm checks be conducted?", options: ["Every 1 minute", "Every 2 minutes", "Every 5 minutes", "Only when requested by family"], answer: 1, explanation: "Rhythm checks are performed briefly (<10s) every 2 minutes at the completion of each CPR cycle." },
+      { id: 64, category: "VF/pVT", question: "What is the recommended energy setting for subsequent biphasic shocks after the initial shock in VF?", options: ["Lower energy than shock 1", "Equivalent or higher energy level (e.g., 150-360 J depending on device)", "Always 50 J", "Monophasic equivalent 100 J"], answer: 1, explanation: "Subsequent biphasic energy should be equal to or greater than the initial dose (up to device maximum)." },
+      { id: 65, category: "VF/pVT", question: "What parameter defines Pulseless Ventricular Tachycardia (pVT)?", options: ["Wide QRS rate >100 bpm with a palpable carotid pulse", "Organized wide QRS rate >100–200 bpm with NO central pulse", "Irregular narrow QRS with radial pulse", "Slow rhythm under 40 bpm"], answer: 1, explanation: "Pulseless VT is an organized rapid ventricular rhythm that fails to produce a palpable arterial pulse." },
+      { id: 66, category: "VF/pVT", question: "What is the consequence of charging the defibrillator while CPR is ongoing prior to rhythm check?", options: ["Dangerous to compressor", "Minimizes hands-off time prior to shock delivery ('pre-charging')", "Causes machine failure", "Decreases shock efficacy"], answer: 1, explanation: "Pre-charging towards the end of a 2-minute CPR cycle reduces non-compression time before shock delivery." },
+      { id: 67, category: "VF/pVT", question: "What should you do if an organized rhythm is seen on the monitor during a 2-minute rhythm check?", options: ["Immediately shock at 200J", "Check for a central pulse (carotid/femoral) for up to 10 seconds", "Administer Amiodarone 300 mg", "Hyperventilate patient"], answer: 1, explanation: "If an organized rhythm is observed, feel for a pulse for maximum 10 seconds to differentiate ROSC from PEA." },
+      { id: 68, category: "VF/pVT", question: "In a patient presenting with VF secondary to accidental severe hypothermia (<30°C), what is the guideline recommendation?", options: ["Deliver unlimited shocks and double drug doses", "Limit shocks to up to 3 attempts, withhold IV drugs until rewarmed >30°C", "Never shock hypothermic patients", "Give Atropine 3 mg IV"], answer: 1, explanation: "In severe hypothermia (<30°C), limit shocks to 3, withhold IV medications until core temp >30°C." },
+      { id: 69, category: "VF/pVT", question: "Which ECG feature distinguishes coarse VF from fine VF?", options: ["Amplitude >3 mm (coarse) vs <3 mm (fine)", "Rate >300 bpm vs <100 bpm", "Presence of P waves in coarse VF", "Fine VF only occurs in pediatric cases"], answer: 0, explanation: "Coarse VF has high amplitude peaks (≥3 mm), whereas fine VF is low amplitude (<3 mm) approaching asystole." },
+      { id: 70, category: "VF/pVT", question: "What is the role of Sodium Bicarbonate in routine VF/pVT cardiac arrest?", options: ["First-line therapy after shock 1", "Not recommended routinely unless arrest is due to hyperkalemia, severe metabolic acidosis, or TCA overdose", "Always given with Amiodarone", "Used to correct respiratory acidosis"], answer: 1, explanation: "Routine sodium bicarbonate is not recommended; it is indicated specifically for hyperkalemia, TCA overdose, or severe metabolic acidosis." },
+      { id: 71, category: "VF/pVT", question: "If a defibrillator pad becomes partially dislodged during CPR, what is the risk?", options: ["Increased shock delivered", "Electrical arcing, cutaneous burns, and ineffective energy delivery", "Defibrillator explosion", "Hypotension"], answer: 1, explanation: "Poor pad contact causes high transthoracic impedance, skin burns, arcing, and inadequate energy delivery to the heart." },
+      { id: 72, category: "VF/pVT", question: "What is the primary objective of high-quality CPR in shockable rhythms while preparing the defibrillator?", options: ["To convert VF to sinus rhythm without shock", "To preserve cerebral and myocardial viability by maintaining blood flow", "To elevate body temperature", "To reduce arterial lactate"], answer: 1, explanation: "CPR provides minimal essential perfusion to heart and brain, increasing likelihood of successful defibrillation." },
+      { id: 73, category: "VF/pVT", question: "When giving drugs via ET tube (if IV/IO unavailable), how is the dose adjusted?", options: ["Half the IV dose", "2 to 2.5 times the IV dose diluted in 5–10 mL sterile water", "Same dose as IV", "ET drug delivery is prohibited"], answer: 1, explanation: "ET administration requires 2–2.5 times the IV dose diluted in 5–10 mL water/saline due to variable absorption." },
+      { id: 74, category: "VF/pVT", question: "A patient in VF converts to sinus tachycardia with a pulse after 3rd shock. What is the immediate priority?", options: ["Give second dose of Amiodarone 150 mg", "Initiate Post-ROSC care (ABCDE, vitals, 12-lead ECG, target SpO2 94-98%)", "Hyperventilate with 100% O2 at 30 bpm", "Administer IV Atropine 1 mg"], answer: 1, explanation: "Upon ROSC, transition immediately to Post-Cardiac Arrest Care guidelines." },
+      { id: 75, category: "VF/pVT", question: "What is the maximum dose limit of Lidocaine in cardiac arrest management?", options: ["1 mg/kg", "3 mg/kg", "5 mg/kg", "10 mg/kg"], answer: 1, explanation: "The cumulative maximum dose of Lidocaine is 3 mg/kg." },
+
+      // SECTION 3: PEA & ASYSTOLE (Q76 - Q110)
+      { id: 76, category: "PEA/Asystole", question: "What is the immediate pharmacological intervention for Pulseless Electrical Activity (PEA) or Asystole?", options: ["Amiodarone 300 mg IV push", "Adrenaline 1 mg IV/IO as soon as access is available", "Atropine 1 mg IV push", "Defibrillation at 200J"], answer: 1, explanation: "For non-shockable rhythms (PEA/Asystole), deliver Adrenaline 1 mg IV/IO immediately." },
+      { id: 77, category: "PEA/Asystole", question: "Which of the following is defined as the presence of an organized cardiac rhythm on monitor WITHOUT a palpable central pulse?", options: ["Ventricular Fibrillation", "Pulseless Electrical Activity (PEA)", "Asystole", "Symptomatic Bradycardia"], answer: 1, explanation: "PEA is characterized by electrical activity visible on ECG that fails to produce mechanical myocardial contraction/pulse." },
+      { id: 78, category: "PEA/Asystole", question: "To confirm true Asystole and rule out fine VF, what verification steps must be taken?", options: ["Check pulse for 30 seconds", "Check leads connected, correct lead selection, and verify gain settings", "Deliver a test shock at 50J", "Administer Atropine"], answer: 1, explanation: "Confirm asystole by checking power, cable/lead attachments, lead selection, and gain calibration." },
+      { id: 79, category: "PEA/Asystole", question: "Why is defibrillation contraindicated in Asystole?", options: ["It triggers VF", "It damages the skin", "It causes parasympathetic discharge and eliminates any chance of intrinsic pacemaker recovery", "It causes hypokalemia"], answer: 2, explanation: "Shocking asystole delivers high electrical energy that damages myocardium and destroys potential pacemaker recovery." },
+      { id: 80, category: "PEA/Asystole", question: "What are the '5 Hs' of reversible cardiac arrest causes?", options: ["Hypovolemia, Hypoxia, Hydrogen ion (acidosis), Hypo/Hyperkalemia, Hypothermia", "Hypertension, Hyperglycemia, Heart failure, Head injury, Hypocalcemia", "Hypovolemia, Hypernatremia, Hepatitis, Hemorrhage, Hypoxia", "Hyperkalemia, Hydrocephalus, Hypthermia, Heart attack, Hypoxia"], answer: 0, explanation: "5 Hs: Hypovolemia, Hypoxia, Hydrogen ion (acidosis), Hypo-/Hyperkalemia, Hypothermia." },
+      { id: 81, category: "PEA/Asystole", question: "What are the '5 Ts' of reversible cardiac arrest causes?", options: ["Tension pneumothorax, Tamponade (cardiac), Toxins, Thrombosis (pulmonary), Thrombosis (coronary)", "Tachycardia, Trauma, Tumor, Thyroid storm, Toxicity", "Tension pneumothorax, Tracheostomy, Tonsillitis, Thrombosis, Trauma", "Tamponade, Tetanus, Typhoid, Toxins, Transient arrest"], answer: 0, explanation: "5 Ts: Tension pneumothorax, Cardiac Tamponade, Toxins, Pulmonary Thrombosis, Coronary Thrombosis." },
+      { id: 82, category: "PEA/Asystole", question: "A patient in cardiac arrest has flat neck veins, severe pale skin, and history of major trauma. Which cause is most likely?", options: ["Cardiac Tamponade", "Hypovolemia (hemorrhagic shock)", "Tension Pneumothorax", "Hyperkalemia"], answer: 1, explanation: "Severe blood loss/trauma leading to flat neck veins strongly points to Hypovolemia as the primary PEA cause." },
+      { id: 83, category: "PEA/Asystole", question: "Tracheal deviation, distended neck veins, and unilateral absence of breath sounds in PEA suggest which diagnosis?", options: ["Pulmonary Embolism", "Tension Pneumothorax", "Hypothermia", "Acute MI"], answer: 1, explanation: "Classic signs of Tension Pneumothorax include neck vein distension, tracheal deviation, and unilateral silent chest." },
+      { id: 84, category: "PEA/Asystole", question: "What is the immediate treatment for PEA caused by a suspected Tension Pneumothorax?", options: ["Pericardiocentesis", "Emergency needle decompression / thoracostomy", "IV Amiodarone 300 mg", "Thrombolytic therapy"], answer: 1, explanation: "Immediate needle decompression (or finger thoracostomy) relieves tension pneumothorax during arrest." },
+      { id: 85, category: "PEA/Asystole", question: "Distended neck veins, muffled heart sounds (if evaluated), and ultrasound showing fluid around the heart indicate:", options: ["Tension Pneumothorax", "Cardiac Tamponade", "Severe Hypoxia", "Tricuspid Stenosis"], answer: 1, explanation: "Beck's triad signs and pericardial effusion on POCUS indicate Cardiac Tamponade." },
+      { id: 86, category: "PEA/Asystole", question: "What is the immediate treatment for Cardiac Tamponade during cardiac arrest?", options: ["Needle decompression of 2nd ICS", "Emergency Pericardiocentesis or resuscitative thoracotomy", "High-dose Calcium Chloride", "Inhaled Salbutamol"], answer: 1, explanation: "Emergency pericardiocentesis (or thoracotomy) evacuates fluid to relieve tamponade." },
+      { id: 87, category: "PEA/Asystole", question: "A end-stage renal failure patient on dialysis misses 3 sessions and develops PEA. ECG shows broad QRS. What cause should be suspected?", options: ["Hypokalemia", "Hyperkalemia", "Hypocalcemia", "Hypoglycemia"], answer: 1, explanation: "Missed hemodialysis causes severe Hyperkalemia, leading to QRS widening and PEA arrest." },
+      { id: 88, category: "PEA/Asystole", question: "What is the specific initial IV antidote to stabilize the cardiac membrane in severe Hyperkalemia?", options: ["Sodium Bicarbonate 8.4%", "10% Calcium Gluconate (or Calcium Chloride) IV", "Regular Insulin + Dextrose", "Amiodarone 300 mg"], answer: 1, explanation: "IV Calcium (Gluconate or Chloride) antagonizes membrane excitability induced by hyperkalemia." },
+      { id: 89, category: "PEA/Asystole", question: "Which medications shift potassium from extracellular space into cells during hyperkalemic arrest?", options: ["Calcium Chloride", "IV Regular Insulin with Dextrose & IV Sodium Bicarbonate / Salbutamol", "Atropine & Adrenaline", "Lidocaine & Magnesium"], answer: 1, explanation: "Insulin/dextrose, sodium bicarbonate, and nebulized beta-agonists shift potassium intracellularly." },
+      { id: 90, category: "PEA/Asystole", question: "In a patient presenting with massive Pulmonary Embolism leading to PEA, what treatment option can be considered?", options: ["High-dose Aspirin", "Thrombolytic therapy (e.g., Alteplase/rtPA)", "Transcutaneous Pacing", "Atropine 3 mg"], answer: 1, explanation: "Thrombolytics (rtPA) are indicated in confirmed or strongly suspected massive PE cardiac arrest." },
+      { id: 91, category: "PEA/Asystole", question: "If thrombolytic therapy is administered during CPR for suspected PE, how long should CPR be continued?", options: ["Stop CPR after 10 minutes", "Continue CPR for at least 60 to 90 minutes before considering termination", "Stop immediately", "20 minutes maximum"], answer: 1, explanation: "CPR should be continued for at least 60–90 minutes to allow the thrombolytic agent to achieve clot lysis." },
+      { id: 92, category: "PEA/Asystole", question: "What is the primary intervention for a patient in hypothermic cardiac arrest (core temp <30°C)?", options: ["High-dose drug administration", "Active internal and external rewarming techniques along with CPR", "Immediate defibrillation 10 times", "Administering ice-cold saline"], answer: 1, explanation: "Active rewarming (warmed IV fluids, warm humidified O2, body warmers, ECMO/lavage) is vital." },
+      { id: 93, category: "PEA/Asystole", question: "A patient intoxicated with Tricyclic Antidepressants (TCA) develops wide QRS PEA arrest. What is the specific treatment?", options: ["IV Sodium Bicarbonate (1–2 mEq/kg)", "Atropine 3 mg", "Calcium Channel Blocker", "Naloxone"], answer: 0, explanation: "Sodium Bicarbonate overcomes sodium channel blockade induced by TCA toxicity." },
+      { id: 94, category: "PEA/Asystole", question: "An opioid overdose patient presents in respiratory arrest progressing to PEA. Which drug should be administered?", options: ["Flumazenil", "Naloxone IV/IM/IN", "Atropine", "Physostigmine"], answer: 1, explanation: "Naloxone is the specific opioid antagonist indicated for opioid-induced respiratory depression/arrest." },
+      { id: 95, category: "PEA/Asystole", question: "During PEA CPR, how frequently should rhythm and pulse checks occur?", options: ["Every 1 minute", "Every 2 minutes", "Every 5 minutes", "Only when ET tube is placed"], answer: 1, explanation: "Rhythm checks occur every 2 minutes in all cardiac arrest algorithms." },
+      { id: 96, category: "PEA/Asystole", question: "What is the role of point-of-care ultrasound (POCUS) during PEA arrest?", options: ["Delay CPR compressions", "Rapid identification of reversible causes (Tamponade, PE, Hypovolemia, Pneumothorax)", "Confirm blood glucose level", "Replace EKG monitor"], answer: 1, explanation: "POCUS performed during non-shockable arrest helps identify specific underlying reversible causes." },
+      { id: 97, category: "PEA/Asystole", question: "To prevent CPR interruptions during POCUS examination, when should ultrasound imaging be performed?", options: ["During active compressions or strictly within the planned 10-second pulse check window", "By stopping CPR for 2 minutes", "Only after ROSC", "Before starting CPR"], answer: 0, explanation: "Ultrasound imaging must be seamlessly executed within the planned <10-second compression pause." },
+      { id: 98, category: "PEA/Asystole", question: "Pseudo-PEA refers to which clinical condition?", options: ["True absence of cardiac electrical activity", "Presence of organized electrical activity with coordinated myocardial contractions on POCUS, but no palpable peripheral pulse", "VF misdiagnosed as PEA", "Asystole on lead II only"], answer: 1, explanation: "Pseudo-PEA occurs when POCUS reveals cardiac contractility despite absent palpable pulses (profound shock)." },
+      { id: 99, category: "PEA/Asystole", question: "In Asystole, after establishing IV/IO access, giving Adrenaline 1mg, and securing airway, what is the key focus?", options: ["Preparing for immediate shock", "Identifying and treating reversible causes (5 Hs & 5 Ts)", "Administering Amiodarone", "Setting up pacing"], answer: 1, explanation: "Resuscitation from non-shockable rhythms hinges on identifying and treating underlying 5 Hs & 5 Ts." },
+      { id: 100, category: "PEA/Asystole", question: "A trauma patient develops PEA following a motor vehicle collision. What is the most likely underlying cause?", options: ["Hypovolemia from internal hemorrhage or Tension Pneumothorax", "Hyperkalemia", "Hypothermia", "Drug toxicity"], answer: 0, explanation: "Trauma-related PEA arrest is predominantly driven by massive blood loss (Hypovolemia) or Tension Pneumothorax." },
+      { id: 101, category: "PEA/Asystole", question: "When should the next dose of Adrenaline be given in PEA after the initial dose at 0 minutes?", options: ["At 1 minute", "At 3 to 5 minutes", "At 10 minutes", "Only after ROSC"], answer: 1, explanation: "Adrenaline 1 mg IV/IO is repeated every 3 to 5 minutes throughout resuscitation." },
+      { id: 102, category: "PEA/Asystole", question: "Why is Calcium Chloride NOT routinely recommended in all cardiac arrests?", options: ["It causes hypotension", "No proven benefit unless hypocalcemia, hyperkalemia, or calcium channel blocker overdose is present", "It causes immediate VF", "It paralyzes diaphragmatic muscle"], answer: 1, explanation: "Routine calcium administration does not improve survival and is restricted to hyperkalemia, hypocalcemia, or CCB overdose." },
+      { id: 103, category: "PEA/Asystole", question: "What ECG pattern is characterized by a completely flat line across multiple leads?", options: ["Ventricular Fibrillation", "Asystole", "Agonal rhythm", "Electromechanical dissociation"], answer: 1, explanation: "Asystole represents total absence of ventricular electrical activity (flatline)." },
+      { id: 104, category: "PEA/Asystole", question: "An agonal rhythm during resuscitation is managed under which pathway?", options: ["Bradycardia algorithm", "Asystole / Non-shockable cardiac arrest pathway", "VF pathway", "Post-ROSC care"], answer: 1, explanation: "Agonal gasps / slow irregular ventricular complexes without pulses are managed under the Asystole/PEA protocol." },
+      { id: 105, category: "PEA/Asystole", question: "In a patient experiencing severe anaphylactic shock progressing to PEA arrest, what drug is mandatory?", options: ["IV Adrenaline 1 mg", "Atropine 1 mg", "Salbutamol nebulizer", "Amiodarone 300 mg"], answer: 0, explanation: "Adrenaline 1 mg IV/IO is administered immediately as per cardiac arrest protocol." },
+      { id: 106, category: "PEA/Asystole", question: "What is the recommended approach for fluid resuscitation in PEA due to suspected hypovolemia?", options: ["50 mL saline flush", "Rapid IV/IO bolus of warm crystalloids (e.g., 500–1000 mL normal saline/Ringer's lactate)", "Slow fluid infusion over 24 hours", "Dextrose 5% 100 mL"], answer: 1, explanation: "Rapid administration of warm crystalloid boluses (or blood products in trauma) restores intravascular volume." },
+      { id: 107, category: "PEA/Asystole", question: "Which condition can lead to severe Hypoxia-induced PEA arrest?", options: ["Foreign body airway obstruction or severe hanging/asphyxia", "Mild asthma attack", "Uncomplicated hyperventilation", "Hypertensive emergency"], answer: 0, explanation: "Airway occlusion or asphyxiation causes rapid profound hypoxia leading to PEA or asystole." },
+      { id: 108, category: "PEA/Asystole", question: "What is the significance of persistent low PETCO2 (<10 mmHg) after 20 minutes of high-quality CPR in PEA?", options: ["High probability of survival", "Strong indicator of resuscitation failure / poor prognosis", "Indicates high cardiac output", "Requires higher drug doses"], answer: 1, explanation: "Failure to achieve PETCO2 > 10-15 mmHg despite optimal CPR for 20+ mins correlates with futile resuscitation outcome." },
+      { id: 109, category: "PEA/Asystole", question: "If PEA rhythm converts to Ventricular Fibrillation during a 2-minute check, what is the immediate action?", options: ["Continue non-shockable protocol", "Switch to shockable protocol: deliver shock immediately", "Give Atropine 1 mg", "Stop resuscitation"], answer: 1, explanation: "Rhythm transitions dictate protocol changes; if VF appears, deliver a shock immediately." },
+      { id: 110, category: "PEA/Asystole", question: "Which reversible cause should be considered in a diabetic patient found unresponsive in PEA arrest?", options: ["Profound Hypoglycemia", "Hypercalcemia", "Hypthyroidism", "Hypernatremia"], answer: 0, explanation: "Severe hypoglycemia can precipitate cardiac arrest and should be rapidly checked and corrected with IV Dextrose." },
+
+      // SECTION 4: BRADYCARDIA & TACHYCARDIA (Q111 - Q155)
+      { id: 111, category: "Brady/Tachy", question: "A patient presents with HR 32 bpm, BP 75/40 mmHg, altered mental state, and chest distress. What is the 1st line medication?", options: ["Adrenaline 1 mg IV fast push", "Atropine 1 mg IV push", "Dopamine 20 mcg/kg/min", "Adenosine 6 mg IV"], answer: 1, explanation: "Atropine 1 mg IV push is the first-line drug for symptomatic unstable bradycardia." },
+      { id: 112, category: "Brady/Tachy", question: "What is the maximum cumulative dose of Atropine recommended for adult bradycardia?", options: ["1 mg", "2 mg", "3 mg", "6 mg"], answer: 2, explanation: "The maximum cumulative dose of Atropine is 3 mg (total 3 doses of 1 mg)." },
+      { id: 113, category: "Brady/Tachy", question: "If Atropine 1 mg is ineffective in symptomatic unstable bradycardia, what are the next treatment options?", options: ["Transcutaneous pacing OR Adrenaline infusion (2–10 mcg/min) OR Dopamine infusion (5–20 mcg/kg/min)", "Adenosine 12 mg IV", "Amiodarone 300 mg IV", "Metoprolol 5 mg IV"], answer: 0, explanation: "Second-line options include Transcutaneous Pacing, Adrenaline infusion (2–10 mcg/min), or Dopamine infusion (5–20 mcg/kg/min)." },
+      { id: 114, category: "Brady/Tachy", question: "In Mobitz Type II second-degree or Third-degree (complete) AV block, why is Atropine often ineffective?", options: ["Atropine only works on the ventricular tissue", "The block is located below the AV node (Infranodal), where vagolytic drugs have minimal effect", "It causes hyperkalemia", "It lowers blood pressure further"], answer: 1, explanation: "Infranodal blocks do not respond to parasympathetic blockade; pacing is urgently required." },
+      { id: 115, category: "Brady/Tachy", question: "What are the 5 classic clinical adverse signs indicating an 'unstable' cardiac arrhythmia?", options: ["Shock, Syncope, Myocardial ischemia, Acute heart failure, Hypotension", "Fever, Cough, Dyspnea, Rash, Joint pain", "Hypertension, Tachycardia, Warm skin, Alertness, Polyuria", "Nausea, Vertigo, Headache, Tinnitus, Diarrhea"], answer: 0, explanation: "Unstable criteria: Shock, Syncope/altered consciousness, Ischemic chest pain, Acute heart failure, Hypotension." },
+      { id: 116, category: "Brady/Tachy", question: "A patient with HR 180 bpm is hypotensive (BP 80/50 mmHg), in acute pulmonary edema, and confused. What is the immediate treatment?", options: ["Vagal maneuvers", "Immediate Synchronized Cardioversion", "IV Metoprolol 5 mg", "Oral Digoxin"], answer: 1, explanation: "Unstable tachycardias with severe compromise demand immediate Synchronized Cardioversion." },
+      { id: 117, category: "Brady/Tachy", question: "What is the initial recommended energy level for synchronized cardioversion of unstable Supraventricular Tachycardia (SVT) or Atrial Flutter?", options: ["50 to 100 Joules biphasic", "200 Joules unsynchronized", "360 Joules monophasic", "10 Joules"], answer: 0, explanation: "Initial energy for narrow regular SVT/A-flutter is 50–100 J biphasic synchronized cardioversion." },
+      { id: 118, category: "Brady/Tachy", question: "Why must the 'SYNC' mode be activated on the defibrillator prior to performing cardioversion?", options: ["To charge faster", "To ensure the shock is delivered on the R-wave, avoiding the vulnerable T-wave (R-on-T VF prevention)", "To deliver higher energy", "To disengage battery drain"], answer: 1, explanation: "Sync mode delivers energy on the R-wave to prevent precipitating VF caused by shocking during ventricular repolarization (T-wave)." },
+      { id: 119, category: "Brady/Tachy", question: "What is the initial choice of treatment for a STABLE patient presenting with narrow-complex regular tachycardia (SVT)?", options: ["Immediate cardioversion", "Vagal maneuvers followed by Adenosine 6 mg fast IV push", "Amiodarone 300 mg bolus", "Atropine 1 mg"], answer: 1, explanation: "Stable SVT management starts with vagal maneuvers; if unsuccessful, administer Adenosine 6 mg rapid IV push." },
+      { id: 120, category: "Brady/Tachy", question: "How should Adenosine be administered for maximal therapeutic efficacy?", options: ["Slow IV infusion over 15 minutes", "Rapid IV push over 1–3 seconds followed immediately by a 20 mL saline flush and arm elevation", "Intramuscular injection", "Sublingual tablet"], answer: 1, explanation: "Adenosine has an ultra-short half-life (<10s) and requires rapid bolus push followed by immediate 20 mL saline flush." },
+      { id: 121, category: "Brady/Tachy", question: "If stable SVT fails to convert after initial Adenosine 6 mg IV, what is the subsequent dosage sequence?", options: ["Second dose of 12 mg fast IV push; if needed, a third dose of 12 mg", "150 mg Amiodarone", "1 mg Atropine", "6 mg repeated 5 times"], answer: 0, explanation: "Adenosine dosing sequence: 6 mg fast IV bolus, followed by 12 mg fast IV bolus, and a second 12 mg if required." },
+      { id: 122, category: "Brady/Tachy", question: "What transient ECG response should you warn the patient about before giving Adenosine?", options: ["Transient sinus pause / brief asystole and feeling of chest tightness/flushing", "Immediate severe hypertension", "Sustained Ventricular Fibrillation", "Persistent fever"], answer: 0, explanation: "Adenosine briefly blocks AV conduction, causing transient asystole, chest tightness, and facial flushing." },
+      { id: 123, category: "Brady/Tachy", question: "Adenosine is strictly contraindicated or used with extreme caution in patients with which underlying condition?", options: ["Hypertension", "Asthma / severe reactive airway disease", "Diabetes mellitus", "Hyperlipidemia"], answer: 1, explanation: "Adenosine can induce severe bronchospasm in asthmatic patients." },
+      { id: 124, category: "Brady/Tachy", question: "What is the management for STABLE wide-complex monomorphic tachycardia (Monomorphic VT)?", options: ["Adenosine 6 mg", "Antiarrhythmic infusion: Amiodarone 150 mg IV over 10 minutes OR Procainamide", "Atropine 1 mg", "Immediate 360J unsynchronized shock"], answer: 1, explanation: "Stable monomorphic VT is treated with IV antiarrhythmics (Amiodarone 150 mg over 10 mins or Procainamide)." },
+      { id: 125, category: "Brady/Tachy", question: "In a patient with Wolff-Parkinson-White (WPW) syndrome who develops Atrial Fibrillation with pre-excitation, which AV nodal blocking drugs are CONTRAINDICATED?", options: ["Procainamide", "Adenosine, Diltiazem, Verapamil, Digoxin, Beta-blockers", "Amiodarone", "Normal saline"], answer: 1, explanation: "AV nodal blockers accelerate conduction down the accessory pathway in pre-excited AF, risking VF." },
+      { id: 126, category: "Brady/Tachy", question: "What is the initial recommended synchronized energy level for unstable Atrial Fibrillation?", options: ["50 Joules", "120 to 200 Joules biphasic", "360 Joules unsynchronized", "20 Joules"], answer: 1, explanation: "Unstable Atrial Fibrillation requires 120–200 J biphasic synchronized cardioversion." },
+      { id: 127, category: "Brady/Tachy", question: "A patient with stable Atrial Fibrillation with rapid ventricular response (RVR) requires rate control. Which drug class is appropriate?", options: ["Atropine", "Beta-blockers (e.g., Metoprolol) or Non-dihydropyridine Calcium Channel Blockers (e.g., Diltiazem)", "Adrenaline infusion", "Adenosine"], answer: 1, explanation: "Rate control in stable AF is achieved using IV Beta-blockers or Diltiazem/Verapamil." },
+      { id: 128, category: "Brady/Tachy", question: "Before attempting transcutaneous pacing, what medication intervention should be provided to a conscious patient?", options: ["Analgesia and/or sedation (e.g., Fentanyl/Midazolam)", "Neuromuscular blockade only", "High-dose Atropine", "Amiodarone"], answer: 0, explanation: "Transcutaneous pacing causes painful muscular contractions; conscious patients require sedation/analgesia." },
+      { id: 129, category: "Brady/Tachy", question: "How do you confirm electrical and mechanical capture during Transcutaneous Pacing (TCP)?", options: ["Pacer spikes on ECG (electrical) paired with a corresponding palpable pulse (e.g., femoral/carotid) (mechanical)", "Pacer spikes on ECG only", "BP increase alone", "Patient verbal reassurance"], answer: 0, explanation: "Capture requires pacer spikes followed by QRS-T complexes (electrical) plus a matching peripheral pulse (mechanical)." },
+      { id: 130, category: "Brady/Tachy", question: "What pacing current (milliamperes - mA) should be set when starting Transcutaneous Pacing?", options: ["Start at minimum mA and dial up gradually until electrical and mechanical capture is achieved", "Set directly to max 200 mA", "Fixed 10 mA for all", "50 mA default"], answer: 0, explanation: "Increase current (mA) incrementally above threshold to obtain reliable electrical and mechanical capture." },
+      { id: 131, category: "Brady/Tachy", question: "What default pacing rate (beats per minute) is recommended when initiating Transcutaneous Pacing?", options: ["30 to 40 bpm", "60 to 80 bpm", "100 to 120 bpm", "140 bpm"], answer: 1, explanation: "The standard demand pacing rate is set between 60 and 80 beats per minute." },
+      { id: 132, category: "Brady/Tachy", question: "Which tachycardia presents with an irregular narrow-complex rhythm lacking distinct P waves?", options: ["Supraventricular Tachycardia", "Atrial Fibrillation", "Monomorphic VT", "Sinus Tachycardia"], answer: 1, explanation: "Atrial Fibrillation is classically irregularly irregular with narrow QRS complexes and absent P waves." },
+      { id: 133, category: "Brady/Tachy", question: "A narrow-complex regular rhythm showing 'sawtooth' flutter waves on ECG at a rate around 150 bpm is:", options: ["Atrial Flutter", "Ventricular Fibrillation", "Sinus Rhythm", "Third-degree block"], answer: 0, explanation: "Atrial Flutter features characteristic 'sawtooth' F-waves, often with 2:1 block (ventricular rate ~150 bpm)." },
+      { id: 134, category: "Brady/Tachy", question: "What is the initial treatment for an UNSTABLE patient in Polymorphic VT with normal QT interval?", options: ["Immediate Unsynchronized High-Energy Shock (Defibrillation)", "Adenosine 6 mg", "Atropine 1 mg", "Vagal maneuvers"], answer: 0, explanation: "Polymorphic VT is unstable and difficult to synchronize; treat with unsynchronized high-energy shocks (defibrillation)." },
+      { id: 135, category: "Brady/Tachy", question: "Which vagal maneuver technique can be safely instructed in a stable SVT patient?", options: ["Bilateral carotid sinus massage simultaneously", "Modified Valsalva maneuver (strain for 15s then passive leg raise)", "Ocular globe pressure", "Abdominal thrusts"], answer: 1, explanation: "The modified Valsalva maneuver (straining followed by leg elevation) significantly enhances conversion rate." },
+      { id: 136, category: "Brady/Tachy", question: "Why is carotid sinus massage CONTRAINDICATED in patients with carotid bruits or history of TIA/stroke?", options: ["It triggers hyperthermia", "Risk of dislodging atheromatous plaque causing ischemic stroke", "It reduces blood pressure too rapidly", "It causes laryngeal spasm"], answer: 1, explanation: "Massaging a carotid artery with bruits risks plaque embolization leading to cerebrovascular accident." },
+      { id: 137, category: "Brady/Tachy", question: "In Sinus Tachycardia (HR 120 bpm), what is the definitive management principle?", options: ["Immediate synchronized cardioversion", "Identify and treat the underlying underlying cause (e.g., pain, fever, hypovolemia, anemia)", "Give Amiodarone 300 mg", "Administer Adenosine 12 mg"], answer: 1, explanation: "Sinus tachycardia is a physiological response; treat the underlying etiology rather than the rhythm itself." },
+      { id: 138, category: "Brady/Tachy", question: "A heart transplant patient presents with symptomatic bradycardia. Why may Atropine be ineffective?", options: ["Transplanted hearts lack vagal innervation", "Transplanted hearts produce excess acetylcholinesterase", "Atropine causes cardiac rejection", "Transplanted hearts are immune to anticholinergics"], answer: 0, explanation: "Denervated transplanted hearts lack vagal parasympathetic supply, rendering Atropine ineffective; use pacing/Isoprenaline." },
+      { id: 139, category: "Brady/Tachy", question: "What is the recommended Adrenaline infusion dosage for symptomatic refractory bradycardia?", options: ["1 mg IV push every minute", "2 to 10 mcg/min IV infusion titrated to response", "50 mcg/kg/min", "10 mg in 500 mL fast drip"], answer: 1, explanation: "Adrenaline infusion for bradycardia is titrated between 2 to 10 mcg per minute." },
+      { id: 140, category: "Brady/Tachy", question: "What is the recommended Dopamine infusion dosage for symptomatic bradycardia?", options: ["1 to 2 mcg/kg/min", "5 to 20 mcg/kg/min IV infusion", "50 mcg/kg/min", "100 mcg/kg/min"], answer: 1, explanation: "Dopamine infusion for symptomatic bradycardia is 5 to 20 mcg/kg/min." },
+      { id: 141, category: "Brady/Tachy", question: "In 1st-degree AV block, what is the characteristic ECG abnormality?", options: ["PR interval >0.20 seconds (5 small squares) consistently", "Progressive PR lengthening until QRS drops", "Complete dissociation of P and QRS", "Irregularly irregular QRS"], answer: 0, explanation: "First-degree AV block features a prolonged PR interval (>0.20s or >5 small boxes) that remains constant." },
+      { id: 142, category: "Brady/Tachy", question: "Which AV block pattern exhibits progressive PR interval prolongation until a QRS complex is dropped?", options: ["1st Degree Block", "Mobitz Type I (Wenckebach) 2nd Degree Block", "Mobitz Type II 2nd Degree Block", "3rd Degree Complete Block"], answer: 1, explanation: "Mobitz Type I (Wenckebach) features progressive PR lengthening culminating in a dropped beat." },
+      { id: 143, category: "Brady/Tachy", question: "Which AV block is characterized by constant PR intervals with intermittent unconducted P waves?", options: ["1st Degree Block", "Mobitz Type I", "Mobitz Type II 2nd Degree Block", "Sinus Arrest"], answer: 2, explanation: "Mobitz Type II maintains constant PR intervals but suddenly drops QRS complexes without prior PR prolongation." },
+      { id: 144, category: "Brady/Tachy", question: "In 3rd-Degree (Complete) AV block, what relationship exists between P waves and QRS complexes?", options: ["P waves and QRS complexes occur independently with no relationship (AV dissociation)", "PR interval gradually shortens", "1:1 conduction always", "P waves are missing completely"], answer: 0, explanation: "Complete heart block features total AV dissociation where atrial (P) and ventricular (QRS) rhythms run independently." },
+      { id: 145, category: "Brady/Tachy", question: "What energy is recommended for initial synchronized cardioversion of unstable Monomorphic VT?", options: ["100 Joules biphasic", "10 Joules", "360 Joules unsynchronized", "20 Joules"], answer: 0, explanation: "Initial synchronized cardioversion for unstable monomorphic VT is 100 J biphasic." },
+      { id: 146, category: "Brady/Tachy", question: "If the machine fails to deliver a shock in SYNC mode during cardioversion, what is the most common reason?", options: ["Battery dead", "The machine cannot detect R-waves (low gain or poorly placed leads)", "Energy setting too high", "Pads expired"], answer: 1, explanation: "Sync mode requires visible high-amplitude R-waves; adjust gain or lead select if shock fails to discharge." },
+      { id: 147, category: "Brady/Tachy", question: "What is the definition of Tachycardia in an adult according to ALS parameters?", options: ["HR >60 bpm", "HR >100 bpm", "HR >150 bpm", "HR >200 bpm"], answer: 1, explanation: "Tachycardia is defined as a heart rate exceeding 100 bpm (symptomatic tachyarrhythmias typically >150 bpm)." },
+      { id: 148, category: "Brady/Tachy", question: "What is the definition of Bradycardia in an adult according to ALS parameters?", options: ["HR <60 bpm", "HR <80 bpm", "HR <40 bpm", "HR <50 bpm"], answer: 0, explanation: "Bradycardia is defined as a heart rate below 60 bpm (symptomatic bradycardia typically <50 bpm)." },
+      { id: 149, category: "Brady/Tachy", question: "If a patient converts from unstable SVT to sinus rhythm after cardioversion, what post-procedure step is essential?", options: ["Immediate discharge", "Continuous cardiac monitoring, 12-lead ECG, blood pressure monitoring, and address underlying cause", "Administer Atropine 3 mg", "Perform manual CPR for 2 minutes"], answer: 1, explanation: "Monitor vitals, obtain 12-lead ECG, assess stability, and treat triggering causes post-cardioversion." },
+      { id: 150, category: "Brady/Tachy", question: "Which antiarrhythmic drug infusion is recommended for maintenance after converting refractory VT?", options: ["Amiodarone 1 mg/min IV infusion over 6 hours", "Atropine 1 mg/hr", "Adenosine 6 mg/hr", "Dopamine 50 mcg/kg/min"], answer: 0, explanation: "Following initial bolus success, an Amiodarone maintenance infusion (1 mg/min for 6 hrs, then 0.5 mg/min) is initiated." },
+      { id: 151, category: "Brady/Tachy", question: "What happens if a patient in wide-complex tachycardia receives Adenosine and it is actually VT?", options: ["Immediate arrest always", "It is usually safe for stable monomorphic VT and may convert idiopathic VT or clarify diagnosis, but avoid in irregular wide QRS", "Cures VT permanently", "Causes hyperthermia"], answer: 1, explanation: "Adenosine can be considered in stable monomorphic wide-complex tachycardia for diagnostic/therapeutic trial, but avoid in pre-excited AF." },
+      { id: 152, category: "Brady/Tachy", question: "Which electrolyte imbalance must be evaluated and corrected in refractory ventricular tachyarrhythmias?", options: ["Hypokalemia and Hypomagnesemia", "Hypernatremia", "Hyperbilirubinemia", "Hypuricemia"], answer: 0, explanation: "Low potassium and low magnesium levels trigger ventricular membrane instability and refractory arrhythmias." },
+      { id: 153, category: "Brady/Tachy", question: "A patient with HR 42 bpm presents with warm skin, normal BP 120/80 mmHg, and no distress. What is the management?", options: ["Immediate Transcutaneous Pacing", "Atropine 1 mg IV", "Observe and monitor while investigating underlying cause", "Adrenaline 1 mg IV push"], answer: 2, explanation: "Asymptomatic stable bradycardia requires observation, monitoring, and diagnostic workup without immediate drug therapy." },
+      { id: 154, category: "Brady/Tachy", question: "In a patient experiencing Beta-blocker overdose with severe bradycardia, what specific antidote is indicated?", options: ["Glucagon IV (3.5–5 mg)", "Naloxone", "Flumazenil", "Protamine sulfate"], answer: 0, explanation: "IV Glucagon bypasses beta-receptors by stimulating adenylate cyclase directly, reversing beta-blocker toxicity." },
+      { id: 155, category: "Brady/Tachy", question: "In Calcium Channel Blocker overdose causing bradycardia and shock, what specific antidote is administered?", options: ["IV Calcium Chloride 10% / High-dose Insulin Euglycemic Therapy", "Atropine 10 mg", "Sodium Bicarbonate", "Physostigmine"], answer: 0, explanation: "IV Calcium and High-Dose Insulin Euglycemic Therapy (HIET) reverse severe calcium channel blocker toxicity." },
+
+      // SECTION 5: POST-ROSC & SPECIAL CIRCUMSTANCES (Q156 - Q200)
+      { id: 156, category: "Post-ROSC", question: "What is the recommended oxygen saturation (SpO2) target range during post-ROSC management?", options: ["100%", "94% to 98%", "85% to 90%", "88% to 92%"], answer: 1, explanation: "Titrate FiO2 to maintain SpO2 between 94% and 98% to prevent hyperoxic tissue reperfusion injury." },
+      { id: 157, category: "Post-ROSC", question: "What is the target Mean Arterial Pressure (MAP) or Systolic Blood Pressure (SBP) during post-ROSC hemodynamics?", options: ["MAP >= 65 mmHg or SBP >= 90 mmHg", "MAP >= 100 mmHg", "SBP >= 160 mmHg", "MAP >= 40 mmHg"], answer: 0, explanation: "Maintain SBP >= 90 mmHg or MAP >= 65 mmHg to ensure adequate brain and organ perfusion." },
+      { id: 158, category: "Post-ROSC", question: "What diagnostic test should be performed immediately upon achieving ROSC to evaluate for coronary ischemia?", options: ["Chest CT scan", "Immediate 12-lead Electrocardiogram (ECG)", "Echocardiogram only", "Troponin blood level at 12 hours"], answer: 1, explanation: "An immediate 12-lead ECG identifies ST-elevation myocardial infarction (STEMI) requiring emergency cardiac catheterization (PPCI)." },
+      { id: 159, category: "Post-ROSC", question: "What is the recommended target temperature for Targeted Temperature Management (TTM) in comatose post-ROSC patients?", options: ["28°C to 30°C", "32°C to 36°C (or strict fever prevention <37.5°C)", "37.5°C to 38.5°C", "20°C to 25°C"], answer: 1, explanation: "TTM maintains core temperature between 32°C and 36°C (or controlled normothermia <37.5°C) for neuroprotection." },
+      { id: 160, category: "Post-ROSC", question: "For how long should Targeted Temperature Management (TTM) be maintained in post-ROSC comatose adults?", options: ["1 to 2 hours", "At least 24 hours", "72 hours continuously", "10 minutes"], answer: 1, explanation: "Targeted Temperature Management is maintained continuously for at least 24 hours post-ROSC." },
+      { id: 161, category: "Post-ROSC", question: "What vasopressor infusion is commonly recommended first-line for post-ROSC hypotension refractory to fluid boluses?", options: ["Noradrenaline (Norepinephrine) or Adrenaline infusion", "Dobutamine only", "Nitroprusside", "Furosemide"], answer: 0, explanation: "Noradrenaline or Adrenaline infusions titrated to MAP >= 65 mmHg are first-line vasopressors." },
+      { id: 162, category: "Post-ROSC", question: "Why should hyperventilation be strictly avoided during post-ROSC mechanical ventilation?", options: ["It leads to hyperkalemia", "Hypocapnia causes cerebral vasoconstriction and decreases cerebral blood flow", "It causes profound hypothermia", "It causes immediate re-arrest"], answer: 1, explanation: "Hyperventilation lowers PaCO2, inducing cerebral arterial vasoconstriction and brain ischemia." },
+      { id: 163, category: "Post-ROSC", question: "What is the target Arterial Blood Gas PaCO2 level post-ROSC?", options: ["20 to 25 mmHg", "35 to 45 mmHg (Normocapnia)", "55 to 65 mmHg", "70 to 80 mmHg"], answer: 1, explanation: "Maintain PaCO2 within normal physiological limits (35 to 45 mmHg)." },
+      { id: 164, category: "Post-ROSC", question: "In a pregnant cardiac arrest patient (>20 weeks gestation), what physical maneuver prevents aortocaval compression?", options: ["Trendelenburg position", "Manual Left Uterine Displacement (LUD)", "Right lateral tilt 90 degrees", "Prone position"], answer: 1, explanation: "Manual left uterine displacement pushes the gravid uterus off the inferior vena cava and aorta." },
+      { id: 165, category: "Post-ROSC", question: "If ROSC is not achieved in a pregnant patient (>20 weeks) within how many minutes should Resuscitative Hysterotomy (Perimortem C-Section) be performed?", options: ["Within 4 to 5 minutes of arrest", "After 20 minutes", "After 45 minutes", "Hysterotomy is contraindicated"], answer: 0, explanation: "Resuscitative hysterotomy should be initiated within 4 minutes and delivery completed by 5 minutes." },
+      { id: 166, category: "Post-ROSC", question: "What is the initial IM drug of choice for acute anaphylactic shock prior to cardiac arrest?", options: ["Adrenaline 0.5 mg IM (1:1000 dilution)", "Chlorpheniramine 10 mg IV", "Hydrocortisone 200 mg IV", "Salbutamol 5 mg neb"], answer: 0, explanation: "Intramuscular Adrenaline 0.5 mg (1:1000) into the anterolateral thigh is the mainstay treatment for anaphylaxis." },
+      { id: 167, category: "Post-ROSC", question: "In Local Anesthetic Systemic Toxicity (LAST) causing cardiac arrest (e.g., Bupivacaine toxicity), what specific reversal emulsion is administered?", options: ["20% Intralipid (Lipid Emulsion) Therapy", "10% Glucose", "Fresh Frozen Plasma", "0.9% Normal Saline"], answer: 0, explanation: "20% Lipid Emulsion Therapy acts as a 'lipid sink' to clear local anesthetic toxicity." },
+      { id: 168, category: "Post-ROSC", question: "What is the recommended approach for CPR compressions in a patient in late pregnancy (>20 weeks)?", options: ["Perform compressions lower on the sternum", "Perform compressions slightly higher on the sternum (above center) due to elevated diaphragm", "Perform compressions on abdomen", "Reduce compression rate to 60/min"], answer: 1, explanation: "Chest compressions are positioned slightly higher on the sternum to adjust for diaphragm elevation." },
+      { id: 169, category: "Post-ROSC", question: "In drowning cardiac arrest, what is the sequence priority during initial BLS/ALS?", options: ["Give 5 initial rescue breaths before starting chest compressions, then standard 30:2", "Compression-only CPR exclusively", "Immediate hypertonic saline IV", "Abdominal Heimlich maneuver"], answer: 0, explanation: "Drowning arrest is hypoxic; initial management prioritizes rescue ventilation (5 initial breaths)." },
+      { id: 170, category: "Post-ROSC", question: "What is the minimum blood glucose monitoring target post-ROSC to avoid hypoglycemia and extreme hyperglycemia?", options: ["Keep between 4.0 to 10.0 mmol/L (avoid hypoglycemia <4.0 mmol/L)", "Keep >15.0 mmol/L", "Keep <2.0 mmol/L", "Do not monitor glucose"], answer: 0, explanation: "Maintain blood glucose between 4 to 10 mmol/L; avoid hypoglycemia (<4 mmol/L) strictly." },
+      { id: 171, category: "Post-ROSC", question: "What is a common complication during rewarming phase of Targeted Temperature Management (TTM)?", options: ["Hyperkalemia and hypoglycemia", "Hypokalemia and rapid shivering", "Severe hyperthermia and hypotension", "Hypotension and rebound hyperkalemia"], answer: 3, explanation: "Rewarming causes vasodilation (hypotension) and cellular release of potassium (rebound hyperkalemia)." },
+      { id: 172, category: "Post-ROSC", question: "What rewarming rate is recommended when rewarming a patient post-TTM?", options: ["0.25°C to 0.5°C per hour", "2°C per hour", "5°C per hour", "Rapid rewarming over 15 mins"], answer: 0, explanation: "Rewarming must be controlled slowly at 0.25°C to 0.5°C per hour to prevent hemodynamic instability." },
+      { id: 173, category: "Post-ROSC", question: "In a patient presenting with traumatic cardiac arrest, what reversible causes must be immediately addressed on scene/ED?", options: ["Hypovolemia, Tension Pneumothorax, Cardiac Tamponade, Hypoxia", "Hyperkalemia, TCA overdose, Hypoglycemia", "Atrial fibrillation, SVT", "Sepsis, Asthma"], answer: 0, explanation: "Trauma arrests are driven by hypoxia, blood loss, tension pneumothorax, and cardiac tamponade." },
+      { id: 174, category: "Post-ROSC", question: "Which procedure is indicated in traumatic arrest with suspected severe intra-abdominal/pelvic hemorrhage below diaphragm?", options: ["REBOA (Resuscitative Endovascular Balloon Occlusion of the Aorta) or resuscitative thoracotomy", "High-dose Amiodarone", "Transcutaneous pacing", "Atropine 3 mg"], answer: 0, explanation: "REBOA or emergency thoracotomy provides aortic occlusion to control non-compressible torso hemorrhage." },
+      { id: 175, category: "Post-ROSC", question: "What is the earliest recommended time point for formal neuroprognostication assessment in comatose post-ROSC patients?", options: ["At 12 hours", "At least 72 hours post-ROSC (and after rewarming/sedation clearance)", "At 24 hours", "Immediately upon ED arrival"], answer: 1, explanation: "Neuroprognostication is evaluated at >=72 hours post-ROSC to allow sedation clearance and cooling recovery." },
+      { id: 176, category: "Post-ROSC", question: "In cardiac arrest caused by Accidental Hypothermia, when can a patient be declared dead?", options: ["After 15 minutes of CPR on scene", "Not until the patient is rewarmed to core temperature >32°C–35°C ('Not dead until warm and dead')", "When core temp is 20°C", "In the ambulance before arrival"], answer: 1, explanation: "Hypothermia exerts a neuroprotective effect; patients cannot be pronounced dead until rewarmed without ROSC." },
+      { id: 177, category: "Post-ROSC", question: "What is the first-line vasopressor for neurogenic shock caused by high spinal cord injury?", options: ["Noradrenaline (Norepinephrine) / Dopamine", "Nitroprusside", "Hydralazine", "Amiodarone"], answer: 0, explanation: "Vasopressors with alpha and beta activity (Noradrenaline) restore vascular tone and heart rate in neurogenic shock." },
+      { id: 178, category: "Post-ROSC", question: "In a patient suffering acute asthmatic cardiac arrest, what mechanical ventilator modification prevents auto-PEEP?", options: ["High tidal volume & rate 30/min", "Low respiratory rate (8–10 bpm), prolonged expiratory phase (I:E 1:3 or 1:4), and low tidal volume", "Zero expiratory time", "High PEEP >15 cmH2O"], answer: 1, explanation: "Asthma ventilation requires low rates and long expiratory times to clear trapped intra-alveolar air." },
+      { id: 179, category: "Post-ROSC", question: "What physiological change occurs during severe auto-PEEP (dynamic hyperinflation)?", options: ["Increased venous return", "Decreased venous return, decreased cardiac output, and increased risk of pneumothorax", "Decreased peak airway pressures", "Profound hypertension"], answer: 1, explanation: "Air trapping increases intrathoracic pressure, impairing venous return and risking barotrauma." },
+      { id: 180, category: "Post-ROSC", question: "What immediate intervention relieves severe auto-PEEP and hypotension in a mechanically ventilated asthmatic?", options: ["Increase ventilation rate to 30", "Disconnect the ventilator circuit briefly and compress the chest gently to allow passive exhalation", "Give Amiodarone 300 mg", "Administer Calcium Chloride"], answer: 1, explanation: "Disconnecting the ventilator releases trapped intra-thoracic pressure instantly ('apneic trial')." },
+      { id: 181, category: "Post-ROSC", question: "What ECG finding post-ROSC demands emergency activation of the PCI laboratory?", options: ["Sinus Tachycardia", "ST-segment Elevation in >=2 contiguous leads (STEMI) or new LBBB", "First-degree AV block", "Isolated PACs"], answer: 1, explanation: "Post-ROSC STEMI or new LBBB mandates immediate primary percutaneous coronary intervention (PPCI)." },
+      { id: 182, category: "Post-ROSC", question: "If a post-ROSC patient exhibits persistent post-cardiac arrest myoclonus or seizures, how should it be managed?", options: ["Ignore as normal recovery", "Electroencephalogram (EEG) monitoring and antiepileptic therapy (e.g., Levetiracetam/Sodium Valproate/Propofol)", "High-dose Atropine", "Induced hyperthermia"], answer: 1, explanation: "Perform EEG monitoring and treat clinical/electrographic seizures aggressively with anticonvulsants." },
+      { id: 183, category: "Post-ROSC", question: "Which physiological parameter is monitored to assess cerebral tissue oxygenation during post-ROSC care if available?", options: ["Near-Infrared Spectroscopy (NIRS) or Jugular Venous Oxygen Saturation (SjvO2)", "Pulse oximetry on toe", "Central venous pressure", "Blood glucose"], answer: 0, explanation: "NIRS or SjvO2 provides continuous non-invasive regional cerebral tissue oxygenation monitoring." },
+      { id: 184, category: "Post-ROSC", question: "What is the primary cause of early death (first 24 hours) following ROSC in adult cardiac arrest?", options: ["Sepsis", "Refractory cardiovascular collapse / hemodynamic failure and primary cardiac cause", "Renal failure", "Liver cirrhosis"], answer: 1, explanation: "Cardiovascular instability and myocardial stunning account for the majority of early post-ROSC mortality." },
+      { id: 185, category: "Post-ROSC", question: "What is the primary cause of late death (>24 hours) following ROSC in out-of-hospital cardiac arrest?", options: ["Hypovolemic shock", "Severe hypoxic-ischemic brain injury (HIBI)", "Pneumonia", "Acute kidney injury"], answer: 1, explanation: "Hypoxic-ischemic brain injury is the leading cause of late morbidity and mortality post-ROSC." },
+      { id: 186, category: "Post-ROSC", question: "What fluid solution should be AVOIDED for routine post-ROSC volume resuscitation?", options: ["Normal Saline 0.9%", "Hypotonic fluids (e.g., Dextrose 5% in water) as they risk cerebral edema", "Ringer's Lactate", "Plasmalyte"], answer: 1, explanation: "Hypotonic fluids shift water into brain parenchyma, exacerbating cerebral edema post-cardiac arrest." },
+      { id: 187, category: "Post-ROSC", question: "What is the recommended approach to shivering control during Targeted Temperature Management?", options: ["Warm the patient immediately", "Administer sedatives, analgesics, magnesium sulfate, or neuromuscular blockers", "Stop TTM", "Give Adrenaline"], answer: 1, explanation: "Shivering increases oxygen consumption and heat production; treat with sedatives, anti-shivering agents, or paralytics." },
+      { id: 188, category: "Post-ROSC", question: "In a patient presenting with hyperkalemia-induced arrest, what post-ROSC lab monitoring is vital?", options: ["Serial serum potassium and glucose levels", "Serial troponin every 1 minute", "Serum bilirubin only", "Platelet count"], answer: 0, explanation: "Monitor potassium and glucose closely to avoid rebound hyper/hypokalemia and hypoglycemia." },
+      { id: 189, category: "Post-ROSC", question: "What is the main role of mechanical chest compression devices (e.g., LUCAS, AutoPulse) in ALS guidelines?", options: ["Superior to manual CPR in all situations", "Alternative to manual CPR in specific settings (prolonged CPR, transport, angiography, limited staff)", "Mandatory for all adult arrests", "Prohibited in clinical care"], answer: 1, explanation: "Mechanical CPR is recommended as an alternative when high-quality manual CPR is unsafe or impractical." },
+      { id: 190, category: "Post-ROSC", question: "When considering Termination of Resuscitation (TOR) in out-of-hospital non-shockable arrest, what criteria apply?", options: ["Unwitnessed arrest, no bystander CPR, no ROSC after full ALS, no shocks delivered", "Age >50 years", "History of diabetes", "Arrest lasting >5 minutes"], answer: 0, explanation: "Valid TOR criteria: unwitnessed arrest, lack of bystander CPR, non-shockable rhythm, and no ROSC after comprehensive ALS." },
+      { id: 191, category: "Post-ROSC", question: "In closed-loop communication during resuscitation, what is the duty of the team member receiving an order?", options: ["Execute silently", "Repeat the order back aloud to confirm understanding and announce when completed", "Question every order twice", "Write down order on paper"], answer: 1, explanation: "Closed-loop communication requires verbal confirmation of the directive and notification upon completion." },
+      { id: 192, category: "Post-ROSC", question: "What is the role of the Resuscitation Team Leader during cardiac arrest?", options: ["Perform chest compressions continuously", "Maintain global situational awareness, assign clear roles, oversee protocol adherence, and direct care", "Manage airway exclusively", "Prepare IV drugs"], answer: 1, explanation: "The team leader maintains an overview, ensures quality chest compressions, coordinates decisions, and leads debriefing." },
+      { id: 193, category: "Post-ROSC", question: "What debriefing protocol is recommended post-resuscitation for healthcare teams?", options: ["Immediate structured clinical debriefing to review performance, system issues, and offer emotional support", "Blaming individuals for mistakes", "Canceling debriefs completely", "Written exam for team"], answer: 0, explanation: "Structured post-event debriefing improves team performance, identifies system improvements, and supports psychological well-being." },
+      { id: 194, category: "Post-ROSC", question: "In Extracorporeal CPR (E-CPR), what device is cannulated to provide circulatory and respiratory support during arrest?", options: ["Veno-Arterial Extracorporeal Membrane Oxygenation (VA-ECMO)", "Veno-Venous ECMO", "Intra-aortic balloon pump only", "Hemodialysis machine"], answer: 0, explanation: "VA-ECMO provides artificial cardiac output and gas exchange during refractory cardiac arrest." },
+      { id: 195, category: "Post-ROSC", question: "What is the primary inclusion criterion for considering E-CPR in refractory cardiac arrest?", options: ["Reversible etiology, witnessed arrest with immediate bystander CPR, young age, and short time to cannulation", "Asystole for >2 hours", "Terminal malignancy", "Severe baseline dementia"], answer: 0, explanation: "E-CPR is effective when applied early in selected patients with potentially reversible causes and high likelihood of neurological recovery." },
+      { id: 196, category: "Post-ROSC", question: "What target blood pressure is maintained during post-ROSC care if history of chronic hypertension is present?", options: ["Target slightly higher mean arterial pressure (e.g., MAP >75–80 mmHg) to maintain cerebral autoregulation", "MAP 40 mmHg", "SBP <80 mmHg", "MAP >120 mmHg"], answer: 0, explanation: "Hypertensive patients have right-shifted cerebral autoregulation and may require higher post-ROSC MAP goals." },
+      { id: 197, category: "Post-ROSC", question: "What complication can arise from prolonged Intraosseous (IO) infusion if mispositioned?", options: ["Compartment syndrome from fluid extravasation into soft tissue", "Immediate stroke", "Pneumothorax", "Splenic rupture"], answer: 0, explanation: "Extravasation from displaced IO needles can lead to tissue necrosis and severe compartment syndrome." },
+      { id: 198, category: "Post-ROSC", question: "Which anatomical site is preferred for emergency IO placement in adults?", options: ["Proximal tibia (anteromedial surface 2 cm medial to tibial tuberosity) or Proximal humerus", "Radius distal tip", "Femoral shaft center", "Mid-clavicle"], answer: 0, explanation: "The proximal tibia and proximal humerus are the primary recommended adult IO anatomical insertion sites." },
+      { id: 199, category: "Post-ROSC", question: "In a post-ROSC patient who remains comatose, why is routine hyperthermia (fever >37.5°C) prevention vital?", options: ["Fever accelerates ischemic neuronal injury and worsens neurological outcomes", "Fever causes hypokalemia", "Fever prevents lung expansion", "Fever induces hypertension"], answer: 0, explanation: "Elevated body temperature increases cerebral metabolic demand and significantly worsens brain injury post-cardiac arrest." },
+      { id: 200, category: "Post-ROSC", question: "What is the ultimate goal of Advanced Life Support (ALS) resuscitation?", options: ["Obtaining any monitor rhythm", "Intubating the trachea successfully", "Return of Spontaneous Circulation (ROSC) with intact neurological survival and discharge home", "Delivering 10 shocks"], answer: 2, explanation: "The true measure of successful ALS is achieving ROSC culminating in intact neurological survival and meaningful functional recovery." }
+    ];
+
+    // STATE MANAGEMENT
+    let currentUser = null;
+    let activeQuestions = [];
+    let currentIndex = 0;
+    let userAnswers = [];
+    let bookmarkedQuestions = new Set();
+    let timerInterval = null;
+    let timeLeft = 45 * 60; // 45 minutes in seconds
+
+    // DOM ELEMENTS
+    const pageAuth = document.getElementById('page-auth');
+    const pageDashboard = document.getElementById('page-dashboard');
+    const pageQuiz = document.getElementById('page-quiz');
+    const pageResults = document.getElementById('page-results');
+    const navUserInfo = document.getElementById('nav-user-info');
+
+    // INITIALIZATION & SESSION CHECK
+    window.onload = () => {
+      // Clear forms on page refresh to ensure clean blank start
+      document.getElementById('form-login')?.reset();
+      document.getElementById('form-register')?.reset();
+
+      const savedSession = localStorage.getItem('als_active_session');
+      if (savedSession) {
+        currentUser = JSON.parse(savedSession);
+        updateNavUser();
+        showPage('dashboard');
+      } else {
+        switchTab('register');
+        showPage('auth');
+      }
+    };
+
+    // 45-MINUTE COUNTDOWN TIMER LOGIC
+    function startTimer() {
+      stopTimer();
+      timeLeft = 45 * 60;
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+
+        if (timeLeft <= 0) {
+          stopTimer();
+          alert("Time is up! Your assessment will now be submitted automatically.");
+          calculateResults();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      const timerText = document.getElementById('quiz-timer-text');
+      if (timerText) timerText.innerText = display;
+
+      const badge = document.getElementById('timer-badge');
+      if (timeLeft <= 300) {
+        badge.className = "flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 text-rose-300 font-bold px-3 py-1 rounded-full text-xs animate-pulse";
+      } else {
+        badge.className = "flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold px-3 py-1 rounded-full text-xs shadow-sm";
+      }
+    }
+
+    // FISHER-YATES SHUFFLE ALGORITHM FOR RANDOM SELECTION
+    function getRandomQuestions(sourcePool, count = 30) {
+      const poolCopy = [...sourcePool];
+      for (let i = poolCopy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [poolCopy[i], poolCopy[j]] = [poolCopy[j], poolCopy[i]];
+      }
+      return poolCopy.slice(0, count);
+    }
+
+    // API WEBHOOK CALLER
+    async function sendWebhookRequest(payload) {
+      if (!GOOGLE_SHEET_WEBHOOK_URL || GOOGLE_SHEET_WEBHOOK_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL")) {
+        console.warn("Google Sheet Webhook URL not configured. Local fallback execution.");
+        return null;
+      }
+      try {
+        const res = await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        return await res.json();
+      } catch (err) {
+        console.error("Webhook network error:", err);
+        return null;
+      }
+    }
+
+    // HELPER: Get registered users from localStorage
+    function getRegisteredUsers() {
+      const users = localStorage.getItem('als_registered_users');
+      return users ? JSON.parse(users) : [];
+    }
+
+    // REGISTER FUNCTIONALITY
+    async function handleRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-reg-submit');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Registering...</span>`;
+
+      const name = document.getElementById('reg-name').value.trim();
+      const id = document.getElementById('reg-id').value.trim();
+      const dept = document.getElementById('reg-dept').value.trim();
+      const pass = document.getElementById('reg-pass').value;
+
+      const users = getRegisteredUsers();
+      const existingUser = users.find(u => u.id.toLowerCase() === id.toLowerCase());
+      if (existingUser) {
+        alert("This Staff ID / IC Number is already registered locally. Please log in.");
+        btn.disabled = false;
+        btn.innerHTML = `<span>Register Practitioner</span>`;
+        switchTab('login');
+        document.getElementById('login-id').value = id;
+        return;
+      }
+
+      const newUser = { id, name, dept, pass };
+      users.push(newUser);
+      localStorage.setItem('als_registered_users', JSON.stringify(users));
+
+      await sendWebhookRequest({ action: 'register', id, name, dept, pass });
+
+      currentUser = { id: newUser.id, name: newUser.name, dept: newUser.dept };
+      localStorage.setItem('als_active_session', JSON.stringify(currentUser));
+
+      alert("Registration successful! Welcome to the ALS Assessment Platform.");
+      btn.disabled = false;
+      btn.innerHTML = `<span>Register Practitioner</span>`;
+      updateNavUser();
+      showPage('dashboard');
+    }
+
+    // LOGIN FUNCTIONALITY
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-login-submit');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Authenticating...</span>`;
+
+      const id = document.getElementById('login-id').value.trim();
+      const pass = document.getElementById('login-pass').value;
+
+      let loginSuccess = false;
+      const remoteRes = await sendWebhookRequest({ action: 'login', id, pass });
+      
+      if (remoteRes && remoteRes.success) {
+        currentUser = remoteRes.user;
+        loginSuccess = true;
+      } else {
+        const users = getRegisteredUsers();
+        const foundUser = users.find(
+          u => u.id.toLowerCase() === id.toLowerCase() && u.pass === pass
+        );
+        if (foundUser) {
+          currentUser = { id: foundUser.id, name: foundUser.name, dept: foundUser.dept };
+          loginSuccess = true;
+        }
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = `<span>Access Assessment</span>`;
+
+      if (loginSuccess) {
+        localStorage.setItem('als_active_session', JSON.stringify(currentUser));
+        updateNavUser();
+        showPage('dashboard');
+      } else {
+        alert("Invalid Staff ID or Password! Please check your credentials or register.");
+      }
+    }
+
+    // NAVIGATION & SESSION HELPERS
+    function showPage(pageName) {
+      pageAuth.classList.add('hidden');
+      pageDashboard.classList.add('hidden');
+      pageQuiz.classList.add('hidden');
+      pageResults.classList.add('hidden');
+
+      if (pageName === 'auth') pageAuth.classList.remove('hidden');
+      if (pageName === 'dashboard') pageDashboard.classList.remove('hidden');
+      if (pageName === 'quiz') pageQuiz.classList.remove('hidden');
+      if (pageName === 'results') pageResults.classList.remove('hidden');
+    }
+
+    function switchTab(tab) {
+      const loginBtn = document.getElementById('tab-login-btn');
+      const regBtn = document.getElementById('tab-register-btn');
+      const formLogin = document.getElementById('form-login');
+      const formReg = document.getElementById('form-register');
+
+      // Always reset inputs when switching tabs
+      formLogin.reset();
+      formReg.reset();
+
+      if (tab === 'register') {
+        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
+        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+        formReg.classList.remove('hidden');
+        formLogin.classList.add('hidden');
+      } else {
+        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
+        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
+      }
+    }
+
+    function updateNavUser() {
+      if (currentUser) {
+        document.getElementById('user-display-name').innerText = currentUser.name;
+        document.getElementById('user-display-id').innerText = currentUser.id;
+        navUserInfo.classList.remove('hidden');
+      } else {
+        navUserInfo.classList.add('hidden');
+      }
+    }
+
+    function logout() {
+      stopTimer();
+      localStorage.removeItem('als_active_session');
+      currentUser = null;
+      updateNavUser();
+      switchTab('register');
+      showPage('auth');
+    }
+
+    function goHome() {
+      stopTimer();
+      if (currentUser) showPage('dashboard');
+      else {
+        switchTab('register');
+        showPage('auth');
+      }
+    }
+
+    // QUIZ ENGINE SETUP
+    function startQuiz() {
+      // FIX 1: Point to rawQuestions array
+      activeQuestions = getRandomQuestions(rawQuestions, 30);
+      currentIndex = 0;
+      userAnswers = new Array(activeQuestions.length).fill(null);
+      bookmarkedQuestions.clear();
+      renderQuestion();
+      showPage('quiz');
+      startTimer();
+    }
+
+    function renderQuestion() {
+      const q = activeQuestions[currentIndex];
+      document.getElementById('quiz-progress-text').innerText = `Question ${currentIndex + 1} of ${activeQuestions.length}`;
+      
+      const answeredCount = userAnswers.filter(a => a !== null).length;
+      document.getElementById('quiz-answered-count').innerText = `${answeredCount} Answered`;
+
+      const progressPercent = ((currentIndex + 1) / activeQuestions.length) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+
+      // Set dynamic category tag
+      document.getElementById('q-category').innerText = `ALS - ${q.category || 'MOH Guideline'}`;
+
+      // FIX 2: Use q.question property instead of q.q
+      document.getElementById('q-text').innerText = `${currentIndex + 1}. ${q.question}`;
+
+      // Render Options
+      const optionsContainer = document.getElementById('q-options');
+      optionsContainer.innerHTML = '';
+
+      const optionPrefixes = ['A', 'B', 'C', 'D'];
+      q.options.forEach((opt, idx) => {
+        const isSelected = userAnswers[currentIndex] === idx;
+        const btn = document.createElement('button');
+        btn.onclick = () => selectOption(idx);
+        btn.className = `w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3 ${
+          isSelected 
+            ? 'bg-brand-950/80 border-brand-500 ring-2 ring-brand-500/30 text-white font-semibold' 
+            : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 text-slate-200 hover:bg-slate-800/50'
+        }`;
+
+        btn.innerHTML = `
+          <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+            isSelected ? 'bg-brand-500 text-white' : 'bg-slate-800 text-slate-400 border border-slate-700'
+          }">${optionPrefixes[idx]}</span>
+          <span class="text-sm flex-1">${opt}</span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+
+      // Update Bookmark UI
+      const bmBtn = document.getElementById('btn-bookmark');
+      if (bookmarkedQuestions.has(currentIndex)) {
+        bmBtn.className = "text-amber-400 font-bold text-sm flex items-center gap-1.5";
+        bmBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span class="hidden sm:inline">Marked</span>`;
+      } else {
+        bmBtn.className = "text-slate-400 hover:text-amber-400 transition text-sm flex items-center gap-1.5 font-semibold";
+        bmBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i><span class="hidden sm:inline">Review Later</span>`;
+      }
+
+      // Next / Submit Buttons
+      const btnNext = document.getElementById('btn-next');
+      const btnSubmit = document.getElementById('btn-submit');
+      if (currentIndex === activeQuestions.length - 1) {
+        btnNext.classList.add('hidden');
+        btnSubmit.classList.remove('hidden');
+      } else {
+        btnNext.classList.remove('hidden');
+        btnSubmit.classList.add('hidden');
+      }
+
+      // Prev Button State
+      document.getElementById('btn-prev').disabled = currentIndex === 0;
+      document.getElementById('btn-prev').style.opacity = currentIndex === 0 ? "0.5" : "1";
+    }
+
+    function selectOption(index) {
+      userAnswers[currentIndex] = index;
+      renderQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentIndex < activeQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    }
+
+    function toggleBookmark() {
+      if (bookmarkedQuestions.has(currentIndex)) {
+        bookmarkedQuestions.delete(currentIndex);
+      } else {
+        bookmarkedQuestions.add(currentIndex);
+      }
+      renderQuestion();
+    }
+
+    // QUESTION GRID MODAL
+    function toggleGridModal() {
+      const modal = document.getElementById('modal-grid');
+      if (modal.classList.contains('hidden')) {
+        renderGrid();
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function renderGrid() {
+      const container = document.getElementById('grid-container');
+      container.innerHTML = '';
+
+      activeQuestions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.onclick = () => {
+          currentIndex = idx;
+          renderQuestion();
+          toggleGridModal();
+        };
+
+        let styleClass = "bg-slate-800 text-slate-300 border-slate-700"; // Unanswered
+        if (userAnswers[idx] !== null) styleClass = "bg-brand-600 text-white font-bold border-brand-500"; // Answered
+        if (bookmarkedQuestions.has(idx)) styleClass = "bg-amber-400 text-slate-950 font-bold ring-2 ring-amber-500/40 border-amber-400"; // Marked
+
+        btn.className = `h-10 rounded-xl text-xs flex items-center justify-center border transition ${styleClass}`;
+        btn.innerText = idx + 1;
+        container.appendChild(btn);
+      });
+    }
+
+    // SUBMIT & CALCULATE RESULTS
+    function confirmSubmit() {
+      const unanswered = userAnswers.filter(a => a === null).length;
+      if (unanswered > 0) {
+        if (!confirm(`You still have ${unanswered} unanswered question(s). Are you sure you want to submit?`)) {
+          return;
+        }
+      }
+      calculateResults();
+    }
+
+    async function calculateResults() {
+      stopTimer();
+      let correct = 0;
+      let incorrect = 0;
+      let skipped = 0;
+
+      activeQuestions.forEach((q, idx) => {
+        if (userAnswers[idx] === null) {
+          skipped++;
+        // FIX 3: Use q.answer property instead of q.ans
+        } else if (userAnswers[idx] === q.answer) {
+          correct++;
+        } else {
+          incorrect++;
+        }
+      });
+
+      const totalScore = correct; // 1 mark per question
+      const totalPossible = activeQuestions.length; // 30
+      const percentage = Math.round((correct / totalPossible) * 100);
+      const status = percentage >= 80 ? "PASSED" : "FAILED";
+
+      document.getElementById('res-score').innerText = `${totalScore} / ${totalPossible}`;
+      document.getElementById('res-percent').innerText = `${percentage}%`;
+      document.getElementById('res-correct').innerText = correct;
+      document.getElementById('res-incorrect').innerText = incorrect;
+      document.getElementById('res-skipped').innerText = skipped;
+
+      const badge = document.getElementById('result-badge');
+      const title = document.getElementById('result-status-title');
+      const sub = document.getElementById('result-status-sub');
+
+      if (percentage >= 80) {
+        badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-emerald-500/20 text-emerald-400 border-4 border-emerald-500/40";
+        badge.innerHTML = `<i class="fa-solid fa-award"></i>`;
+        title.innerText = "Congratulations! You Passed";
+        sub.innerText = "You have met the MOH Malaysia Advanced Life Support Theory Standard.";
+      } else {
+        badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-rose-500/20 text-rose-400 border-4 border-rose-500/40";
+        badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
+        title.innerText = "Assessment Not Cleared";
+        sub.innerText = "Passing threshold is 80% (24/30). Please review the manual and attempt re-test.";
+      }
+
+      // Sync result to Google Sheet Webhook
+      if (currentUser) {
+        await sendWebhookRequest({
+          action: 'saveResult',
+          id: currentUser.id,
+          name: currentUser.name,
+          dept: currentUser.dept || 'N/A',
+          score: `${totalScore} / ${totalPossible}`,
+          percentage: percentage,
+          status: status
+        });
+      }
+
+      showPage('results');
+    }
+
+    function retest() {
+      startQuiz();
+    }
+  </script>
+</body>
+</html>
