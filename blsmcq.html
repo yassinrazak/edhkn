@@ -135,6 +135,10 @@
             <input type="text" id="reg-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
           </div>
           <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Email Address</label>
+            <input type="email" id="reg-email" required autocomplete="off" placeholder="e.g. practitioner@moh.gov.my" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
             <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Department / Facility</label>
             <input type="text" id="reg-dept" required autocomplete="off" placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
           </div>
@@ -714,6 +718,7 @@
 
       const name = document.getElementById('reg-name').value.trim();
       const id = document.getElementById('reg-id').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
       const dept = document.getElementById('reg-dept').value.trim();
       const pass = document.getElementById('reg-pass').value;
 
@@ -728,13 +733,13 @@
         return;
       }
 
-      const newUser = { id, name, dept, pass };
+      const newUser = { id, name, email, dept, pass };
       users.push(newUser);
       localStorage.setItem('bls_registered_users', JSON.stringify(users));
 
-      await sendWebhookRequest({ action: 'register', id, name, dept, pass });
+      await sendWebhookRequest({ action: 'register', id, name, email, dept, pass });
 
-      currentUser = { id: newUser.id, name: newUser.name, dept: newUser.dept };
+      currentUser = { id: newUser.id, name: newUser.name, email: newUser.email, dept: newUser.dept };
       localStorage.setItem('bls_active_session', JSON.stringify(currentUser));
 
       alert("Registration successful! Welcome to the BLS Assessment Platform.");
@@ -766,7 +771,7 @@
           u => u.id.toLowerCase() === id.toLowerCase() && u.pass === pass
         );
         if (foundUser) {
-          currentUser = { id: foundUser.id, name: foundUser.name, dept: foundUser.dept };
+          currentUser = { id: foundUser.id, name: foundUser.name, email: foundUser.email, dept: foundUser.dept };
           loginSuccess = true;
         }
       }
@@ -1044,6 +1049,7 @@
           action: 'saveResult',
           id: currentUser.id,
           name: currentUser.name,
+          email: currentUser.email || 'N/A',
           dept: currentUser.dept || 'N/A',
           score: `${totalScore} / ${totalPossible}`,
           percentage: percentage,
