@@ -25,6 +25,7 @@
               600: '#0d9488',
               700: '#0f766e',
               900: '#134e4a',
+              950: '#042f2e',
             },
             accent: {
               500: '#0284c7',
@@ -38,30 +39,38 @@
   <style>
     body { 
       font-family: 'Plus Jakarta Sans', sans-serif; 
+      background-color: #030712;
+      color: #f3f4f6;
     }
     .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(226, 232, 240, 0.8);
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }
     .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
   </style>
 </head>
-<body id="app-body" class="bg-slate-900 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white">
+<body id="app-body" class="bg-black text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+
+  <!-- BACKGROUND AMBIENT GLOW EFFECT -->
+  <div class="fixed top-0 left-1/4 -translate-x-1/2 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+  <div class="fixed bottom-0 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[140px] pointer-events-none"></div>
 
   <!-- HEADER / NAVIGATION (Visible on all pages) -->
-  <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
+  <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <!-- HEADER LOGO -->
       <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
-        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/20">
+        <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/10">
           <img id="img-header-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
         </div>
         <div>
           <span class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            MOH BLS <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-500 border border-brand-500/30">2nd Edition</span>
+            MOH BLS <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30">2nd Edition</span>
           </span>
           <p class="text-xs text-slate-400 font-medium">Basic Life Support Assessment Platform</p>
         </div>
@@ -80,7 +89,7 @@
           <span class="hidden md:inline">BLS Manual PDF</span>
         </a>
 
-        <button onclick="toggleGridModal()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition flex items-center gap-2">
+        <button onclick="toggleGridModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg border border-slate-800 transition flex items-center gap-2">
           <i class="fa-solid fa-border-all"></i>
           <span>Question Grid</span>
         </button>
@@ -92,12 +101,12 @@
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
+  <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 flex flex-col justify-center relative z-10">
 
     <!-- PAGE 1: LANDING & AUTH PAGE -->
     <div id="page-auth" class="w-full max-w-md mx-auto">
-      <div class="glass-card rounded-3xl p-8 shadow-2xl border border-slate-800/50 relative overflow-hidden text-center">
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl"></div>
+      <div class="glass-card rounded-3xl p-8 shadow-2xl relative overflow-hidden text-center">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-brand-500/20 rounded-full blur-2xl"></div>
         
         <!-- TOP LANDING PAGE LOGO -->
         <div class="mb-6">
@@ -105,51 +114,51 @@
         </div>
 
         <div class="mb-6">
-          <h2 class="text-2xl font-extrabold text-slate-900">Healthcare Worker Portal</h2>
-          <p class="text-xs text-slate-500 mt-1">Malaysia Ministry of Health BLS Certification</p>
+          <h2 class="text-2xl font-extrabold text-white">Healthcare Worker Portal</h2>
+          <p class="text-xs text-slate-400 mt-1">Malaysia Ministry of Health BLS Certification</p>
         </div>
 
-        <!-- AUTH TABS -->
-        <div class="flex rounded-xl bg-slate-100 p-1 mb-6">
-          <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-slate-900 shadow-sm">Log In</button>
-          <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-900">Register</button>
+        <!-- AUTH TABS (REGISTER DEFAULT) -->
+        <div class="flex rounded-xl bg-slate-950/80 p-1 mb-6 border border-slate-800/80">
+          <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm">Register</button>
+          <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white">Log In</button>
         </div>
 
-        <!-- LOGIN FORM -->
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+        <!-- REGISTER FORM (DEFAULT ACTIVE) -->
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left" autocomplete="off">
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
-            <input type="text" id="login-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
+            <input type="text" id="reg-name" required autocomplete="off" placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Access Password</label>
-            <input type="password" id="login-pass" required placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
+            <input type="text" id="reg-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
           </div>
-          <button type="submit" id="btn-login-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/25 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
-            <span>Access Assessment</span>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Department / Facility</label>
+            <input type="text" id="reg-dept" required autocomplete="off" placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Create Password</label>
+            <input type="password" id="reg-pass" required autocomplete="new-password" placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
+          </div>
+          <button type="submit" id="btn-reg-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+            <span>Register Practitioner</span>
           </button>
         </form>
 
-        <!-- REGISTER FORM -->
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left hidden">
+        <!-- LOGIN FORM (HIDDEN BY DEFAULT) -->
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left hidden" autocomplete="off">
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
-            <input type="text" id="reg-name" required placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
+            <input type="text" id="login-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
-            <input type="text" id="reg-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Access Password</label>
+            <input type="password" id="login-pass" required autocomplete="current-password" placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
           </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Department / Facility</label>
-            <input type="text" id="reg-dept" required placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Create Password</label>
-            <input type="password" id="reg-pass" required placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
-          </div>
-          <button type="submit" id="btn-reg-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/25 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
-            <span>Register Practitioner</span>
+          <button type="submit" id="btn-login-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+            <span>Access Assessment</span>
           </button>
         </form>
       </div>
@@ -164,12 +173,12 @@
         </div>
 
         <div>
-          <h1 class="text-3xl font-extrabold text-slate-900">BLS Theory Assessment</h1>
-          <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto">Based on the Ministry of Health Malaysia Basic Life Support Training Manual (2nd Edition, 2023).</p>
+          <h1 class="text-3xl font-extrabold text-white">BLS Theory Assessment</h1>
+          <p class="text-sm text-slate-400 mt-2 max-w-md mx-auto">Based on the Ministry of Health Malaysia Basic Life Support Training Manual (2nd Edition, 2023).</p>
         </div>
 
         <!-- LEARNING MATERIAL & PDF DOWNLOAD BUTTON (DISPLAYED AFTER LOGIN) -->
-        <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-5 text-left border border-slate-700 shadow-md space-y-3">
+        <div class="bg-slate-900/90 rounded-2xl p-5 text-left border border-slate-800 shadow-md space-y-3">
           <div class="flex items-center space-x-3">
             <div class="p-2.5 bg-rose-500/20 text-rose-400 rounded-xl">
               <i class="fa-solid fa-book-bookmark text-xl"></i>
@@ -186,36 +195,36 @@
           </a>
         </div>
 
-        <div class="grid grid-cols-4 gap-3 py-4 border-y border-slate-100">
-          <div class="p-3 bg-slate-50 rounded-2xl">
-            <span class="block text-2xl font-extrabold text-brand-600">30</span>
-            <span class="text-xs font-semibold text-slate-500 uppercase">MCQs</span>
+        <div class="grid grid-cols-4 gap-3 py-4 border-y border-slate-800/80">
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-brand-400">30</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase">MCQs</span>
           </div>
-          <div class="p-3 bg-slate-50 rounded-2xl">
-            <span class="block text-2xl font-extrabold text-amber-600">45m</span>
-            <span class="text-xs font-semibold text-slate-500 uppercase">Timer</span>
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-amber-400">45m</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase">Timer</span>
           </div>
-          <div class="p-3 bg-slate-50 rounded-2xl">
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl">
             <span class="block text-2xl font-extrabold text-accent-500">80%</span>
-            <span class="text-xs font-semibold text-slate-500 uppercase">Pass Mark</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase">Pass Mark</span>
           </div>
-          <div class="p-3 bg-slate-50 rounded-2xl">
-            <span class="block text-2xl font-extrabold text-purple-600">30</span>
-            <span class="text-xs font-semibold text-slate-500 uppercase">Total Marks</span>
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-purple-400">30</span>
+            <span class="text-xs font-semibold text-slate-400 uppercase">Total Marks</span>
           </div>
         </div>
 
-        <div class="bg-amber-50 border border-amber-200/60 rounded-2xl p-4 text-left flex items-start space-x-3">
-          <i class="fa-solid fa-circle-info text-amber-500 text-lg mt-0.5"></i>
-          <div class="text-xs text-amber-800 space-y-1">
-            <p class="font-bold">Assessment Instructions:</p>
+        <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 text-left flex items-start space-x-3">
+          <i class="fa-solid fa-circle-info text-amber-400 text-lg mt-0.5"></i>
+          <div class="text-xs text-amber-200/90 space-y-1">
+            <p class="font-bold text-amber-300">Assessment Instructions:</p>
             <p>• A 45-minute timer will run during your session.</p>
             <p>• 30 questions are randomly selected from the master question bank.</p>
             <p>• Use the Question Grid at any time to jump to specific questions.</p>
           </div>
         </div>
 
-        <button onclick="startQuiz()" class="w-full py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-brand-500/25 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-3">
+        <button onclick="startQuiz()" class="w-full py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-3">
           <span>Begin Assessment</span>
           <i class="fa-solid fa-arrow-right"></i>
         </button>
@@ -227,18 +236,18 @@
       
       <!-- TOP STATUS, TIMER & PROGRESS -->
       <div class="glass-card rounded-2xl p-4 shadow-sm space-y-3">
-        <div class="flex items-center justify-between text-xs font-bold text-slate-500">
-          <span id="quiz-progress-text" class="text-brand-600">Question 1 of 30</span>
+        <div class="flex items-center justify-between text-xs font-bold text-slate-400">
+          <span id="quiz-progress-text" class="text-brand-400">Question 1 of 30</span>
           
           <!-- 45-MINUTE LIVE TIMER DISPLAY -->
-          <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 font-bold px-3 py-1 rounded-full text-xs shadow-sm" id="timer-badge">
+          <div class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold px-3 py-1 rounded-full text-xs shadow-sm" id="timer-badge">
             <i class="fa-solid fa-clock animate-pulse"></i>
             <span id="quiz-timer-text">45:00</span>
           </div>
 
-          <span id="quiz-answered-count" class="bg-slate-100 px-3 py-1 rounded-full text-slate-700">0 Answered</span>
+          <span id="quiz-answered-count" class="bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-slate-300">0 Answered</span>
         </div>
-        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
+        <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800">
           <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-accent-500 rounded-full transition-all duration-300" style="width: 3.33%;"></div>
         </div>
       </div>
@@ -246,14 +255,14 @@
       <!-- QUESTION CARD -->
       <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl space-y-6 relative">
         <div class="flex items-center justify-between">
-          <span id="q-category" class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200/60 px-3 py-1 rounded-lg">MOH BLS Manual 2nd Edition</span>
-          <button onclick="toggleBookmark()" id="btn-bookmark" class="text-slate-400 hover:text-amber-500 transition text-sm flex items-center gap-1.5 font-semibold">
+          <span id="q-category" class="text-xs font-bold uppercase tracking-wider text-brand-400 bg-brand-500/10 border border-brand-500/30 px-3 py-1 rounded-lg">MOH BLS Manual 2nd Edition</span>
+          <button onclick="toggleBookmark()" id="btn-bookmark" class="text-slate-400 hover:text-amber-400 transition text-sm flex items-center gap-1.5 font-semibold">
             <i class="fa-regular fa-bookmark"></i>
             <span class="hidden sm:inline">Review Later</span>
           </button>
         </div>
 
-        <h3 id="q-text" class="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed">
+        <h3 id="q-text" class="text-lg sm:text-xl font-bold text-white leading-relaxed">
           Loading Question...
         </h3>
 
@@ -261,18 +270,18 @@
         <div id="q-options" class="space-y-3"></div>
 
         <!-- NAVIGATION CONTROLS -->
-        <div class="flex items-center justify-between pt-6 border-t border-slate-100">
-          <button onclick="prevQuestion()" id="btn-prev" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition flex items-center gap-2">
+        <div class="flex items-center justify-between pt-6 border-t border-slate-800">
+          <button onclick="prevQuestion()" id="btn-prev" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-sm border border-slate-800 transition flex items-center gap-2">
             <i class="fa-solid fa-chevron-left text-xs"></i>
             <span>Previous</span>
           </button>
           
           <div class="flex items-center space-x-2">
-            <button onclick="nextQuestion()" id="btn-next" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm shadow-md shadow-brand-500/20 transition flex items-center gap-2">
+            <button onclick="nextQuestion()" id="btn-next" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl text-sm shadow-md shadow-brand-500/20 transition flex items-center gap-2">
               <span>Next</span>
               <i class="fa-solid fa-chevron-right text-xs"></i>
             </button>
-            <button onclick="confirmSubmit()" id="btn-submit" class="hidden px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-500/20 transition flex items-center gap-2">
+            <button onclick="confirmSubmit()" id="btn-submit" class="hidden px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-500/20 transition flex items-center gap-2">
               <i class="fa-solid fa-check-circle"></i>
               <span>Submit Assessment</span>
             </button>
@@ -288,41 +297,41 @@
         <div id="result-badge" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl"></div>
 
         <div>
-          <h2 id="result-status-title" class="text-3xl font-extrabold text-slate-900">Assessment Result</h2>
-          <p id="result-status-sub" class="text-sm text-slate-500 mt-1">Ministry of Health Malaysia BLS Standard</p>
+          <h2 id="result-status-title" class="text-3xl font-extrabold text-white">Assessment Result</h2>
+          <p id="result-status-sub" class="text-sm text-slate-400 mt-1">Ministry of Health Malaysia BLS Standard</p>
         </div>
 
         <!-- SCORE SUMMARY CARD -->
-        <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 space-y-4">
+        <div class="bg-slate-900/90 rounded-2xl p-6 border border-slate-800 space-y-4">
           <div class="flex justify-around items-center">
             <div>
               <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Total Marks</span>
-              <span id="res-score" class="text-4xl font-extrabold text-slate-900">0 / 30</span>
+              <span id="res-score" class="text-4xl font-extrabold text-white">0 / 30</span>
             </div>
-            <div class="h-12 w-px bg-slate-200"></div>
+            <div class="h-12 w-px bg-slate-800"></div>
             <div>
               <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Percentage</span>
-              <span id="res-percent" class="text-4xl font-extrabold text-brand-600">0%</span>
+              <span id="res-percent" class="text-4xl font-extrabold text-brand-400">0%</span>
             </div>
           </div>
         </div>
 
         <!-- METRICS BREAKDOWN -->
         <div class="grid grid-cols-3 gap-3 text-xs font-bold">
-          <div class="p-3 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
             <span class="block text-base font-extrabold" id="res-correct">0</span> Correct
           </div>
-          <div class="p-3 rounded-xl bg-rose-50 text-rose-700 border border-rose-200">
+          <div class="p-3 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/30">
             <span class="block text-base font-extrabold" id="res-incorrect">0</span> Incorrect
           </div>
-          <div class="p-3 rounded-xl bg-slate-100 text-slate-600 border border-slate-200">
+          <div class="p-3 rounded-xl bg-slate-900 text-slate-400 border border-slate-800">
             <span class="block text-base font-extrabold" id="res-skipped">0</span> Skipped
           </div>
         </div>
 
         <!-- ACTION BUTTONS -->
         <div class="pt-4 flex flex-col sm:flex-row gap-3">
-          <button onclick="retest()" class="flex-1 py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold rounded-xl shadow-lg shadow-brand-500/25 hover:opacity-95 transition flex items-center justify-center gap-2">
+          <button onclick="retest()" class="flex-1 py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition flex items-center justify-center gap-2">
             <i class="fa-solid fa-rotate-right"></i>
             <span>Re-Test Assessment (New 30 Questions)</span>
           </button>
@@ -333,14 +342,14 @@
   </main>
 
   <!-- QUESTION GRID MODAL -->
-  <div id="modal-grid" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+  <div id="modal-grid" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-white">
+      <div class="p-6 border-b border-slate-800 flex items-center justify-between">
         <div>
-          <h3 class="text-lg font-bold text-slate-900">Question Navigator</h3>
-          <p class="text-xs text-slate-500">Jump directly to any of the 30 active session questions</p>
+          <h3 class="text-lg font-bold text-white">Question Navigator</h3>
+          <p class="text-xs text-slate-400">Jump directly to any of the 30 active session questions</p>
         </div>
-        <button onclick="toggleGridModal()" class="text-slate-400 hover:text-slate-600 p-2">
+        <button onclick="toggleGridModal()" class="text-slate-400 hover:text-white p-2">
           <i class="fa-solid fa-xmark text-xl"></i>
         </button>
       </div>
@@ -349,8 +358,8 @@
         <div id="grid-container" class="grid grid-cols-5 sm:grid-cols-6 gap-2"></div>
       </div>
 
-      <div class="p-4 bg-slate-50 border-t border-slate-100 text-xs font-semibold text-slate-500 flex justify-around">
-        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-200"></span> Unanswered</span>
+      <div class="p-4 bg-slate-950 border-t border-slate-800 text-xs font-semibold text-slate-400 flex justify-around">
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-800 border border-slate-700"></span> Unanswered</span>
         <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-brand-600"></span> Answered</span>
         <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-400"></span> Marked</span>
       </div>
@@ -358,7 +367,7 @@
   </div>
 
   <!-- FOOTER (Visible on all pages with 2 Footer Logos) -->
-  <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400">
+  <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400 relative z-10">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       
       <!-- 2 FOOTER LOGOS FROM GOOGLE DRIVE -->
@@ -606,12 +615,17 @@
 
     // INITIALIZATION & SESSION CHECK
     window.onload = () => {
+      // Clear forms on page refresh to ensure clean blank start
+      document.getElementById('form-login')?.reset();
+      document.getElementById('form-register')?.reset();
+
       const savedSession = localStorage.getItem('bls_active_session');
       if (savedSession) {
         currentUser = JSON.parse(savedSession);
         updateNavUser();
         showPage('dashboard');
       } else {
+        switchTab('register');
         showPage('auth');
       }
     };
@@ -647,9 +661,9 @@
 
       const badge = document.getElementById('timer-badge');
       if (timeLeft <= 300) {
-        badge.className = "flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 font-bold px-3 py-1 rounded-full text-xs animate-pulse";
+        badge.className = "flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 text-rose-300 font-bold px-3 py-1 rounded-full text-xs animate-pulse";
       } else {
-        badge.className = "flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 font-bold px-3 py-1 rounded-full text-xs shadow-sm";
+        badge.className = "flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold px-3 py-1 rounded-full text-xs shadow-sm";
       }
     }
 
@@ -785,16 +799,20 @@
       const formLogin = document.getElementById('form-login');
       const formReg = document.getElementById('form-register');
 
-      if (tab === 'login') {
-        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-slate-900 shadow-sm";
-        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-900";
-        formLogin.classList.remove('hidden');
-        formReg.classList.add('hidden');
-      } else {
-        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-slate-900 shadow-sm";
-        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-900";
+      // Always reset inputs when switching tabs
+      formLogin.reset();
+      formReg.reset();
+
+      if (tab === 'register') {
+        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
+        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
         formReg.classList.remove('hidden');
         formLogin.classList.add('hidden');
+      } else {
+        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
+        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
       }
     }
 
@@ -813,13 +831,17 @@
       localStorage.removeItem('bls_active_session');
       currentUser = null;
       updateNavUser();
+      switchTab('register');
       showPage('auth');
     }
 
     function goHome() {
       stopTimer();
       if (currentUser) showPage('dashboard');
-      else showPage('auth');
+      else {
+        switchTab('register');
+        showPage('auth');
+      }
     }
 
     // QUIZ ENGINE SETUP
@@ -856,13 +878,13 @@
         btn.onclick = () => selectOption(idx);
         btn.className = `w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3 ${
           isSelected 
-            ? 'bg-brand-50 border-brand-500 ring-2 ring-brand-500/20 text-brand-900 font-semibold' 
-            : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
+            ? 'bg-brand-950/80 border-brand-500 ring-2 ring-brand-500/30 text-white font-semibold' 
+            : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 text-slate-200 hover:bg-slate-800/50'
         }`;
 
         btn.innerHTML = `
           <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
-            isSelected ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-500'
+            isSelected ? 'bg-brand-500 text-white' : 'bg-slate-800 text-slate-400 border border-slate-700'
           }">${optionPrefixes[idx]}</span>
           <span class="text-sm flex-1">${opt}</span>
         `;
@@ -872,10 +894,10 @@
       // Update Bookmark UI
       const bmBtn = document.getElementById('btn-bookmark');
       if (bookmarkedQuestions.has(currentIndex)) {
-        bmBtn.className = "text-amber-500 font-bold text-sm flex items-center gap-1.5";
+        bmBtn.className = "text-amber-400 font-bold text-sm flex items-center gap-1.5";
         bmBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span class="hidden sm:inline">Marked</span>`;
       } else {
-        bmBtn.className = "text-slate-400 hover:text-amber-500 transition text-sm flex items-center gap-1.5 font-semibold";
+        bmBtn.className = "text-slate-400 hover:text-amber-400 transition text-sm flex items-center gap-1.5 font-semibold";
         bmBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i><span class="hidden sm:inline">Review Later</span>`;
       }
 
@@ -946,9 +968,9 @@
           toggleGridModal();
         };
 
-        let styleClass = "bg-slate-100 text-slate-600 border-slate-200"; // Unanswered
-        if (userAnswers[idx] !== null) styleClass = "bg-brand-600 text-white font-bold"; // Answered
-        if (bookmarkedQuestions.has(idx)) styleClass = "bg-amber-400 text-slate-900 font-bold ring-2 ring-amber-500/30"; // Marked
+        let styleClass = "bg-slate-800 text-slate-300 border-slate-700"; // Unanswered
+        if (userAnswers[idx] !== null) styleClass = "bg-brand-600 text-white font-bold border-brand-500"; // Answered
+        if (bookmarkedQuestions.has(idx)) styleClass = "bg-amber-400 text-slate-950 font-bold ring-2 ring-amber-500/40 border-amber-400"; // Marked
 
         btn.className = `h-10 rounded-xl text-xs flex items-center justify-center border transition ${styleClass}`;
         btn.innerText = idx + 1;
@@ -999,12 +1021,12 @@
       const sub = document.getElementById('result-status-sub');
 
       if (percentage >= 80) {
-        badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-emerald-100 text-emerald-600 border-4 border-emerald-300";
+        badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-emerald-500/20 text-emerald-400 border-4 border-emerald-500/40";
         badge.innerHTML = `<i class="fa-solid fa-award"></i>`;
         title.innerText = "Congratulations! You Passed";
         sub.innerText = "You have met the MOH Malaysia Basic Life Support Theory Standard.";
       } else {
-        badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-rose-100 text-rose-600 border-4 border-rose-300";
+        badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-rose-500/20 text-rose-400 border-4 border-rose-500/40";
         badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
         title.innerText = "Assessment Not Cleared";
         sub.innerText = "Passing threshold is 80% (24/30). Please review the manual and attempt re-test.";
