@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOH Malaysia BLS Training Assessment</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              900: '#134e4a',
+            },
+            accent: {
+              500: '#0284c7',
+              600: '#0369a1',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body id="app-body" class="bg-slate-900 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- HEADER / NAVIGATION (Visible on all pages) -->
+  <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- HEADER LOGO -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
+        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/20">
+          <img id="img-header-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
+        </div>
+        <div>
+          <span class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            MOH BLS <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-500 border border-brand-500/30">2nd Edition</span>
+          </span>
+          <p class="text-xs text-slate-400 font-medium">Basic Life Support Assessment Platform</p>
+        </div>
+      </div>
+
+      <!-- USER PROFILE / CONTROLS -->
+      <div id="nav-user-info" class="hidden flex items-center space-x-4">
+        <div class="text-right hidden sm:block">
+          <p id="user-display-name" class="text-sm font-bold text-white"></p>
+          <p id="user-display-id" class="text-xs text-slate-400"></p>
+        </div>
+        <button onclick="toggleGridModal()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition flex items-center gap-2">
+          <i class="fa-solid fa-border-all"></i>
+          <span>Question Grid</span>
+        </button>
+        <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Log Out">
+          <i class="fa-solid fa-right-from-bracket text-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
+
+    <!-- PAGE 1: LANDING & AUTH PAGE -->
+    <div id="page-auth" class="w-full max-w-md mx-auto">
+      <div class="glass-card rounded-3xl p-8 shadow-2xl border border-slate-800/50 relative overflow-hidden text-center">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl"></div>
+        
+        <!-- TOP LANDING PAGE LOGO -->
+        <div class="mb-6">
+          <img id="img-landing-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="BLS Certification Logo" class="h-20 w-auto mx-auto object-contain drop-shadow-md">
+        </div>
+
+        <div class="mb-6">
+          <h2 class="text-2xl font-extrabold text-slate-900">Healthcare Worker Portal</h2>
+          <p class="text-xs text-slate-500 mt-1">Malaysia Ministry of Health BLS Certification</p>
+        </div>
+
+        <!-- AUTH TABS -->
+        <div class="flex rounded-xl bg-slate-100 p-1 mb-6">
+          <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-slate-900 shadow-sm">Log In</button>
+          <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-900">Register</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
+            <input type="text" id="login-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Access Password</label>
+            <input type="password" id="login-pass" required placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+          </div>
+          <button type="submit" id="btn-login-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/25 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+            <span>Access Assessment</span>
+          </button>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left hidden">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
+            <input type="text" id="reg-name" required placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
+            <input type="text" id="reg-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Department / Facility</label>
+            <input type="text" id="reg-dept" required placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Create Password</label>
+            <input type="password" id="reg-pass" required placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
+          </div>
+          <button type="submit" id="btn-reg-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/25 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+            <span>Register Practitioner</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE 2: QUIZ DASHBOARD / START SCREEN -->
+    <div id="page-dashboard" class="hidden max-w-2xl mx-auto w-full">
+      <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
+        <!-- TOP DASHBOARD LOGO -->
+        <div class="mb-2">
+          <img id="img-dashboard-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Logo" class="h-20 w-auto mx-auto object-contain drop-shadow">
+        </div>
+
+        <div>
+          <h1 class="text-3xl font-extrabold text-slate-900">BLS Theory Assessment</h1>
+          <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto">Based on the Ministry of Health Malaysia Basic Life Support Training Manual (2nd Edition, 2023).</p>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 py-4 border-y border-slate-100">
+          <div class="p-3 bg-slate-50 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-brand-600">30</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase">MCQs</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-amber-600">45m</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase">Timer</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-accent-500">80%</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase">Pass Mark</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl">
+            <span class="block text-2xl font-extrabold text-purple-600">30</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase">Total Marks</span>
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200/60 rounded-2xl p-4 text-left flex items-start space-x-3">
+          <i class="fa-solid fa-circle-info text-amber-500 text-lg mt-0.5"></i>
+          <div class="text-xs text-amber-800 space-y-1">
+            <p class="font-bold">Assessment Instructions:</p>
+            <p>• A 45-minute timer will run during your session.</p>
+            <p>• 30 questions are randomly selected from the master question bank.</p>
+            <p>• Use the Question Grid at any time to jump to specific questions.</p>
+          </div>
+        </div>
+
+        <button onclick="startQuiz()" class="w-full py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-brand-500/25 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-3">
+          <span>Begin Assessment</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- PAGE 3: ACTIVE QUIZ SCREEN -->
+    <div id="page-quiz" class="hidden space-y-6">
+      
+      <!-- TOP STATUS, TIMER & PROGRESS -->
+      <div class="glass-card rounded-2xl p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between text-xs font-bold text-slate-500">
+          <span id="quiz-progress-text" class="text-brand-600">Question 1 of 30</span>
+          
+          <!-- 45-MINUTE LIVE TIMER DISPLAY -->
+          <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 font-bold px-3 py-1 rounded-full text-xs shadow-sm" id="timer-badge">
+            <i class="fa-solid fa-clock animate-pulse"></i>
+            <span id="quiz-timer-text">45:00</span>
+          </div>
+
+          <span id="quiz-answered-count" class="bg-slate-100 px-3 py-1 rounded-full text-slate-700">0 Answered</span>
+        </div>
+        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
+          <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-accent-500 rounded-full transition-all duration-300" style="width: 3.33%;"></div>
+        </div>
+      </div>
+
+      <!-- QUESTION CARD -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl space-y-6 relative">
+        <div class="flex items-center justify-between">
+          <span id="q-category" class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200/60 px-3 py-1 rounded-lg">MOH BLS Manual 2nd Edition</span>
+          <button onclick="toggleBookmark()" id="btn-bookmark" class="text-slate-400 hover:text-amber-500 transition text-sm flex items-center gap-1.5 font-semibold">
+            <i class="fa-regular fa-bookmark"></i>
+            <span class="hidden sm:inline">Review Later</span>
+          </button>
+        </div>
+
+        <h3 id="q-text" class="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed">
+          Loading Question...
+        </h3>
+
+        <!-- OPTIONS GRID -->
+        <div id="q-options" class="space-y-3"></div>
+
+        <!-- NAVIGATION CONTROLS -->
+        <div class="flex items-center justify-between pt-6 border-t border-slate-100">
+          <button onclick="prevQuestion()" id="btn-prev" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition flex items-center gap-2">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+            <span>Previous</span>
+          </button>
+          
+          <div class="flex items-center space-x-2">
+            <button onclick="nextQuestion()" id="btn-next" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm shadow-md shadow-brand-500/20 transition flex items-center gap-2">
+              <span>Next</span>
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+            <button onclick="confirmSubmit()" id="btn-submit" class="hidden px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-500/20 transition flex items-center gap-2">
+              <i class="fa-solid fa-check-circle"></i>
+              <span>Submit Assessment</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: RESULTS SCREEN -->
+    <div id="page-results" class="hidden max-w-2xl mx-auto w-full">
+      <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
+        
+        <div id="result-badge" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl"></div>
+
+        <div>
+          <h2 id="result-status-title" class="text-3xl font-extrabold text-slate-900">Assessment Result</h2>
+          <p id="result-status-sub" class="text-sm text-slate-500 mt-1">Ministry of Health Malaysia BLS Standard</p>
+        </div>
+
+        <!-- SCORE SUMMARY CARD -->
+        <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 space-y-4">
+          <div class="flex justify-around items-center">
+            <div>
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Total Marks</span>
+              <span id="res-score" class="text-4xl font-extrabold text-slate-900">0 / 30</span>
+            </div>
+            <div class="h-12 w-px bg-slate-200"></div>
+            <div>
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Percentage</span>
+              <span id="res-percent" class="text-4xl font-extrabold text-brand-600">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- METRICS BREAKDOWN -->
+        <div class="grid grid-cols-3 gap-3 text-xs font-bold">
+          <div class="p-3 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span class="block text-base font-extrabold" id="res-correct">0</span> Correct
+          </div>
+          <div class="p-3 rounded-xl bg-rose-50 text-rose-700 border border-rose-200">
+            <span class="block text-base font-extrabold" id="res-incorrect">0</span> Incorrect
+          </div>
+          <div class="p-3 rounded-xl bg-slate-100 text-slate-600 border border-slate-200">
+            <span class="block text-base font-extrabold" id="res-skipped">0</span> Skipped
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="pt-4 flex flex-col sm:flex-row gap-3">
+          <button onclick="retest()" class="flex-1 py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold rounded-xl shadow-lg shadow-brand-500/25 hover:opacity-95 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Re-Test Assessment (New 30 Questions)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- QUESTION GRID MODAL -->
+  <div id="modal-grid" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">Question Navigator</h3>
+          <p class="text-xs text-slate-500">Jump directly to any of the 30 active session questions</p>
+        </div>
+        <button onclick="toggleGridModal()" class="text-slate-400 hover:text-slate-600 p-2">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-grow">
+        <div id="grid-container" class="grid grid-cols-5 sm:grid-cols-6 gap-2"></div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-100 text-xs font-semibold text-slate-500 flex justify-around">
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-slate-200"></span> Unanswered</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-brand-600"></span> Answered</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-400"></span> Marked</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER (Visible on all pages with 2 Footer Logos) -->
+  <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      
+      <!-- 2 FOOTER LOGOS FROM GOOGLE DRIVE -->
+      <div class="flex items-center space-x-3 bg-white/5 p-2 rounded-xl border border-white/10">
+        <img id="img-footer-logo-1" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1" class="h-8 w-auto object-contain">
+        <div class="h-5 w-px bg-slate-800"></div>
+        <img id="img-footer-logo-2" src="https://lh3.googleusercontent.com/d/1LdMRx-PF49CWOcrjthClGLJg-yQoJ2mt" alt="Footer Logo 2" class="h-8 w-auto object-contain">
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Basic Life Support Training System</span>
+      </div>
+
+      <p class="text-slate-300 font-semibold tracking-wide">copyright Yassin Razak @ 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT, TIMERS & CONFIGURATION -->
+  <script>
+    // GOOGLE APPS SCRIPT WEBHOOK DEPLOYMENT URL
+    const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwtKz7PDx-cvT01XU4lkPSTlF-7zYKh5j0mhu7Cdu23SdqC6HdF-Ux09yq1xAYoX3kAGQ/exec";
+
+    // ------------------------------------------------------------------
+    // MASTER 200 MCQ QUESTION POOL
+    // ------------------------------------------------------------------
+    const questionsData = [
+      { id: 1, q: "Who developed the NCORT Basic Life Support Training Manual Second Edition?", options: ["American Heart Association", "BLS Subcommittee, National Committee on Resuscitation Training (NCORT)", "European Resuscitation Council", "World Health Organization"], ans: 1 },
+      { id: 2, q: "What is the national emergency response number dialed via MERS in Malaysia?", options: ["911", "999", "112", "994"], ans: 1 },
+      { id: 3, q: "Which consensus document forms the basis for the NCORT BLS Training Manual Second Edition?", options: ["ILCOR 2020 Consensus on Science and Treatment Recommendations", "ILCOR 2010 Guidelines", "AHA 2015 Guidelines", "ERC 2015 Guidelines"], ans: 0 },
+      { id: 4, q: "What is the first link in the Chain of Survival for adult cardiac arrest?", options: ["Early CPR", "Early Defibrillation", "Early recognition and call for help", "Post-resuscitation care"], ans: 2 },
+      { id: 5, q: "Cardiac arrest occurs in what proportion of myocardial ischaemia patients within the first hour of symptom onset?", options: ["10% to 20%", "25% to 33% (1/4 to 1/3)", "50% to 60%", "75% to 80%"], ans: 1 },
+      { id: 6, q: "Defibrillation within 3–5 minutes of collapse can produce survival rates as high as:", options: ["10–20%", "30–40%", "50–70%", "80–90%"], ans: 2 },
+      { id: 7, q: "For each minute of delay to defibrillation without bystander CPR, survival probability decreases by:", options: ["1–2%", "3–4%", "7–8%", "10–12%"], ans: 3 },
+      { id: 8, q: "When bystander CPR is provided, the decline in survival per minute delay to defibrillation averages:", options: ["1–2%", "3–4%", "5–6%", "8–10%"], ans: 1 },
+      { id: 9, q: "What is the primary purpose of early CPR in the Chain of Survival?", options: ["To restart the heart", "To buy time", "To restore quality of life", "To prevent myocardial infarction"], ans: 1 },
+      { id: 10, q: "What is the main objective of early defibrillation in the Chain of Survival?", options: ["To prevent cardiac arrest", "To buy time", "To restart the heart", "To restore quality of life"], ans: 2 },
+      { id: 11, q: "Which anatomical component of the heart ensures one-way blood flow?", options: ["Myocardium", "Heart valves", "Conduction system", "Coronary vessels"], ans: 1 },
+      { id: 12, q: "Most blood flow (perfusion) to the heart muscles occurs during which phase?", options: ["Systole", "Diastole", "Ventricular ejection", "Atrial contraction"], ans: 1 },
+      { id: 13, q: "Irreversible brain cell death starts after approximately how long without oxygen?", options: ["1 minute", "2 minutes", "4 minutes", "10 minutes"], ans: 2 },
+      { id: 14, q: "Ambient room air contains what percentage of oxygen?", options: ["16%", "21%", "50%", "100%"], ans: 1 },
+      { id: 15, q: "Exhaled air delivered during rescue breathing contains approximately what percentage of oxygen?", options: ["10%", "16%", "21%", "25%"], ans: 1 },
+      { id: 16, q: "In an unconscious adult, what is the most common cause of upper airway obstruction?", options: ["Foreign body", "Epiglottis", "Tongue", "Laryngeal edema"], ans: 2 },
+      { id: 17, q: "Why must hyperventilation be strictly avoided during CPR?", options: ["It increases thoracic recoil", "It increases intrathoracic pressure, reducing cardiac filling and perfusion", "It causes excessive arterial oxygenation", "It reduces stomach inflation"], ans: 1 },
+      { id: 18, q: "What physical sign confirms adequate volume delivery during rescue breathing?", options: ["Abdominal rising", "Visible chest rise", "Fogging of the mask", "Bag resistance"], ans: 1 },
+      { id: 19, q: "Agonal breathing is best described as:", options: ["Normal deep breathing", "Rapid shallow breathing", "An abnormal reflex gasping caused by brain hypoxia", "Effective alveolar ventilation"], ans: 2 },
+      { id: 20, q: "Agonal breathing is present in approximately what percentage of cardiac arrest victims?", options: ["10%", "25%", "50%", "85%"], ans: 2 },
+      { id: 21, q: "What is the single biggest barrier to early recognition of cardiac arrest?", options: ["Absence of chest pain", "Agonal breathing mistaken for normal breathing", "Absence of radial pulse", "Lack of medical training"], ans: 1 },
+      { id: 22, q: "If a patient experiences a short seizure and remains unresponsive with abnormal breathing, the rescuer should:", options: ["Wait 15 minutes for recovery", "Place in recovery position only", "Immediately start CPR", "Check pupil reactivity"], ans: 2 },
+      { id: 23, q: "A patient clutching a clenched fist over the center of the chest is demonstrating:", options: ["Trousseau's sign", "Levine's sign", "Chvostek's sign", "Kernig's sign"], ans: 1 },
+      { id: 24, q: "The maximum recommended rate of chest compressions is 120/min primarily to:", options: ["Prevent rescuer fatigue", "Allow adequate diastolic filling and heart muscle perfusion", "Prevent rib fractures", "Allow easy ECG interpretation"], ans: 1 },
+      { id: 25, q: "In a child, a heart rate below what threshold with poor perfusion requires chest compressions?", options: ["40 bpm", "60 bpm", "80 bpm", "100 bpm"], ans: 1 },
+      { id: 26, q: "What sequence of steps does the algorithm for Adult BLS follow?", options: ["Danger, Response, Shout, Airway, Breathing, Circulation, Defibrillation (DRSABCD)", "Airway, Breathing, Circulation, Danger, Response, Defibrillation", "Diagnosis, Resuscitation, Safety, Airway, Breathing, Compression", "Danger, Reaction, Send, Airway, Breathing, Defibrillation"], ans: 0 },
+      { id: 27, q: "How should responsiveness be assessed in an adult victim?", options: ["Shake the victim forcefully", "Gently tap shoulders and ask loudly 'Are you OK?'", "Pinch the trapezius muscle", "Slap the face gently"], ans: 1 },
+      { id: 28, q: "What is the target chest compression rate for adults?", options: ["80–100 compressions/min", "100–120 compressions/min", "120–140 compressions/min", "Exactly 100 compressions/min"], ans: 1 },
+      { id: 29, q: "What is the correct compression depth for adult CPR?", options: ["3 to 4 cm", "4 to 5 cm", "5 to 6 cm", "Greater than 6 cm"], ans: 2 },
+      { id: 30, q: "What is the compression-to-ventilation ratio for single-rescuer adult CPR?", options: ["15:2", "30:2", "5:1", "Continuous compressions only"], ans: 1 },
+      { id: 31, q: "Assessment of breathing and carotid pulse should take no more than:", options: ["5 seconds", "10 seconds", "15 seconds", "20 seconds"], ans: 1 },
+      { id: 32, q: "Where should the heel of the hand be positioned during adult chest compressions?", options: ["Upper third of the sternum", "Middle of the chest, lower half of the sternum", "Over the xiphoid process", "Left side of the chest wall"], ans: 1 },
+      { id: 33, q: "What is the standard manual method to open the airway in a non-trauma victim?", options: ["Jaw thrust", "Head tilt-chin lift", "Head rotation", "Neck flexion"], ans: 1 },
+      { id: 34, q: "What technique is indicated to open the airway when cervical spine trauma is suspected?", options: ["Head tilt-chin lift", "Jaw thrust", "Neck extension", "Head tilt only"], ans: 1 },
+      { id: 35, q: "Rescuers performing chest compressions should alternate roles every:", options: ["1 minute", "2 minutes (or 5 cycles)", "5 minutes", "10 cycles"], ans: 1 },
+      { id: 36, q: "Each rescue breath delivered to an adult victim should last:", options: ["0.5 seconds", "1 second", "2 seconds", "3 seconds"], ans: 1 },
+      { id: 37, q: "If an adult victim has a pulse but is not breathing normally, rescue breathing should be given at:", options: ["1 breath every 3 seconds", "1 breath every 6 seconds (10 breaths/min)", "1 breath every 10 seconds", "2 breaths every 15 seconds"], ans: 1 },
+      { id: 38, q: "Is moving a patient from a hospital mattress to the floor recommended for CPR?", options: ["Yes, always mandatory", "No, moving the patient to the floor is NOT recommended", "Only if a backboard is unavailable", "Yes, mattress compressions are ineffective"], ans: 1 },
+      { id: 39, q: "What technique is used to hold a face mask firmly on a patient's face during bag-mask ventilation?", options: ["C-O clamp technique", "E-C clamp technique", "V-Y grip technique", "Two-finger press"], ans: 1 },
+      { id: 40, q: "An unresponsive victim who is breathing normally should be placed in the:", options: ["Supine position", "Prone position", "Recovery position", "Trendelenburg position"], ans: 2 },
+      { id: 41, q: "Where is the pulse checked in an adult cardiac arrest assessment?", options: ["Brachial artery", "Carotid artery", "Radial artery", "Femoral artery only"], ans: 1 },
+      { id: 42, q: "What CPR method should an untrained rescuer perform?", options: ["Rescue breathing only", "Compression-only CPR", "Abdominal thrusts", "Wait without intervening"], ans: 1 },
+      { id: 43, q: "What is the compression-to-ventilation ratio for two-rescuer adult CPR?", options: ["15:2", "30:2", "5:1", "10:1"], ans: 1 },
+      { id: 44, q: "Immediately after an AED delivers a shock, the rescuer should:", options: ["Recheck the pulse for 10 seconds", "Immediately resume CPR starting with chest compressions", "Administer 2 rescue breaths", "Wait for the AED to re-analyze"], ans: 1 },
+      { id: 45, q: "CPR should be continued until:", options: ["10 minutes pass", "The victim shows signs of life, the rescuer is exhausted, or EMS takes over", "The AED arrives", "3 shocks have been delivered"], ans: 1 },
+      { id: 46, q: "Most paediatric cardiac arrests stem primarily from:", options: ["Primary cardiac arrhythmia", "Respiratory insufficiency and hypoxia", "Myocardial infarction", "Valve disorders"], ans: 1 },
+      { id: 47, q: "In paediatric BLS, an infant is defined as an age of:", options: ["Birth to 30 days", "More than 30 days up to 1 year", "1 year to 8 years", "1 year to puberty"], ans: 1 },
+      { id: 48, q: "After opening the airway of an unresponsive, non-breathing child, healthcare providers should first:", options: ["Give 30 compressions", "Give 5 initial rescue breaths", "Apply AED pads", "Perform 5 back blows"], ans: 1 },
+      { id: 49, q: "What is the compression-to-ventilation ratio for paediatric CPR for Healthcare Workers?", options: ["30:2", "15:2", "5:1", "10:2"], ans: 1 },
+      { id: 50, q: "What depth of chest compressions is recommended for a child (1 year to puberty)?", options: ["At least 2 cm", "At least 1/3 chest depth (approximately 5 cm)", "Greater than 6 cm", "7 cm"], ans: 1 },
+      { id: 51, q: "What depth of chest compressions is recommended for an infant (<1 year)?", options: ["At least 1/3 chest depth (approximately 4 cm)", "2 cm", "5 cm", "6 cm"], ans: 0 },
+      { id: 52, q: "A lone Healthcare Worker with a child in cardiac arrest (no mobile phone) should perform CPR for how long before leaving to get assistance?", options: ["30 seconds", "About 1 minute (5 cycles)", "3 minutes", "5 minutes"], ans: 1 },
+      { id: 53, q: "Where should a pulse be assessed in an infant?", options: ["Carotid artery", "Brachial or femoral artery", "Radial artery", "Temporal artery"], ans: 1 },
+      { id: 54, q: "Where should a pulse be assessed in a child over 1 year old?", options: ["Brachial artery", "Carotid or femoral artery", "Radial artery only", "Apical pulse"], ans: 1 },
+      { id: 55, q: "What head positioning opens the airway in an infant without causing occlusion?", options: ["Past neutral position (hyperextension)", "Neutral position ('sniffing' position)", "Flexed position", "Maximum extension"], ans: 1 },
+      { id: 56, q: "Over-extension of the neck in infants must be avoided because it:", options: ["Causes neck fractures", "May occlude the pliable infant airway", "Causes regurgitation", "Triggers reflex bradycardia"], ans: 1 },
+      { id: 57, q: "What is the preferred chest compression technique for two rescuers in infant CPR?", options: ["Two-finger technique", "Two thumb-encircling hands technique", "Heel of one hand", "Palm compression"], ans: 1 },
+      { id: 58, q: "Which chest compression technique can be used by a single rescuer for an infant?", options: ["Two-finger technique (or two-thumb technique)", "Fist technique", "Heel of hand", "Two-handed interlocked technique"], ans: 0 },
+      { id: 59, q: "Tactile responsiveness in an infant is checked by:", options: ["Shaking the chest", "Firmly tapping the infant's sole", "Pinching the arm", "Rubbing the sternum"], ans: 1 },
+      { id: 60, q: "What is the recommended compression rate for paediatric and infant CPR?", options: ["80–100/min", "100–120/min", "120–140/min", ">140/min"], ans: 1 },
+      { id: 61, q: "For children 8 years of age and older, which AED pads should be used?", options: ["Paediatric attenuator pads", "Standard adult AED pads", "Neonatal pads", "Internal pads"], ans: 1 },
+      { id: 62, q: "If paediatric-specific AED pads are unavailable for a 3-year-old child, the rescuer should:", options: ["Withhold defibrillation", "Use adult AED pads ensuring they do not touch/overlap", "Cut the adult pads in half", "Perform compressions only"], ans: 1 },
+      { id: 63, q: "Which pad placement is used in infants to prevent AED pad contact/overlap?", options: ["Antero-posterior (front and back) position", "Antero-lateral position", "Symmetrical chest placement", "Both on the back"], ans: 0 },
+      { id: 64, q: "When placing an unconscious, normally breathing child in the recovery position, the goal is to:", options: ["Keep the body elevated", "Maintain a lateral position to enable fluid drainage from the mouth", "Restrain arm movement", "Keep head flexed forward"], ans: 1 },
+      { id: 65, q: "If a child has a pulse >60 bpm but is not breathing normally, the rescuer should:", options: ["Start chest compressions at 15:2", "Provide rescue breathing (20–30 breaths/min or 1 every 2–3 sec)", "Attach AED and shock", "Perform abdominal thrusts"], ans: 1 },
+      { id: 66, q: "What rhythm accounts for the vast majority of sudden cardiac arrest in adults?", options: ["Asystole", "Ventricular Fibrillation (VF) / Pulseless VT", "Pulseless Electrical Activity (PEA)", "Sinus Bradycardia"], ans: 1 },
+      { id: 67, q: "What is the primary function of an AED?", options: ["Deliver automatic ventilation", "Analyze heart rhythm and recommend/deliver an electric shock if needed", "Monitor pulse rate continuously", "Deliver emergency drugs"], ans: 1 },
+      { id: 68, q: "Which two cardiac rhythms are shockable by an AED?", options: ["Asystole and PEA", "Ventricular Fibrillation (VF) and Pulseless Ventricular Tachycardia (VT)", "Atrial Fibrillation and SVT", "Sinus Tachycardia and Atrial Flutter"], ans: 1 },
+      { id: 69, q: "Where is the first standard AED pad placed on an adult victim?", options: ["Left upper chest", "Right upper chest below the clavicle", "Center of the sternum", "Left lower abdomen"], ans: 1 },
+      { id: 70, q: "Where is the second standard AED pad placed on an adult victim?", options: ["Right lower ribs", "Left side of the apex of the heart", "Center of the back", "Over the epigastrium"], ans: 1 },
+      { id: 71, q: "What action must be taken when the AED announces 'Analyzing rhythm'?", options: ["Continue chest compressions", "Give 2 rescue breaths", "Ensure nobody touches the victim", "Turn off the AED"], ans: 2 },
+      { id: 72, q: "What phrase should the rescuer state loudly before pressing the shock button?", options: ["'Stand clear!' or 'Everybody clear!'", "'Pushing button!'", "'Checking pulse!'", "'Starting shock!'"], ans: 0 },
+      { id: 73, q: "If a cardiac arrest victim's chest is wet or covered in water, you should:", options: ["Apply pads directly over water", "Wipe the chest dry before placing AED pads", "Submerge the pads", "Avoid using the AED"], ans: 1 },
+      { id: 74, q: "If a victim has a excessively hairy chest that prevents pad contact, you should:", options: ["Shave the area where pads are to be placed", "Do not use the AED", "Place pads on the abdomen", "Wet the chest to improve stickiness"], ans: 0 },
+      { id: 75, q: "Where should AED pads be placed if an implantable cardiac device (ICD) is present under the skin?", options: ["Directly over the ICD", "Avoid placing pads directly over the ICD", "On the patient's neck", "Over the pacemaker wire"], ans: 1 },
+      { id: 76, q: "If a transdermal medication patch is present on the chest where an AED pad belongs, you should:", options: ["Place the pad on top of the patch", "Remove the patch and wipe the area clean before applying the pad", "Cut around the patch", "Fold the patch in half"], ans: 1 },
+      { id: 77, q: "Should chest compressions stop while AED pads are being attached by a second rescuer?", options: ["Yes, stop compressions immediately", "No, chest compressions should continue while pads are attached", "Stop compressions for 1 minute", "Only give ventilations while attaching pads"], ans: 1 },
+      { id: 78, q: "Once a shock is advised and charged by the AED, the shock should be delivered within:", options: ["5 seconds", "15 seconds", "30 seconds", "60 seconds"], ans: 0 },
+      { id: 79, q: "High-flow oxygen sources should be moved away from the chest during defibrillation to avoid:", options: ["Oxygen depletion", "Fire hazard", "AED false analysis", "Pad displacement"], ans: 1 },
+      { id: 80, q: "How long does an AED allow CPR to run before prompting a re-analysis?", options: ["1 minute", "2 minutes (or 5 cycles)", "3 minutes", "5 minutes"], ans: 1 },
+      { id: 81, q: "What is the initial management for a conscious adult with MILD airway obstruction (effective cough)?", options: ["Give 5 back blows", "Perform 5 abdominal thrusts", "Encourage coughing and monitor closely", "Start CPR"], ans: 2 },
+      { id: 82, q: "What is the first intervention for a conscious adult with SEVERE FBAO (ineffective cough)?", options: ["Up to 5 sharp back blows", "Up to 5 abdominal thrusts", "Blind finger sweep", "Chest compressions"], ans: 0 },
+      { id: 83, q: "If 5 back blows fail to relieve choking in a conscious adult, the rescuer should next perform:", options: ["5 rescue breaths", "Up to 5 abdominal thrusts", "CPR", "Finger sweep"], ans: 1 },
+      { id: 84, q: "Where is the fist placed during abdominal thrusts on an adult?", options: ["Over the xiphoid process", "Between the umbilicus and the ribcage", "On the lower pelvic region", "Over the lower ribs"], ans: 1 },
+      { id: 85, q: "Which maneuver replaces abdominal thrusts in pregnant or markedly obese choking victims?", options: ["Back slaps only", "Chest thrusts", "Blind finger sweeps", "Abdominal squeezes"], ans: 1 },
+      { id: 86, q: "What should be done immediately if a choking victim becomes UNCONSCIOUS?", options: ["Continue abdominal thrusts", "Lower to ground, activate ERS, and START CPR", "Give 5 back blows", "Perform blind finger sweep"], ans: 1 },
+      { id: 87, q: "During CPR on an unconscious choking victim, a finger sweep should be performed:", options: ["Blindly after every cycle", "Only if a foreign object is visually seen in the mouth", "Routinely every 2 minutes", "Never"], ans: 1 },
+      { id: 88, q: "Are abdominal thrusts recommended for choking INFANTS (<1 year old)?", options: ["Yes, 5 thrusts", "No, abdominal thrusts are contraindicated; use chest thrusts instead", "Yes, combined with slaps", "Only if conscious"], ans: 1 },
+      { id: 89, q: "What is the correct management sequence for a conscious choking INFANT with severe obstruction?", options: ["5 abdominal thrusts alternating with 5 back blows", "5 back blows alternating with 5 chest thrusts", "Immediate CPR", "5 rescue breaths"], ans: 1 },
+      { id: 90, q: "How is an infant held when delivering back blows for foreign body obstruction?", options: ["Upright against the chest", "Head-downwards in a prone position across the rescuer's arm/thigh", "Flat on back", "Head elevated at 45 degrees"], ans: 1 },
+      { id: 91, q: "How is an Oropharyngeal Airway (OPA) correctly sized for an adult?", options: ["Tip of the nose to earlobe", "Corner of the mouth to the angle of the jaw", "Center of mouth to neck", "Length of the index finger"], ans: 1 },
+      { id: 92, q: "How is an OPA inserted in an adult patient?", options: ["Concave side down directly", "Inserted upside down (concave up), then rotated 180 degrees", "Sideways without turning", "Under direct laryngoscopy only"], ans: 1 },
+      { id: 93, q: "How is an OPA inserted in infants and young children?", options: ["Rotated 180 degrees during insertion", "Inserted directly concave side down using a tongue depressor", "Rotated 90 degrees", "Same technique as adult"], ans: 1 },
+      { id: 94, q: "How is a Nasopharyngeal Airway (NPA) measured for correct sizing?", options: ["Angle of mouth to angle of jaw", "Tip of the nose to the tragus of the ear", "Nostril width", "Nose tip to chin"], ans: 1 },
+      { id: 95, q: "Once a Laryngeal Mask Airway (LMA) is placed in an adult during CPR, ventilations are delivered at:", options: ["30:2 ratio paused", "Continuous compressions with 1 breath every 6 seconds (10 breaths/min)", "15:2 ratio paused", "20–30 breaths/min"], ans: 1 },
+      { id: 96, q: "What level of PPE is required for healthcare providers performing CPR (an Aerosol Generating Procedure) during a pandemic?", options: ["Surgical mask and gloves", "Airborne-precaution PPE (N95 mask, gown, face shield/goggles, gloves)", "Apron and surgical mask only", "Gloves only"], ans: 1 },
+      { id: 97, q: "During a pandemic, what routine assessment step is omitted to reduce infection risk?", options: ["Response check", "Placing face close to victim to 'listen & feel' for breathing", "Pulse check", "AED application"], ans: 1 },
+      { id: 98, q: "When providing Bag-Valve-Mask (BVM) ventilations during a pandemic, rescuers must:", options: ["Use a standard mask without filters", "Attach a HEPA/viral filter and use a 2-hand tight E-C seal", "Ventilate rapidly", "Avoid using oxygen"], ans: 1 },
+      { id: 99, q: "If BVM ventilation is not being provided during pandemic CPR, what should be done to the victim's face?", options: ["Leave exposed", "Cover the victim's mouth and nose with a face mask, cloth, or plastic sheet", "Spray with alcohol", "Keep jaw pulled down"], ans: 1 },
+      { id: 100, q: "BLS teams who are uncomfortable or less skilled with BVM seal during a pandemic should:", options: ["Perform mouth-to-mouth", "Place an oxygen mask at 6 L/min on the victim and perform compression-only CPR", "Withhold all resuscitation", "Give 30:2 without mask seal"], ans: 1 },
+      { id: 101, q: "According to the BLS Training Manual recommended module schedule, what activity occurs between 08:30 and 09:15?", options: ["Practical sessions", "Registration", "Video/Lecture on BLS", "Tea break"], ans: 2 },
+      { id: 102, q: "What is the maximum recommended time allowed for checking normal breathing and pulse simultaneously in adult BLS?", options: ["5 seconds", "10 seconds", "15 seconds", "20 seconds"], ans: 1 },
+      { id: 103, q: "What component of the heart is specifically responsible for coordinating the contraction of heart muscles?", options: ["Heart valves", "Heart chambers", "Conduction system", "Coronary blood vessels"], ans: 2 },
+      { id: 104, q: "At what heart rate does a heart pump fail to maintain adequate blood flow due to being excessively fast?", options: ["More than 100/min", "More than 120/min", "More than 150/min", "More than 180/min"], ans: 2 },
+      { id: 105, q: "What is the primary reason why full chest recoil between compressions is critical during CPR?", options: ["To prevent rib fractures", "To allow blood filling of heart chambers and coronary perfusion during diastole", "To clear air from the lungs", "To give the rescuer a rest break"], ans: 1 },
+      { id: 106, q: "Which component of the respiratory system functions specifically as the site for gas exchange?", options: ["Airways", "Lungs and blood vessels", "Intercostal muscles", "Diaphragm"], ans: 1 },
+      { id: 107, q: "What effect does stomach distention caused by overventilation have on respiratory mechanics?", options: ["Increases chest expansion", "Reduces diaphragm mobility and increases risk of regurgitation and aspiration", "Enhances alveolar surface area", "Increases coronary perfusion pressure"], ans: 1 },
+      { id: 108, q: "Which of the following is NOT listed as a sign of life following successful resuscitation?", options: ["Breathing normally", "Moving", "Coughing", "Agonal gasping"], ans: 3 },
+      { id: 109, q: "How does the presence of short-duration seizure-like movements at cardiac arrest onset impact patient characteristics?", options: ["Indicates poorer overall survival", "More likely to be a witnessed arrest with an initial shockable rhythm", "Means CPR should be withheld for 10 minutes", "Confirms primary asphyxial arrest"], ans: 1 },
+      { id: 110, q: "Pathologically, how is a myocardial infarction defined?", options: ["Valve regurgitation due to aging", "Myocardial cell death due to prolonged ischaemia", "Electrical system arrest due to hypokalemia", "Spasm of the pericardial sac"], ans: 1 },
+      { id: 111, q: "Which symptom is described as a classic presentation of angina pectoris?", options: ["Stabbing pain localized strictly to the left fingertip", "Pain, pressure, fullness, burning or tightness in the chest", "Sudden lower abdominal cramps", "Sharp pleuritic pain during deep expiration only"], ans: 1 },
+      { id: 112, q: "In the Adult BLS for Healthcare Workers algorithm, what step immediately follows 'SHOUT'?", options: ["Breathing", "Airway", "Circulation", "Defibrillation"], ans: 1 },
+      { id: 113, q: "What should a lone responder with a mobile phone do immediately upon recognizing an unresponsive adult OHCA victim?", options: ["Run to the nearest clinic", "Dial MERS 999, activate speaker/hands-free, and immediately start CPR", "Perform 5 cycles of CPR before dialing 999", "Search for an OPA before calling"], ans: 1 },
+      { id: 114, q: "When opening the airway using head tilt-chin lift, where should the rescuer's fingertips be placed?", options: ["Soft tissues under the chin", "Under the point of the victim's chin on the bony part", "Directly over the hyoid bone", "On the thyroid cartilage"], ans: 1 },
+      { id: 115, q: "What is the recommended target chest compression depth range for adult CPR?", options: ["At least 3 cm, not exceeding 4 cm", "At least 4 cm, not exceeding 5 cm", "At least 5 cm, not exceeding 6 cm", "Greater than 6 cm"], ans: 2 },
+      { id: 116, q: "What is the recommended chest compression rate per minute for adult cardiac arrest victims?", options: ["80 to 100 compressions per minute", "100 to 120 compressions per minute", "120 to 140 compressions per minute", "Exactly 140 compressions per minute"], ans: 1 },
+      { id: 117, q: "Regarding CPR surfaces in hospital settings, what does the NCORT BLS manual recommend regarding transferring a patient from a mattress to the floor?", options: ["Always transfer to floor immediately", "Moving a patient from the bed to the floor is NOT recommended", "Transfer only if mattress is soft", "Floor compressions are strictly prohibited"], ans: 1 },
+      { id: 118, q: "Is the routine use of backboards recommended during hospital mattress compressions according to the manual?", options: ["Highly recommended for all cardiac arrests", "Not recommended", "Mandatory before giving any ventilation", "Required only in pediatric arrests"], ans: 1 },
+      { id: 119, q: "What guide feature on the face mask should be used for correct positioning during Bag-Valve-Mask ventilation?", options: ["Chin cushion", "Bridge of the nose", "Exhalation port", "Filter connection"], ans: 1 },
+      { id: 120, q: "In the E-C clamp technique, which fingers form the 'C'?", options: ["Thumb and index finger", "Middle and ring fingers", "Index and middle fingers", "Ring and little fingers"], ans: 0 },
+      { id: 121, q: "In the E-C clamp technique, which fingers form the 'E'?", options: ["Thumb, index, and middle fingers", "Remaining three fingers (middle, ring, little fingers) placing pressure under the jaw angle", "Index and thumb", "Thumb and little finger"], ans: 1 },
+      { id: 122, q: "When performing mouth-to-mask ventilation, where should the rescuer position themselves relative to the victim?", options: ["Directly above the victim's head", "At the victim's side", "At the victim's feet", "Facing the victim's chest"], ans: 1 },
+      { id: 123, q: "Where should the first AED electrode pad be applied on an adult victim?", options: ["Left upper chest", "Right upper chest below the clavicle", "Middle of the sternum", "Right flank"], ans: 1 },
+      { id: 124, q: "Where should the second AED electrode pad be applied on an adult victim?", options: ["Right upper chest", "Side of the apex of the heart", "Upper back between scapulae", "Epigastric region"], ans: 1 },
+      { id: 125, q: "What should rescuers do while the AED is analyzing the cardiac rhythm?", options: ["Continue chest compressions continuously", "Deliver 2 rescue breaths", "Ensure that nobody is touching the victim", "Check the carotid pulse"], ans: 2 },
+      { id: 126, q: "What is the first step in placing an unresponsive, normally breathing victim into the recovery position?", options: ["Bend both knees", "Keep both victim's legs straight", "Turn head to the right", "Cross arms over the stomach"], ans: 1 },
+      { id: 127, q: "When placing a victim in the recovery position, how should the arm nearest to the rescuer be positioned?", options: ["Across the chest", "At right angles to the body, elbow bent with hand palm-up", "Straight down along the side", "Under the head"], ans: 1 },
+      { id: 128, q: "How should the upper leg be adjusted after rolling a victim into the recovery position?", options: ["Completely straight", "Both hip and knee bent at right angles", "Tucked under the lower leg", "Extended backwards"], ans: 1 },
+      { id: 129, q: "What is the primary cause of cardio-respiratory arrest in the majority of paediatric cases?", options: ["Primary cardiac arrhythmia", "Respiratory insufficiency", "Congenital heart defects", "Acute coronary syndrome"], ans: 1 },
+      { id: 130, q: "What is the lower age limit cutoff definition for an infant in paediatric BLS guidelines?", options: ["At birth", "More than 30 days old", "6 months old", "1 year old"], ans: 1 },
+      { id: 131, q: "How are neonates defined in terms of age under BLS guidelines?", options: ["Less than 7 days old", "Less than 30 days old", "Less than 3 months old", "Less than 1 year old"], ans: 1 },
+      { id: 132, q: "What initial ventilation step is given to a non-breathing paediatric victim before starting chest compressions?", options: ["2 rescue breaths", "5 initial rescue breaths", "10 rescue breaths", "No rescue breaths; compressions only"], ans: 1 },
+      { id: 133, q: "What compression-to-ventilation ratio is recommended for Healthcare Workers performing paediatric BLS?", options: ["30:2", "15:2", "5:1", "10:1"], ans: 1 },
+      { id: 134, q: "How long should a single healthcare worker undertake CPR on a child before leaving to seek assistance (if no mobile phone is available)?", options: ["About 30 seconds", "About 1 minute", "About 3 minutes", "About 5 minutes"], ans: 1 },
+      { id: 135, q: "In sudden, witnessed collapse of a child where primary shockable rhythm is suspected, a single responder may:", options: ["Perform 5 minutes of CPR first", "Rapidly collect and apply an AED at the time of calling EMS", "Avoid using AED on children", "Perform chest compressions only for 10 minutes"], ans: 1 },
+      { id: 136, q: "What head tilt position is recommended for opening the airway in a child (age 1 to puberty)?", options: ["Past neutral position", "Slightly past neutral position", "Neutral position", "Fully flexed position"], ans: 1 },
+      { id: 137, q: "What head tilt position is recommended for opening the airway in an infant (birth to 1 year)?", options: ["Past neutral position", "Neutral position", "Slightly past neutral position", "Hyperextended position"], ans: 1 },
+      { id: 138, q: "Where is the femoral pulse located during circulation assessment in a child?", options: ["Behind the knee joint", "In the groin, midway between the anterior superior iliac spine and symphysis pubis", "At the inner ankle", "Over the apex of the heart"], ans: 1 },
+      { id: 139, q: "Where should the heel of one hand be placed when performing chest compressions on a child?", options: ["Upper half of the sternum", "Lower half of the sternum (one finger's breadth above xiphisternum)", "Directly over the xiphoid process", "Left intercostal space"], ans: 1 },
+      { id: 140, q: "What depth of chest compression is required for a child?", options: ["At least 2 cm", "At least 1/3 of the depth of the chest, approximately 5 cm", "At least 6 cm", "7 to 8 cm"], ans: 1 },
+      { id: 141, q: "What depth of chest compression is required for an infant?", options: ["At least 2 cm", "At least 1/3 of the depth of the chest, approximately 4 cm", "At least 5 cm", "At least 6 cm"], ans: 1 },
+      { id: 142, q: "Where is the brachial pulse felt in an infant?", options: ["Outer aspect of the wrist", "Inner aspect of the upper arm", "Neck beside the trachea", "Behind the knee"], ans: 1 },
+      { id: 143, q: "What is the preferred chest compression technique for an infant when two rescuers are present?", options: ["Two-finger technique", "Two thumb-encircling hands technique", "One-hand palm technique", "Fist compression technique"], ans: 1 },
+      { id: 144, q: "What is the placement of thumbs in the two thumb-encircling hands technique for infants?", options: ["One thumb over the other on the upper sternum", "Both thumbs flat, side-by-side, on the lower half of the sternum with tips pointing toward head", "Thumbs placed over the ribs", "Thumbs placed on the abdomen"], ans: 1 },
+      { id: 145, q: "How should an unconscious infant who is breathing normally be positioned for recovery?", options: ["Supine with legs elevated", "Near true lateral position with support (e.g. rolled blanket behind back)", "Prone on stomach", "Sitting upright"], ans: 1 },
+      { id: 146, q: "What percentage of sudden cardiac deaths in adults is due to VF / pulseless VT?", options: ["20-30%", "50-60%", "80-90%", "100%"], ans: 2 },
+      { id: 147, q: "Without early CPR and early defibrillation, survival rate in shockable rhythm reduces by how much per minute?", options: ["1-2%", "3-5%", "7-10%", "15-20%"], ans: 2 },
+      { id: 148, q: "Survival rate with early CPR and early defibrillation in shockable cardiac arrest increases to:", options: ["10-20%", "30-70%", "80-95%", "100%"], ans: 1 },
+      { id: 149, q: "For children between 1 and 8 years old, what AED pad system should ideally be used?", options: ["Standard adult pads at all times", "Special paediatric pads with a dose-attenuator system", "Internal defibrillator paddles", "Neonatal micro-pads"], ans: 1 },
+      { id: 150, q: "What pad placement is recommended for infants to avoid contact between AED pads?", options: ["Antero-lateral", "Antero-posterior (front-back)", "Bitemporal", "Both pads on chest side-by-side"], ans: 1 },
+      { id: 151, q: "What delay should be observed before delivering an AED shock if an implanted ICD is actively delivering a shock?", options: ["No delay required", "Allow 30-60 seconds for the implantable device to complete its treatment cycle", "Wait 5 minutes", "Turn off the AED completely"], ans: 1 },
+      { id: 152, q: "Why should transdermal medication patches be removed before placing AED pads?", options: ["They absorb the AED battery power", "They block transfer of energy to the heart and may cause skin burns", "They cause false rhythm diagnosis", "They make the AED short-circuit"], ans: 1 },
+      { id: 153, q: "What defines a mild foreign body airway obstruction (FBAO) in a conscious adult?", options: ["Inability to speak or cough", "Effective cough", "Cyanosis", "Silent gasping"], ans: 1 },
+      { id: 154, q: "Where are back blows delivered when treating a conscious adult with severe FBAO?", options: ["Over the lower lumbar spine", "In the middle of the back between the shoulder blades", "On the nape of the neck", "Over the lower left rib cage"], ans: 1 },
+      { id: 155, q: "In what direction are abdominal thrusts pulled during the Heimlich maneuver on an adult?", options: ["Straight downwards", "Sharply inwards and upwards", "Side to side", "Downwards and outwards"], ans: 1 },
+      { id: 156, q: "How many back blows and abdominal thrusts are alternated during management of conscious severe adult FBAO?", options: ["2 back blows and 2 abdominal thrusts", "5 back blows and 5 abdominal thrusts", "10 back blows and 10 abdominal thrusts", "15 back blows and 2 abdominal thrusts"], ans: 1 },
+      { id: 157, q: "Which sign indicates severe FBAO in a paediatric patient?", options: ["Loud coughing", "Quiet or silent cough / inability to vocalize", "Full responsiveness", "Ability to take a deep breath before coughing"], ans: 1 },
+      { id: 158, q: "Are abdominal thrusts recommended for choking INFANTS (<1 year old)?", options: ["Yes, 5 thrusts", "No, abdominal thrusts are contraindicated; use chest thrusts instead", "Yes, combined with slaps", "Only if conscious"], ans: 1 },
+      { id: 159, q: "What is the landmark for delivering chest thrusts in a choking infant?", options: ["Upper third of sternum", "Lower sternum approximately a finger's breadth above xiphisternum", "Over the stomach", "Over the xiphoid process directly"], ans: 1 },
+      { id: 160, q: "What hand motion is used when attempting to remove an object seen in the mouth of an unconscious choking victim?", options: ["Blind finger sweep", "Single finger sweep motion (only if object is visible)", "Two-finger pincer grasp blindly", "Suction catheter blindly"], ans: 1 },
+      { id: 161, q: "Why are blind finger sweeps strictly discouraged in infant choking management?", options: ["They take too much time", "They can push the object deeper into the pharynx and cause injury", "They induce vomiting", "They cause tongue damage"], ans: 1 },
+      { id: 162, q: "What indication calls for the insertion of an Oropharyngeal Airway (OPA)?", options: ["Semi-conscious patient with intact gag reflex", "Comatose patient or patient with loss of airway reflex", "Patient with severe nasal trauma", "Fully alert choking patient"], ans: 1 },
+      { id: 163, q: "What anatomical landmark measurement determines the correct size for an OPA?", options: ["Tip of the nose to earlobe", "Corner of the mouth to the angle of the jaw", "Center of mouth to neck", "Length of the index finger"], ans: 1 },
+      { id: 164, q: "What is a key caution/contraindication for using an Oropharyngeal Airway (OPA)?", options: ["Unconscious cardiac arrest patient", "Semiconscious patient with gag reflex", "Intubated patient", "Patient with flail chest"], ans: 1 },
+      { id: 165, q: "What anatomical landmark measurement determines the correct size for a Nasopharyngeal Airway (NPA)?", options: ["Angle of mouth to angle of jaw", "Tip of the nose to the tragus of the ear", "Nostril width", "Nose tip to chin"], ans: 1 },
+      { id: 166, q: "What is a specific caution/contraindication for inserting a Nasopharyngeal Airway (NPA)?", options: ["Semi-conscious patient", "Suspected base of skull fracture or ENT bleeding", "Trismus / difficult mouth opening", "Intact gag reflex"], ans: 1 },
+      { id: 167, q: "During BVM ventilation in a COVID-19/pandemic setting, what component MUST be inserted between the bag and mask?", options: ["One-way valve only", "High-efficiency particulate air (HEPA) or heat and moisture exchanger (HME) filter", "Oxygen extension tube", "Nebulizer chamber"], ans: 1 },
+      { id: 168, q: "Does a Laryngeal Mask Airway (LMA) protect against gastric aspiration?", options: ["Yes, completely", "No, LMA does not protect against gastric aspiration", "Only if inflated with maximum air", "Only in paediatric patients"], ans: 1 },
+      { id: 169, q: "What is the recommended LMA size for a patient weighing < 5 kg?", options: ["Size 1", "Size 1.5", "Size 2", "Size 2.5"], ans: 0 },
+      { id: 170, q: "What is the maximum air cuff volume for a Size 1 LMA?", options: ["2 ml", "4 ml", "7 ml", "10 ml"], ans: 1 },
+      { id: 171, q: "What is the recommended LMA size for a patient weighing 10 to 20 kg?", options: ["Size 1.5", "Size 2", "Size 2.5", "Size 3"], ans: 1 },
+      { id: 172, q: "What is the recommended LMA size for a standard adult weighing 50 to 70 kg?", options: ["Size 3", "Size 4", "Size 5", "Size 2.5"], ans: 1 },
+      { id: 173, q: "What is the maximum air cuff volume for a Size 4 LMA?", options: ["20 ml", "30 ml", "40 ml", "50 ml"], ans: 1 },
+      { id: 174, q: "What is the recommended LMA size for a large adult weighing > 70 kg?", options: ["Size 3", "Size 4", "Size 5", "Size 6"], ans: 2 },
+      { id: 175, q: "What is the maximum air cuff volume for a Size 5 LMA?", options: ["30 ml", "40 ml", "50 ml", "60 ml"], ans: 1 },
+      { id: 176, q: "How should an LMA be held during insertion?", options: ["Like a hammer", "Like a pencil", "With both palms", "By the pilot balloon"], ans: 1 },
+      { id: 177, q: "Once an LMA is successfully inserted during adult 2-rescuer CPR, how are compressions and ventilations delivered?", options: ["30 compressions paused for 2 ventilations", "Continuous compressions (100-120/min) with 1 breath every 6 seconds (10 breaths/min)", "15 compressions paused for 2 ventilations", "Continuous compressions with 20-30 breaths/min"], ans: 1 },
+      { id: 178, q: "What level of PPE is required for low-risk non-COVID resuscitation events according to NCORT guidelines?", options: ["Type II fluid resistant surgical mask, eye protection, disposable gloves, apron", "N95 mask, powered air-purifying respirator (PAPR), full suit", "Gloves only", "Surgical mask only"], ans: 0 },
+      { id: 179, q: "Is mouth-to-mouth ventilation permitted during resuscitation of a suspected COVID-19/airborne disease patient?", options: ["Yes, encouraged", "No, strictly prohibited / not recommended", "Permitted only if pocket mask is unavailable", "Permitted for 5 initial breaths"], ans: 1 },
+      { id: 180, q: "What technique should be used by two rescuers during BVM ventilation in a pandemic setting?", options: ["One-hand E-C clamp technique", "Two-hands E-C clamp technique to ensure a tight mask seal", "Single thumb press", "Strap mask to face without hands"], ans: 1 },
+      { id: 181, q: "If a BLS team is less skilled with BVM ventilation during a pandemic, what alternative is recommended?", options: ["Attempt intubation without training", "Place an oxygen mask at 6 L/min on the victim and perform compression-only CPR", "Provide mouth-to-mouth rescue breaths", "Withhold compressions"], ans: 1 },
+      { id: 182, q: "During a pandemic, CPR performed after inserting a Supraglottic Airway (SGA) like LMA should follow which ratio to minimize aerosolization?", options: ["Continuous compressions without pauses", "30:2 compression-to-ventilation ratio", "15:2 ratio", "5:1 ratio"], ans: 1 },
+      { id: 183, q: "Uninterrupted continuous chest compression with 1 ventilation every 6 to 8 seconds during a pandemic is reserved ONLY for patients who are:", options: ["Unintubated", "Intubated with an endotracheal tube", "Managed with BVM", "Conscious"], ans: 1 },
+      { id: 184, q: "When performing CPR on a patient already connected to a mechanical ventilator, rescuers should:", options: ["Disconnect ventilator immediately", "Do not disconnect ventilator circuit, increase FiO2 to 1.0, set ventilator to 10 breaths/min", "Turn off ventilator power", "Switch ventilator to CPAP mode"], ans: 1 },
+      { id: 185, q: "In the summary table of BLS steps (Appendix), what is the compression depth for adults?", options: ["3 to 4 cm", "5 cm to but not more than 6 cm", "At least 1/3 depth (4 cm)", "Greater than 6 cm"], ans: 1 },
+      { id: 186, q: "In the summary table of BLS steps (Appendix), what is the ventilation rate with an advanced airway in paediatrics/infants?", options: ["10 breaths/min (1 breath every 6 seconds)", "20-30 breaths/min (1 breath every 2-3 seconds)", "5-10 breaths/min", "35-40 breaths/min"], ans: 1 },
+      { id: 187, q: "According to the Adult 1-Rescuer CPR checklist, what is checked during the Response step?", options: ["Radial pulse and breathing", "Shoulder tap and asking loudly 'Are you alright?'", "Pupillary light reflex", "Sternal rub"], ans: 1 },
+      { id: 188, q: "According to the Adult 1-Rescuer CPR checklist, what is the maximum time allowed for determining absent/abnormal breathing and pulse?", options: ["5 seconds", "Not more than 10 seconds", "15 seconds", "20 seconds"], ans: 1 },
+      { id: 189, q: "In the 2-Rescuer CPR checklist, what role does the 2nd rescuer take upon arrival with an AED?", options: ["Starts rescue breathing immediately", "Turns on AED, attaches pads, clears victim for analysis, and switches roles", "Takes over pulse check for 30 seconds", "Calls Code Blue while 1st rescuer stops compressions"], ans: 1 },
+      { id: 190, q: "According to the Infant CPR checklist, how is responsiveness assessed in an infant?", options: ["Shaking shoulders", "Shout & speak / call infant and tap baby soles", "Sternal rub", "Pinching chest wall"], ans: 1 },
+      { id: 191, q: "In the Infant CPR checklist, what is given immediately after assessing absent/abnormal breathing?", options: ["30 chest compressions", "5 initial rescue breaths", "15 chest compressions", "2 back blows"], ans: 1 },
+      { id: 192, q: "According to the Adult Choking checklist, if back blows are ineffective in a conscious choking victim, what step follows?", options: ["5 abdominal thrusts", "2 rescue breaths", "CPR compressions", "Blind finger sweep"], ans: 0 },
+      { id: 193, q: "What modification is listed in the Adult Choking checklist for pregnant or very obese victims?", options: ["Abdominal thrusts lower down", "Perform chest thrusts instead of abdominal thrusts", "Back blows only", "Immediate intubation"], ans: 1 },
+      { id: 194, q: "In the Infant Choking checklist, what positioning is used during back blow delivery?", options: ["Upright sitting position", "Head-downwards prone position supporting lower jaw angle", "Supine flat position", "Head elevated position"], ans: 1 },
+      { id: 195, q: "In the Infant Choking checklist, what positioning is used during chest thrust delivery?", options: ["Head-downwards supine position supporting back and occiput", "Prone position", "Upright sitting position", "Lateral position"], ans: 0 },
+      { id: 196, q: "According to the Airway checklist, when inserting an OPA in an adult, when should the 180-degree rotation occur?", options: ["Before entering the mouth", "Once a third of the OPA has been inserted / resistance felt", "After reaching the pharynx completely", "Rotation is not needed"], ans: 1 },
+      { id: 197, q: "According to the Airway checklist, what anatomical part should a pocket mask cover?", options: ["Mouth only", "Nose and mouth", "Nose only", "Chin and mouth"], ans: 1 },
+      { id: 198, q: "In the Airway checklist for LMA insertion, what step is performed on the back of the LMA mask and cuff before insertion?", options: ["Wash with water", "Lubricate back of LMA mask and cuff", "Inflate cuff to maximum volume", "Cut cuff edge"], ans: 1 },
+      { id: 199, q: "According to the Airway checklist, when guiding the LMA manually along the hard and soft palates, when do you stop advancing?", options: ["After 5 cm", "When experiencing definitive resistance", "When cuff reaches teeth", "After 10 seconds"], ans: 1 },
+      { id: 200, q: "Which edition of the BLS Training Manual published by the Ministry of Health Malaysia is this assessment based upon?", options: ["First Edition (2015)", "Second Edition (September 2023)", "Third Edition (2025)", "Guidelines 2010"], ans: 1 }
+    ];
+
+    // STATE MANAGEMENT
+    let currentUser = null;
+    let activeQuestions = [];
+    let currentIndex = 0;
+    let userAnswers = [];
+    let bookmarkedQuestions = new Set();
+    let timerInterval = null;
+    let timeLeft = 45 * 60; // 45 minutes in seconds
+
+    // DOM ELEMENTS
+    const pageAuth = document.getElementById('page-auth');
+    const pageDashboard = document.getElementById('page-dashboard');
+    const pageQuiz = document.getElementById('page-quiz');
+    const pageResults = document.getElementById('page-results');
+    const navUserInfo = document.getElementById('nav-user-info');
+
+    // INITIALIZATION & SESSION CHECK
+    window.onload = () => {
+      const savedSession = localStorage.getItem('bls_active_session');
+      if (savedSession) {
+        currentUser = JSON.parse(savedSession);
+        updateNavUser();
+        showPage('dashboard');
+      } else {
+        showPage('auth');
+      }
+    };
+
+    // 45-MINUTE COUNTDOWN TIMER LOGIC
+    function startTimer() {
+      stopTimer();
+      timeLeft = 45 * 60;
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+
+        if (timeLeft <= 0) {
+          stopTimer();
+          alert("Time is up! Your assessment will now be submitted automatically.");
+          calculateResults();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      const timerText = document.getElementById('quiz-timer-text');
+      if (timerText) timerText.innerText = display;
+
+      const badge = document.getElementById('timer-badge');
+      if (timeLeft <= 300) {
+        badge.className = "flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 font-bold px-3 py-1 rounded-full text-xs animate-pulse";
+      } else {
+        badge.className = "flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 font-bold px-3 py-1 rounded-full text-xs shadow-sm";
+      }
+    }
+
+    // FISHER-YATES SHUFFLE ALGORITHM FOR RANDOM SELECTION
+    function getRandomQuestions(sourcePool, count = 30) {
+      const poolCopy = [...sourcePool];
+      for (let i = poolCopy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [poolCopy[i], poolCopy[j]] = [poolCopy[j], poolCopy[i]];
+      }
+      return poolCopy.slice(0, count);
+    }
+
+    // API WEBHOOK CALLER
+    async function sendWebhookRequest(payload) {
+      if (!GOOGLE_SHEET_WEBHOOK_URL || GOOGLE_SHEET_WEBHOOK_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL")) {
+        console.warn("Google Sheet Webhook URL not configured. Local fallback execution.");
+        return null;
+      }
+      try {
+        const res = await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        return await res.json();
+      } catch (err) {
+        console.error("Webhook network error:", err);
+        return null;
+      }
+    }
+
+    // HELPER: Get registered users from localStorage
+    function getRegisteredUsers() {
+      const users = localStorage.getItem('bls_registered_users');
+      return users ? JSON.parse(users) : [];
+    }
+
+    // REGISTER FUNCTIONALITY
+    async function handleRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-reg-submit');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Registering...</span>`;
+
+      const name = document.getElementById('reg-name').value.trim();
+      const id = document.getElementById('reg-id').value.trim();
+      const dept = document.getElementById('reg-dept').value.trim();
+      const pass = document.getElementById('reg-pass').value;
+
+      const users = getRegisteredUsers();
+      const existingUser = users.find(u => u.id.toLowerCase() === id.toLowerCase());
+      if (existingUser) {
+        alert("This Staff ID / IC Number is already registered locally. Please log in.");
+        btn.disabled = false;
+        btn.innerHTML = `<span>Register Practitioner</span>`;
+        switchTab('login');
+        document.getElementById('login-id').value = id;
+        return;
+      }
+
+      const newUser = { id, name, dept, pass };
+      users.push(newUser);
+      localStorage.setItem('bls_registered_users', JSON.stringify(users));
+
+      await sendWebhookRequest({ action: 'register', id, name, dept, pass });
+
+      currentUser = { id: newUser.id, name: newUser.name, dept: newUser.dept };
+      localStorage.setItem('bls_active_session', JSON.stringify(currentUser));
+
+      alert("Registration successful! Welcome to the BLS Assessment Platform.");
+      btn.disabled = false;
+      btn.innerHTML = `<span>Register Practitioner</span>`;
+      updateNavUser();
+      showPage('dashboard');
+    }
+
+    // LOGIN FUNCTIONALITY
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-login-submit');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Authenticating...</span>`;
+
+      const id = document.getElementById('login-id').value.trim();
+      const pass = document.getElementById('login-pass').value;
+
+      let loginSuccess = false;
+      const remoteRes = await sendWebhookRequest({ action: 'login', id, pass });
+      
+      if (remoteRes && remoteRes.success) {
+        currentUser = remoteRes.user;
+        loginSuccess = true;
+      } else {
+        const users = getRegisteredUsers();
+        const foundUser = users.find(
+          u => u.id.toLowerCase() === id.toLowerCase() && u.pass === pass
+        );
+        if (foundUser) {
+          currentUser = { id: foundUser.id, name: foundUser.name, dept: foundUser.dept };
+          loginSuccess = true;
+        }
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = `<span>Access Assessment</span>`;
+
+      if (loginSuccess) {
+        localStorage.setItem('bls_active_session', JSON.stringify(currentUser));
+        updateNavUser();
+        showPage('dashboard');
+      } else {
+        alert("Invalid Staff ID or Password! Please check your credentials or register.");
+      }
+    }
+
+    // NAVIGATION & SESSION HELPERS
+    function showPage(pageName) {
+      pageAuth.classList.add('hidden');
+      pageDashboard.classList.add('hidden');
+      pageQuiz.classList.add('hidden');
+      pageResults.classList.add('hidden');
+
+      if (pageName === 'auth') pageAuth.classList.remove('hidden');
+      if (pageName === 'dashboard') pageDashboard.classList.remove('hidden');
+      if (pageName === 'quiz') pageQuiz.classList.remove('hidden');
+      if (pageName === 'results') pageResults.classList.remove('hidden');
+    }
+
+    function switchTab(tab) {
+      const loginBtn = document.getElementById('tab-login-btn');
+      const regBtn = document.getElementById('tab-register-btn');
+      const formLogin = document.getElementById('form-login');
+      const formReg = document.getElementById('form-register');
+
+      if (tab === 'login') {
+        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-slate-900 shadow-sm";
+        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-900";
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
+      } else {
+        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-slate-900 shadow-sm";
+        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-900";
+        formReg.classList.remove('hidden');
+        formLogin.classList.add('hidden');
+      }
+    }
+
+    function updateNavUser() {
+      if (currentUser) {
+        document.getElementById('user-display-name').innerText = currentUser.name;
+        document.getElementById('user-display-id').innerText = currentUser.id;
+        navUserInfo.classList.remove('hidden');
+      } else {
+        navUserInfo.classList.add('hidden');
+      }
+    }
+
+    function logout() {
+      stopTimer();
+      localStorage.removeItem('bls_active_session');
+      currentUser = null;
+      updateNavUser();
+      showPage('auth');
+    }
+
+    function goHome() {
+      stopTimer();
+      if (currentUser) showPage('dashboard');
+      else showPage('auth');
+    }
+
+    // QUIZ ENGINE SETUP
+    function startQuiz() {
+      activeQuestions = getRandomQuestions(questionsData, 30);
+      currentIndex = 0;
+      userAnswers = new Array(activeQuestions.length).fill(null);
+      bookmarkedQuestions.clear();
+      renderQuestion();
+      showPage('quiz');
+      startTimer();
+    }
+
+    function renderQuestion() {
+      const q = activeQuestions[currentIndex];
+      document.getElementById('quiz-progress-text').innerText = `Question ${currentIndex + 1} of ${activeQuestions.length}`;
+      
+      const answeredCount = userAnswers.filter(a => a !== null).length;
+      document.getElementById('quiz-answered-count').innerText = `${answeredCount} Answered`;
+
+      const progressPercent = ((currentIndex + 1) / activeQuestions.length) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+
+      document.getElementById('q-text').innerText = `${currentIndex + 1}. ${q.q}`;
+
+      // Render Options
+      const optionsContainer = document.getElementById('q-options');
+      optionsContainer.innerHTML = '';
+
+      const optionPrefixes = ['A', 'B', 'C', 'D'];
+      q.options.forEach((opt, idx) => {
+        const isSelected = userAnswers[currentIndex] === idx;
+        const btn = document.createElement('button');
+        btn.onclick = () => selectOption(idx);
+        btn.className = `w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3 ${
+          isSelected 
+            ? 'bg-brand-50 border-brand-500 ring-2 ring-brand-500/20 text-brand-900 font-semibold' 
+            : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
+        }`;
+
+        btn.innerHTML = `
+          <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+            isSelected ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-500'
+          }">${optionPrefixes[idx]}</span>
+          <span class="text-sm flex-1">${opt}</span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+
+      // Update Bookmark UI
+      const bmBtn = document.getElementById('btn-bookmark');
+      if (bookmarkedQuestions.has(currentIndex)) {
+        bmBtn.className = "text-amber-500 font-bold text-sm flex items-center gap-1.5";
+        bmBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span class="hidden sm:inline">Marked</span>`;
+      } else {
+        bmBtn.className = "text-slate-400 hover:text-amber-500 transition text-sm flex items-center gap-1.5 font-semibold";
+        bmBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i><span class="hidden sm:inline">Review Later</span>`;
+      }
+
+      // Next / Submit Buttons
+      const btnNext = document.getElementById('btn-next');
+      const btnSubmit = document.getElementById('btn-submit');
+      if (currentIndex === activeQuestions.length - 1) {
+        btnNext.classList.add('hidden');
+        btnSubmit.classList.remove('hidden');
+      } else {
+        btnNext.classList.remove('hidden');
+        btnSubmit.classList.add('hidden');
+      }
+
+      // Prev Button State
+      document.getElementById('btn-prev').disabled = currentIndex === 0;
+      document.getElementById('btn-prev').style.opacity = currentIndex === 0 ? "0.5" : "1";
+    }
+
+    function selectOption(index) {
+      userAnswers[currentIndex] = index;
+      renderQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentIndex < activeQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    }
+
+    function toggleBookmark() {
+      if (bookmarkedQuestions.has(currentIndex)) {
+        bookmarkedQuestions.delete(currentIndex);
+      } else {
+        bookmarkedQuestions.add(currentIndex);
+      }
+      renderQuestion();
+    }
+
+    // QUESTION GRID MODAL
+    function toggleGridModal() {
+      const modal = document.getElementById('modal-grid');
+      if (modal.classList.contains('hidden')) {
+        renderGrid();
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function renderGrid() {
+      const container = document.getElementById('grid-container');
+      container.innerHTML = '';
+
+      activeQuestions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.onclick = () => {
+          currentIndex = idx;
+          renderQuestion();
+          toggleGridModal();
+        };
+
+        let styleClass = "bg-slate-100 text-slate-600 border-slate-200"; // Unanswered
+        if (userAnswers[idx] !== null) styleClass = "bg-brand-600 text-white font-bold"; // Answered
+        if (bookmarkedQuestions.has(idx)) styleClass = "bg-amber-400 text-slate-900 font-bold ring-2 ring-amber-500/30"; // Marked
+
+        btn.className = `h-10 rounded-xl text-xs flex items-center justify-center border transition ${styleClass}`;
+        btn.innerText = idx + 1;
+        container.appendChild(btn);
+      });
+    }
+
+    // SUBMIT & CALCULATE RESULTS
+    function confirmSubmit() {
+      const unanswered = userAnswers.filter(a => a === null).length;
+      if (unanswered > 0) {
+        if (!confirm(`You still have ${unanswered} unanswered question(s). Are you sure you want to submit?`)) {
+          return;
+        }
+      }
+      calculateResults();
+    }
+
+    async function calculateResults() {
+      stopTimer();
+      let correct = 0;
+      let incorrect = 0;
+      let skipped = 0;
+
+      activeQuestions.forEach((q, idx) => {
+        if (userAnswers[idx] === null) {
+          skipped++;
+        } else if (userAnswers[idx] === q.ans) {
+          correct++;
+        } else {
+          incorrect++;
+        }
+      });
+
+      const totalScore = correct; // 1 mark per question
+      const totalPossible = activeQuestions.length; // 30
+      const percentage = Math.round((correct / totalPossible) * 100);
+      const status = percentage >= 80 ? "PASSED" : "FAILED";
+
+      document.getElementById('res-score').innerText = `${totalScore} / ${totalPossible}`;
+      document.getElementById('res-percent').innerText = `${percentage}%`;
+      document.getElementById('res-correct').innerText = correct;
+      document.getElementById('res-incorrect').innerText = incorrect;
+      document.getElementById('res-skipped').innerText = skipped;
+
+      const badge = document.getElementById('result-badge');
+      const title = document.getElementById('result-status-title');
+      const sub = document.getElementById('result-status-sub');
+
+      if (percentage >= 80) {
+        badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-emerald-100 text-emerald-600 border-4 border-emerald-300";
+        badge.innerHTML = `<i class="fa-solid fa-award"></i>`;
+        title.innerText = "Congratulations! You Passed";
+        sub.innerText = "You have met the MOH Malaysia Basic Life Support Theory Standard.";
+      } else {
+        badge.className = "w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl bg-rose-100 text-rose-600 border-4 border-rose-300";
+        badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
+        title.innerText = "Assessment Not Cleared";
+        sub.innerText = "Passing threshold is 80% (24/30). Please review the manual and attempt re-test.";
+      }
+
+      // Sync result to Google Sheet Webhook
+      if (currentUser) {
+        await sendWebhookRequest({
+          action: 'saveResult',
+          id: currentUser.id,
+          name: currentUser.name,
+          dept: currentUser.dept || 'N/A',
+          score: `${totalScore} / ${totalPossible}`,
+          percentage: percentage,
+          status: status
+        });
+      }
+
+      showPage('results');
+    }
+
+    function retest() {
+      startQuiz();
+    }
+  </script>
+</body>
+</html>
