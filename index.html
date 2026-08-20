@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emergency & Trauma Department | Hospital Kuala Nerang</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-dark: #030712;
@@ -37,21 +39,78 @@
             flex-direction: column;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- HEADER & TOP USER BAR --- */
         header {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             color: white;
-            padding: 2.5rem 1rem;
+            padding: 2rem 1.5rem;
             text-align: center;
             border-bottom: 2px solid rgba(239, 68, 68, 0.6);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.2);
+            position: relative;
+        }
+
+        .top-user-bar {
+            max-width: 1100px;
+            margin: 0 auto 1.5rem auto;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-badge-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.85rem;
+        }
+
+        .user-badge-info .user-name {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .user-badge-info .user-id {
+            color: var(--accent-cyan);
+            font-size: 0.75rem;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 0.45rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.3);
+            color: #ffffff;
+            border-color: #ef4444;
         }
 
         .main-logo {
-            max-height: 110px;
+            max-height: 100px;
             width: auto;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
             transition: transform 0.3s ease, filter 0.3s ease;
         }
@@ -71,15 +130,15 @@
             padding: 0.35rem 1rem;
             border-radius: 20px;
             text-transform: uppercase;
-            margin-bottom: 0.85rem;
+            margin-bottom: 0.75rem;
             box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         header h1 {
-            font-size: 2.2rem;
+            font-size: 2rem;
             letter-spacing: 1px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.35rem;
             background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -87,7 +146,7 @@
         }
 
         header p {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: var(--accent-cyan);
             letter-spacing: 0.5px;
             text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
@@ -95,11 +154,143 @@
 
         .container {
             max-width: 1100px;
-            margin: 4rem auto;
+            margin: 3rem auto;
             padding: 0 1.5rem;
             flex: 1;
         }
 
+        /* --- AUTH CARD & FORM STYLES --- */
+        .auth-container {
+            max-width: 450px;
+            margin: 2rem auto;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        .auth-card-header {
+            text-align: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .auth-card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+        }
+
+        .auth-card-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(2, 6, 23, 0.8);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 0.65rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab-btn.active {
+            background: linear-gradient(135deg, #0d9488, #0284c7);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #cbd5e1;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+        }
+
+        .form-control::placeholder {
+            color: #475569;
+        }
+
+        .btn-auth-submit {
+            width: 100%;
+            padding: 0.95rem;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-auth-submit:hover {
+            opacity: 0.95;
+            transform: scale(1.01);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+        }
+
+        .btn-auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* --- PORTAL CONTENT STYLES --- */
         .portal-heading {
             text-align: center;
             margin-bottom: 3.5rem;
@@ -124,7 +315,6 @@
             gap: 2rem;
         }
 
-        /* --- FUTURISTIC CARDS --- */
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(16px);
@@ -152,7 +342,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Distinct Title Glows contrasting with dark background */
         .card-bls .card-header {
             background: linear-gradient(180deg, rgba(30, 58, 138, 0.5) 0%, rgba(15, 23, 42, 0) 100%);
         }
@@ -183,7 +372,6 @@
         .card-als .card-title { color: #34d399; text-shadow: 0 0 12px rgba(52, 211, 153, 0.5); }
         .card-tls .card-title { color: #38bdf8; text-shadow: 0 0 12px rgba(56, 189, 248, 0.5); }
 
-        /* --- DARK BLUE / BLACK BUTTON AREA --- */
         .card-body {
             padding: 2rem;
             flex: 1;
@@ -201,7 +389,6 @@
             text-align: center;
         }
 
-        /* --- STYLISH FUTURISTIC BUTTONS --- */
         .btn {
             display: block;
             width: 100%;
@@ -222,7 +409,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
-        /* High-contrast neon colored outlines & button text */
         .btn-bls {
             color: #60a5fa;
             border-color: rgba(96, 165, 250, 0.4);
@@ -356,6 +542,21 @@
 <body>
 
     <header>
+        <!-- LOGGED-IN USER NAV CONTROL -->
+        <div id="nav-user-info" class="top-user-bar hidden">
+            <div class="user-badge-info">
+                <i class="fa-solid fa-user-doctor text-cyan-400"></i>
+                <div>
+                    <span id="user-display-name" class="user-name">---</span>
+                    <span id="user-display-id" class="user-id">(---)</span>
+                </div>
+            </div>
+            <button onclick="logout()" class="btn-logout" title="Log Out">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Log Out</span>
+            </button>
+        </div>
+
         <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Hospital Kuala Nerang Logo" class="main-logo">
         <br>
         <span class="hospital-badge">Jabatan Kecemasan & Trauma</span>
@@ -364,45 +565,105 @@
     </header>
 
     <main class="container">
-        <div class="portal-heading">
-            <h2>Select Training Module</h2>
-            <p>Choose a portal to access learning modules, guidelines, and simulation scenarios.</p>
+        <!-- AUTHENTICATION SCREEN (REGISTER / LOGIN) -->
+        <div id="page-auth" class="auth-container">
+            <div class="auth-card">
+                <div class="auth-card-header">
+                    <h2>Healthcare Practitioner Access</h2>
+                    <p>Register or log in to access clinical learning portals</p>
+                </div>
+
+                <div class="auth-tabs">
+                    <button id="tab-register-btn" onclick="switchTab('register')" class="auth-tab-btn active">Register</button>
+                    <button id="tab-login-btn" onclick="switchTab('login')" class="auth-tab-btn">Log In</button>
+                </div>
+
+                <!-- REGISTER FORM -->
+                <form id="form-register" onsubmit="handleRegister(event)" autocomplete="off">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="reg-name" required placeholder="Dr. / Staff Nurse / MA Name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Staff ID / IC Number</label>
+                        <input type="text" id="reg-id" required placeholder="e.g. MOH88291" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="reg-email" required placeholder="e.g. practitioner@moh.gov.my" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Department / Facility</label>
+                        <input type="text" id="reg-dept" required placeholder="e.g. Emergency & Trauma Dept" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Create Password</label>
+                        <input type="password" id="reg-pass" required placeholder="••••••••" class="form-control" autocomplete="new-password">
+                    </div>
+                    <button type="submit" id="btn-reg-submit" class="btn-auth-submit">
+                        <span>Register Practitioner</span>
+                    </button>
+                </form>
+
+                <!-- LOGIN FORM -->
+                <form id="form-login" onsubmit="handleLogin(event)" class="hidden" autocomplete="off">
+                    <div class="form-group">
+                        <label>Staff ID / IC Number</label>
+                        <input type="text" id="login-id" required placeholder="e.g. MOH88291" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Access Password</label>
+                        <input type="password" id="login-pass" required placeholder="••••••••" class="form-control" autocomplete="current-password">
+                    </div>
+                    <button type="submit" id="btn-login-submit" class="btn-auth-submit">
+                        <span>Access Portal</span>
+                    </button>
+                </form>
+            </div>
         </div>
 
-        <div class="portal-grid">
-            <!-- BLS Training Card -->
-            <div class="card card-bls">
-                <div class="card-header">
-                    <div class="card-icon">🫀</div>
-                    <h3 class="card-title">BLS TRAINING</h3>
-                </div>
-                <div class="card-body">
-                    <p>Basic Life Support modules covering CPR algorithms, AED operations, airway management, and high-quality resuscitation fundamentals.</p>
-                    <a href="blsmcq.html" target="_blank" rel="noopener noreferrer" class="btn btn-bls">Enter BLS Portal &rarr;</a>
-                </div>
+        <!-- PORTAL SELECTION MODULE (DISPLAYED ONLY AFTER LOG IN) -->
+        <div id="page-portal" class="hidden">
+            <div class="portal-heading">
+                <h2>Select Training Module</h2>
+                <p>Choose a portal to access learning modules, guidelines, and simulation scenarios.</p>
             </div>
 
-            <!-- ALS Simulator Card -->
-            <div class="card card-als">
-                <div class="card-header">
-                    <div class="card-icon">⚡</div>
-                    <h3 class="card-title">ALS SIMULATOR</h3>
+            <div class="portal-grid">
+                <!-- BLS Training Card -->
+                <div class="card card-bls">
+                    <div class="card-header">
+                        <div class="card-icon">🫀</div>
+                        <h3 class="card-title">BLS TRAINING</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Basic Life Support modules covering CPR algorithms, AED operations, airway management, and high-quality resuscitation fundamentals.</p>
+                        <a href="blsmcq.html" target="_blank" rel="noopener noreferrer" class="btn btn-bls">Enter BLS Portal &rarr;</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p>Advanced Life Support scenario generators, ECG interpretation, emergency pharmacology, and interactive team-based resuscitation algorithms.</p>
-                    <a href="monitors.html" target="_blank" rel="noopener noreferrer" class="btn btn-als">Enter ALS Simulator &rarr;</a>
-                </div>
-            </div>
 
-            <!-- ALS Online Learning Card -->
-            <div class="card card-tls">
-                <div class="card-header">
-                    <div class="card-icon">📚</div>
-                    <h3 class="card-title">ALS ONLINE LEARNING</h3>
+                <!-- ALS Simulator Card -->
+                <div class="card card-als">
+                    <div class="card-header">
+                        <div class="card-icon">⚡</div>
+                        <h3 class="card-title">ALS SIMULATOR</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Advanced Life Support scenario generators, ECG interpretation, emergency pharmacology, and interactive team-based resuscitation algorithms.</p>
+                        <a href="monitors.html" target="_blank" rel="noopener noreferrer" class="btn btn-als">Enter ALS Simulator &rarr;</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p>Interactive Advanced Life Support MCQ question bank featuring 200 comprehensive scenarios, timed 45-minute exam mode, and instant scoring feedback.</p>
-                    <a href="alsmcq.html" target="_blank" rel="noopener noreferrer" class="btn btn-tls">Enter ALS MCQ Portal &rarr;</a>
+
+                <!-- ALS Online Learning Card -->
+                <div class="card card-tls">
+                    <div class="card-header">
+                        <div class="card-icon">📚</div>
+                        <h3 class="card-title">ALS ONLINE LEARNING</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Interactive Advanced Life Support MCQ question bank featuring 200 comprehensive scenarios, timed 45-minute exam mode, and instant scoring feedback.</p>
+                        <a href="alsmcq.html" target="_blank" rel="noopener noreferrer" class="btn btn-tls">Enter ALS MCQ Portal &rarr;</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -427,5 +688,177 @@
         </div>
     </footer>
 
+    <!-- AUTHENTICATION & WEBHOOK SCRIPT -->
+    <script>
+        // GOOGLE APPS SCRIPT WEBHOOK DEPLOYMENT URL
+        const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwKLAGcxIj5Z1GhbHgeOEKIRLvb0oNG8g2xrCNtF5tgaHUKjlvkJKw0XUNIAeRkfpfd/exec";
+
+        let currentUser = null;
+
+        window.onload = () => {
+            document.getElementById('form-login')?.reset();
+            document.getElementById('form-register')?.reset();
+
+            const savedSession = localStorage.getItem('edhkn_active_session');
+            if (savedSession) {
+                currentUser = JSON.parse(savedSession);
+                updateNavUser();
+                showPortal();
+            } else {
+                switchTab('register');
+                showAuth();
+            }
+        };
+
+        async function sendWebhookRequest(payload) {
+            if (!GOOGLE_SHEET_WEBHOOK_URL || GOOGLE_SHEET_WEBHOOK_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL")) {
+                console.warn("Google Sheet Webhook URL not configured. Local fallback execution.");
+                return null;
+            }
+            try {
+                const res = await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                return await res.json();
+            } catch (err) {
+                console.error("Webhook network error:", err);
+                return null;
+            }
+        }
+
+        function getRegisteredUsers() {
+            const users = localStorage.getItem('edhkn_registered_users');
+            return users ? JSON.parse(users) : [];
+        }
+
+        function switchTab(tab) {
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+            const formLogin = document.getElementById('form-login');
+            const formReg = document.getElementById('form-register');
+
+            formLogin.reset();
+            formReg.reset();
+
+            if (tab === 'register') {
+                regBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                formReg.classList.remove('hidden');
+                formLogin.classList.add('hidden');
+            } else {
+                loginBtn.classList.add('active');
+                regBtn.classList.remove('active');
+                formLogin.classList.remove('hidden');
+                formReg.classList.add('hidden');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-reg-submit');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Registering...</span>`;
+
+            const name = document.getElementById('reg-name').value.trim();
+            const id = document.getElementById('reg-id').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const dept = document.getElementById('reg-dept').value.trim();
+            const pass = document.getElementById('reg-pass').value;
+
+            const users = getRegisteredUsers();
+            const existingUser = users.find(u => u.id.toLowerCase() === id.toLowerCase());
+            if (existingUser) {
+                alert("This Staff ID / IC Number is already registered locally. Please log in.");
+                btn.disabled = false;
+                btn.innerHTML = `<span>Register Practitioner</span>`;
+                switchTab('login');
+                document.getElementById('login-id').value = id;
+                return;
+            }
+
+            const newUser = { id, name, email, dept, pass };
+            users.push(newUser);
+            localStorage.setItem('edhkn_registered_users', JSON.stringify(users));
+
+            await sendWebhookRequest({ action: 'register', id, name, email, dept, pass });
+
+            currentUser = { id: newUser.id, name: newUser.name, email: newUser.email, dept: newUser.dept };
+            localStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
+
+            alert("Registration successful! Welcome to EDHKN Portal.");
+            btn.disabled = false;
+            btn.innerHTML = `<span>Register Practitioner</span>`;
+            updateNavUser();
+            showPortal();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login-submit');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Authenticating...</span>`;
+
+            const id = document.getElementById('login-id').value.trim();
+            const pass = document.getElementById('login-pass').value;
+
+            let loginSuccess = false;
+            const remoteRes = await sendWebhookRequest({ action: 'login', id, pass });
+
+            if (remoteRes && remoteRes.success) {
+                currentUser = remoteRes.user;
+                loginSuccess = true;
+            } else {
+                const users = getRegisteredUsers();
+                const foundUser = users.find(
+                    u => u.id.toLowerCase() === id.toLowerCase() && u.pass === pass
+                );
+                if (foundUser) {
+                    currentUser = { id: foundUser.id, name: foundUser.name, email: foundUser.email, dept: foundUser.dept };
+                    loginSuccess = true;
+                }
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = `<span>Access Portal</span>`;
+
+            if (loginSuccess) {
+                localStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
+                updateNavUser();
+                showPortal();
+            } else {
+                alert("Invalid Staff ID or Password! Please check your credentials.");
+            }
+        }
+
+        function showAuth() {
+            document.getElementById('page-auth').classList.remove('hidden');
+            document.getElementById('page-portal').classList.add('hidden');
+            document.getElementById('nav-user-info').classList.add('hidden');
+        }
+
+        function showPortal() {
+            document.getElementById('page-auth').classList.add('hidden');
+            document.getElementById('page-portal').classList.remove('hidden');
+        }
+
+        function updateNavUser() {
+            if (currentUser) {
+                document.getElementById('user-display-name').innerText = currentUser.name;
+                document.getElementById('user-display-id').innerText = `(${currentUser.id})`;
+                document.getElementById('nav-user-info').classList.remove('hidden');
+            } else {
+                document.getElementById('nav-user-info').classList.add('hidden');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('edhkn_active_session');
+            currentUser = null;
+            showAuth();
+            switchTab('register');
+        }
+    </script>
 </body>
 </html>
