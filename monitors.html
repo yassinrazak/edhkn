@@ -47,6 +47,7 @@
       --neon-blue: #00e5ff;
       --neon-red: #ff3b30;
       --neon-yellow: #ffcc00;
+      --neon-purple: #cc99ff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -189,6 +190,21 @@
       display: none;
       z-index: 20;
       animation: pulse 1s infinite;
+    }
+    .pacer-indicator {
+      position: absolute;
+      top: 10px; left: 130px;
+      padding: 4px 10px;
+      border: 2px solid var(--neon-blue);
+      background: rgba(0, 229, 255, 0.2);
+      color: var(--neon-blue);
+      border-radius: 4px;
+      font-weight: bold;
+      font-family: monospace;
+      font-size: 0.9rem;
+      display: none;
+      z-index: 20;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
     }
     .defib-status {
       position: absolute;
@@ -403,6 +419,7 @@
         <div class="canvas-container">
           <div id="m-status-overlay" class="status-overlay">CPR IN PROGRESS</div>
           <div id="m-sync-mode" class="sync-indicator">SYNC MODE</div>
+          <div id="m-pacer-mode" class="pacer-indicator">PACER ACTIVE</div>
           <div id="m-defib-status" class="defib-status"></div>
           <canvas id="ecgCanvas"></canvas>
         </div>
@@ -532,12 +549,13 @@
           </div>
         </div>
 
-        <!-- DEFIBRILLATOR (2 Cols) -->
+        <!-- DEFIBRILLATOR & PACER CONSOLE (3 Cols) -->
         <div class="ctrl-card col-span-12 sm:col-span-6 lg:col-span-2 border-red-900/50 bg-red-950/10">
-          <div class="ctrl-title border-red-900 text-red-400">3. Defib / Cardioverter</div>
+          <div class="ctrl-title border-red-900 text-red-400">3. Defib / Pacer Console</div>
           <div class="space-y-2 font-mono">
+            <!-- DEFIB SECTION -->
             <div>
-              <label class="text-[10px] text-gray-400 block mb-0.5">Joules:</label>
+              <label class="text-[10px] text-gray-400 block mb-0.5">Defib Joules:</label>
               <select id="defib-joules" class="w-full text-center text-sm font-bold text-yellow-400 bg-slate-900 border border-slate-700 rounded py-1" onchange="pushState()">
                 <option value="50">50 J</option>
                 <option value="100">100 J</option>
@@ -548,8 +566,44 @@
               </select>
             </div>
             <button id="btn-sync" onclick="toggleSyncMode()" class="w-full py-1 bg-gray-800 text-red-400 font-bold rounded text-xs hover:bg-gray-700">SYNC MODE: OFF</button>
-            <button onclick="triggerCharge()" class="w-full py-2 bg-yellow-600 hover:bg-yellow-500 text-black font-extrabold rounded text-xs shadow">⚡ CHARGE</button>
-            <button onclick="triggerShock()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded text-xs tracking-wider shadow animate-pulse">💥 DELIVER SHOCK</button>
+            <div class="grid grid-cols-2 gap-1">
+              <button onclick="triggerCharge()" class="py-1.5 bg-yellow-600 hover:bg-yellow-500 text-black font-extrabold rounded text-[11px] shadow">⚡ CHARGE</button>
+              <button onclick="triggerShock()" class="py-1.5 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded text-[11px] tracking-wider shadow">💥 SHOCK</button>
+            </div>
+
+            <div class="border-t border-gray-800 pt-1.5 mt-1">
+              <!-- PACER SECTION -->
+              <div class="ctrl-title border-cyan-900 text-cyan-400 mb-1">Transcutaneous Pacer</div>
+              
+              <button id="btn-pacer" onclick="togglePacerActive()" class="w-full py-1 bg-gray-800 text-cyan-400 font-bold rounded text-xs hover:bg-gray-700 mb-1.5">
+                ⚡ PACING: OFF
+              </button>
+
+              <div class="flex gap-1 mb-1.5">
+                <button id="btn-pacer-mode-demand" onclick="setPacerMode('DEMAND')" class="flex-1 py-0.5 bg-cyan-950 border border-cyan-500 text-cyan-300 font-bold text-[10px] rounded">
+                  DEMAND
+                </button>
+                <button id="btn-pacer-mode-fixed" onclick="setPacerMode('FIXED')" class="flex-1 py-0.5 bg-gray-800 border border-gray-700 text-gray-400 font-bold text-[10px] rounded">
+                  FIXED
+                </button>
+              </div>
+
+              <div class="space-y-1 text-[11px]">
+                <div>
+                  <div class="flex justify-between items-center mb-0.5">
+                    <label class="text-cyan-300 font-bold">Pacer Rate (PPM): <span id="pacer-rate-val" class="text-white">60</span></label>
+                  </div>
+                  <input type="range" id="pacer-rate" min="30" max="180" value="60" class="w-full accent-cyan-400 cursor-pointer" oninput="updatePacerLabels(); pushState();">
+                </div>
+
+                <div>
+                  <div class="flex justify-between items-center mb-0.5">
+                    <label class="text-cyan-300 font-bold">Output (mA): <span id="pacer-amp-val" class="text-white">0</span></label>
+                  </div>
+                  <input type="range" id="pacer-amp" min="0" max="200" value="0" class="w-full accent-cyan-400 cursor-pointer" oninput="updatePacerLabels(); pushState();">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -637,6 +691,7 @@
       document.getElementById('nav-user-info').classList.remove('hidden');
       document.getElementById('nav-user-info').classList.add('flex');
       updateVitalLabels();
+      updatePacerLabels();
       resizeCanvas();
     }
 
@@ -660,6 +715,11 @@
       document.getElementById('v-etco2-val').innerText = document.getElementById('v-etco2').value;
     }
 
+    function updatePacerLabels() {
+      document.getElementById('pacer-rate-val').innerText = document.getElementById('pacer-rate').value;
+      document.getElementById('pacer-amp-val').innerText = document.getElementById('pacer-amp').value;
+    }
+
     // --- STATE MANAGEMENT ---
     let state = {
       rhythm: 'NSR',
@@ -670,6 +730,10 @@
       defibJoules: 200,
       chargeEvent: null,
       shockEvent: null,
+      pacerActive: false,
+      pacerMode: 'DEMAND', // 'DEMAND' or 'FIXED'
+      pacerRate: 60,
+      pacerAmp: 0,
       vitals: { hr: '75', bpSys: '120', bpDia: '80', spo2: '98', etco2: '38', rr: '16' },
       patient: { age: '65', gender: 'M', comorbidities: ['CAD', 'HTN', 'DM2'] }
     };
@@ -694,6 +758,9 @@
       state.vitals.rr = document.getElementById('v-rr').value || '16';
       state.vitals.etco2 = document.getElementById('v-etco2').value || '38';
       state.defibJoules = parseInt(document.getElementById('defib-joules').value, 10);
+      
+      state.pacerRate = parseInt(document.getElementById('pacer-rate').value, 10);
+      state.pacerAmp = parseInt(document.getElementById('pacer-amp').value, 10);
 
       syncChannel.postMessage(state);
       updateUIFromState();
@@ -752,6 +819,31 @@
       btn.innerText = state.syncMode ? 'SYNC MODE: ON' : 'SYNC MODE: OFF';
       btn.className = state.syncMode ? 'w-full py-1 bg-red-900 text-white font-bold rounded text-xs animate-pulse' : 'w-full py-1 bg-gray-800 text-red-400 font-bold rounded text-xs';
       logEvent(`Sync Mode: ${state.syncMode ? 'ENABLED' : 'DISABLED'}`);
+      pushState();
+    }
+
+    function togglePacerActive() {
+      state.pacerActive = !state.pacerActive;
+      const btn = document.getElementById('btn-pacer');
+      btn.innerText = state.pacerActive ? '⚡ PACING: ON' : '⚡ PACING: OFF';
+      btn.className = state.pacerActive ? 'w-full py-1 bg-cyan-900 text-cyan-200 border border-cyan-400 font-bold rounded text-xs animate-pulse mb-1.5' : 'w-full py-1 bg-gray-800 text-cyan-400 font-bold rounded text-xs hover:bg-gray-700 mb-1.5';
+      logEvent(`Transcutaneous Pacer: ${state.pacerActive ? 'ON' : 'OFF'}`);
+      pushState();
+    }
+
+    function setPacerMode(mode) {
+      state.pacerMode = mode;
+      const btnDemand = document.getElementById('btn-pacer-mode-demand');
+      const btnFixed = document.getElementById('btn-pacer-mode-fixed');
+
+      if (mode === 'DEMAND') {
+        btnDemand.className = 'flex-1 py-0.5 bg-cyan-950 border border-cyan-500 text-cyan-300 font-bold text-[10px] rounded';
+        btnFixed.className = 'flex-1 py-0.5 bg-gray-800 border border-gray-700 text-gray-400 font-bold text-[10px] rounded';
+      } else {
+        btnFixed.className = 'flex-1 py-0.5 bg-cyan-950 border border-cyan-500 text-cyan-300 font-bold text-[10px] rounded';
+        btnDemand.className = 'flex-1 py-0.5 bg-gray-800 border border-gray-700 text-gray-400 font-bold text-[10px] rounded';
+      }
+      logEvent(`Pacer Mode set to: ${mode}`);
       pushState();
     }
 
@@ -837,6 +929,11 @@
       ctx.moveTo(x, y - 80); ctx.lineTo(x, y + 25); ctx.stroke(); ctx.restore(); ctx.beginPath(); ctx.moveTo(x, y);
     }
 
+    function drawPacerSpike(x, y) {
+      ctx.save(); ctx.beginPath(); ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 3; ctx.shadowColor = '#00e5ff'; ctx.shadowBlur = 8;
+      ctx.moveTo(x, y - 75); ctx.lineTo(x, y + 25); ctx.stroke(); ctx.restore(); ctx.beginPath(); ctx.moveTo(x, y);
+    }
+
     function drawECG() {
       resizeCanvas();
       const prevX = xOffset, nextX = xOffset + 3, wrapped = nextX >= canvas.width;
@@ -865,6 +962,22 @@
         let prOffset = 0;
         let qrsDepth = canvas.height * 0.25;
         let effectiveGap = baseBeatGap;
+
+        // --- TRANSCUTANEOUS PACING CALCULATIONS ---
+        let pacerBeatGap = 5400 / Math.max(30, state.pacerRate);
+        let pacerCycle = globalX % Math.round(pacerBeatGap);
+        let prevPacerCycle = (globalX - 3) % Math.round(pacerBeatGap);
+        let isPacerSpikeFired = false;
+
+        if (state.pacerActive) {
+          if (state.pacerMode === 'FIXED') {
+            if (prevPacerCycle <= 3 && pacerCycle > 3) isPacerSpikeFired = true;
+          } else { // DEMAND MODE
+            if (currentHR < state.pacerRate && prevPacerCycle <= 3 && pacerCycle > 3) {
+              isPacerSpikeFired = true;
+            }
+          }
+        }
 
         // --- 1. SINUS ARRHYTHMIA ---
         if (r === 'SINUS_ARRHYTHMIA') {
@@ -992,6 +1105,22 @@
             if (state.syncMode && isQRS && prevCycle <= 2 && cycle > 2) drawSyncSpike(xOffset, y);
           }
         }
+
+        // DRAW PACING SPIKE & OVERRIDE WITH PACED QRS ON CAPTURE
+        if (isPacerSpikeFired) {
+          drawPacerSpike(xOffset, y);
+        }
+
+        // If Pacing is Active & Output current (Amp) >= 50mA (Threshold Capture), drive paced beat
+        if (state.pacerActive && state.pacerAmp >= 50) {
+          if (pacerCycle >= 0 && pacerCycle < 14) {
+            let pProg = pacerCycle / 14;
+            y -= Math.sin(pProg * Math.PI) * (qrsDepth * 1.4); // Wide ventricular capture QRS
+          } else if (pacerCycle >= 14 && pacerCycle < 24) {
+            let tProg = (pacerCycle - 14) / 10;
+            y += Math.sin(tProg * Math.PI) * 14; // Discordant T wave
+          }
+        }
       }
 
       ctx.beginPath();
@@ -1004,13 +1133,28 @@
     // --- MONITOR DISPLAY UPDATER ---
     function updateMonitorDisplay() {
       document.getElementById('m-sync-mode').style.display = state.syncMode ? 'block' : 'none';
+      
+      const pacerEl = document.getElementById('m-pacer-mode');
+      if (state.pacerActive) {
+        pacerEl.style.display = 'block';
+        pacerEl.innerText = `PACER: ${state.pacerRate} PPM @ ${state.pacerAmp} mA [${state.pacerMode}]`;
+      } else {
+        pacerEl.style.display = 'none';
+      }
+
       if (state.rhythm === 'OFF') {
         ['m-v-hr', 'm-v-bp', 'm-v-spo2', 'm-v-etco2', 'm-v-rr'].forEach(id => document.getElementById(id).innerText = '--');
         document.getElementById('m-status-overlay').style.display = 'none';
         return;
       }
 
-      document.getElementById('m-v-hr').innerText = state.vitals.hr || '--';
+      // Display effective HR (pacing rate if capturing)
+      let displayedHR = state.vitals.hr;
+      if (state.pacerActive && state.pacerAmp >= 50 && state.pacerRate > parseInt(state.vitals.hr, 10)) {
+        displayedHR = state.pacerRate;
+      }
+      document.getElementById('m-v-hr').innerText = displayedHR || '--';
+
       const isArrest = arrestRhythms.includes(state.rhythm);
       const showVitals = !state.cprActive && !isArrest;
 
@@ -1043,11 +1187,17 @@
 
     function playRhythmTone() {
       if (rhythmAudioStopped || !audioContext || audioContext.state !== 'running' || state.rhythm === 'OFF') return;
-      const hr = parseInt(state.vitals.hr, 10) || 60, interval = Math.max(180, Math.min(1400, 60000 / hr));
+      
+      let effectiveHR = parseInt(state.vitals.hr, 10) || 60;
+      if (state.pacerActive && state.pacerAmp >= 50 && state.pacerRate > effectiveHR) {
+        effectiveHR = state.pacerRate;
+      }
+
+      const interval = Math.max(180, Math.min(1400, 60000 / effectiveHR));
       if (Date.now() % Math.round(interval) > 280) return;
       const osc = audioContext.createOscillator(), gain = audioContext.createGain();
       osc.type = (state.rhythm === 'VFIB' || state.rhythm === 'POLYMORPHIC_VT') ? 'sawtooth' : 'sine';
-      osc.frequency.value = state.rhythm === 'ASYSTOLE' ? 180 : 520;
+      osc.frequency.value = state.rhythm === 'ASYSTOLE' ? 180 : (state.pacerActive && state.pacerAmp >= 50 ? 640 : 520);
       gain.gain.setValueAtTime(0.0001, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(0.07, audioContext.currentTime + 0.01); gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.12);
       osc.connect(gain).connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime + 0.13);
     }
