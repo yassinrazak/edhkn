@@ -291,7 +291,7 @@
     </div>
 
     <!-- PAGE 4: RESULTS SCREEN -->
-    <div id="page-results" class="hidden max-w-2xl mx-auto w-full">
+    <div id="page-results" class="hidden max-w-3xl mx-auto w-full">
       <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
         
         <div id="result-badge" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl"></div>
@@ -336,6 +336,9 @@
             <span>Re-Test Assessment (New 30 Questions)</span>
           </button>
         </div>
+
+        <!-- DETAILED QUESTION REVIEW CONTAINER -->
+        <div id="review-container" class="space-y-4 text-left pt-6 border-t border-slate-800"></div>
       </div>
     </div>
 
@@ -852,7 +855,6 @@
 
     // QUIZ ENGINE SETUP
     function startQuiz() {
-      // FIX 1: Point to rawQuestions array
       activeQuestions = getRandomQuestions(rawQuestions, 30);
       currentIndex = 0;
       userAnswers = new Array(activeQuestions.length).fill(null);
@@ -875,7 +877,6 @@
       // Set dynamic category tag
       document.getElementById('q-category').innerText = `ALS - ${q.category || 'MOH Guideline'}`;
 
-      // FIX 2: Use q.question property instead of q.q
       document.getElementById('q-text').innerText = `${currentIndex + 1}. ${q.question}`;
 
       // Render Options
@@ -1009,7 +1010,6 @@
       activeQuestions.forEach((q, idx) => {
         if (userAnswers[idx] === null) {
           skipped++;
-        // FIX 3: Use q.answer property instead of q.ans
         } else if (userAnswers[idx] === q.answer) {
           correct++;
         } else {
@@ -1044,6 +1044,9 @@
         sub.innerText = "Passing threshold is 80% (24/30). Please review the manual and attempt re-test.";
       }
 
+      // RENDER DETAILED QUESTION BREAKDOWN (CORRECT, WRONG & EXPLANATIONS)
+      renderDetailedReview();
+
       // Sync result to Google Sheet Webhook
       if (currentUser) {
         await sendWebhookRequest({
@@ -1058,6 +1061,78 @@
       }
 
       showPage('results');
+    }
+
+    // DETAILED ANSWER REVIEW RENDERING
+    function renderDetailedReview() {
+      const reviewContainer = document.getElementById('review-container');
+      if (!reviewContainer) return;
+
+      reviewContainer.innerHTML = `
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-clipboard-check text-brand-400"></i>
+            <span>Detailed Question Review</span>
+          </h3>
+          <span class="text-xs text-slate-400 font-medium">Review your answers and explanations below</span>
+        </div>
+      `;
+
+      const optionPrefixes = ['A', 'B', 'C', 'D'];
+
+      activeQuestions.forEach((q, idx) => {
+        const userChoice = userAnswers[idx];
+        const isCorrect = userChoice === q.answer;
+        const isSkipped = userChoice === null;
+
+        let statusBadge = '';
+        let borderClass = '';
+
+        if (isCorrect) {
+          statusBadge = `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Correct</span>`;
+          borderClass = 'border-emerald-500/30';
+        } else if (isSkipped) {
+          statusBadge = `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1"><i class="fa-solid fa-circle-minus"></i> Skipped</span>`;
+          borderClass = 'border-amber-500/30';
+        } else {
+          statusBadge = `<span class="bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1"><i class="fa-solid fa-circle-xmark"></i> Incorrect</span>`;
+          borderClass = 'border-rose-500/30';
+        }
+
+        const userAnsText = isSkipped 
+          ? '<span class="text-amber-400 font-semibold italic">No option selected</span>' 
+          : `<span class="${isCorrect ? 'text-emerald-400 font-semibold' : 'text-rose-400 font-semibold'}">${optionPrefixes[userChoice]}: ${q.options[userChoice]}</span>`;
+        
+        const correctAnsText = `<span class="text-emerald-400 font-semibold">${optionPrefixes[q.answer]}: ${q.options[q.answer]}</span>`;
+
+        const card = document.createElement('div');
+        card.className = `bg-slate-900/90 rounded-2xl p-5 border ${borderClass} space-y-3 transition`;
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-bold text-brand-400 uppercase tracking-wider bg-brand-500/10 border border-brand-500/20 px-2.5 py-0.5 rounded-lg">
+              ${q.category || 'MOH ALS'} • Question ${idx + 1}
+            </span>
+            ${statusBadge}
+          </div>
+
+          <p class="text-sm font-bold text-white leading-relaxed">${idx + 1}. ${q.question}</p>
+
+          <div class="text-xs space-y-1.5 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/80">
+            <p><span class="text-slate-400 font-semibold">Your Answer:</span> ${userAnsText}</p>
+            ${!isCorrect ? `<p><span class="text-slate-400 font-semibold">Correct Answer:</span> ${correctAnsText}</p>` : ''}
+          </div>
+
+          <div class="p-3.5 bg-brand-500/10 border border-brand-500/20 rounded-xl text-xs text-slate-300 leading-relaxed space-y-1">
+            <p class="font-bold text-brand-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-lightbulb text-amber-400"></i> Explanation:
+            </p>
+            <p>${q.explanation || 'No detailed explanation available.'}</p>
+          </div>
+        `;
+
+        reviewContainer.appendChild(card);
+      });
     }
 
     function retest() {
