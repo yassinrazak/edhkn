@@ -730,7 +730,11 @@
             document.getElementById('form-login')?.reset();
             document.getElementById('form-register')?.reset();
 
-            const savedSession = localStorage.getItem('edhkn_active_session');
+            // Clear legacy persistent localStorage active sessions if present
+            localStorage.removeItem('edhkn_active_session');
+
+            // Use sessionStorage so active login terminates on browser/tab exit
+            const savedSession = sessionStorage.getItem('edhkn_active_session');
             if (savedSession) {
                 currentUser = JSON.parse(savedSession);
                 updateNavUser();
@@ -816,7 +820,7 @@
             await sendWebhookRequest({ action: 'register', id, name, email, dept, pass });
 
             currentUser = { id: newUser.id, name: newUser.name, email: newUser.email, dept: newUser.dept };
-            localStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
+            sessionStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
 
             alert("Registration successful! Welcome to EDHKN Portal.");
             btn.disabled = false;
@@ -855,7 +859,7 @@
             btn.innerHTML = `<span>Access Portal</span>`;
 
             if (loginSuccess) {
-                localStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
+                sessionStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
                 updateNavUser();
                 showPortal();
             } else {
@@ -885,6 +889,7 @@
         }
 
         function logout() {
+            sessionStorage.removeItem('edhkn_active_session');
             localStorage.removeItem('edhkn_active_session');
             currentUser = null;
             showAuth();
