@@ -60,7 +60,7 @@
   <div class="fixed top-0 left-1/4 -translate-x-1/2 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[140px] pointer-events-none"></div>
   <div class="fixed bottom-0 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[140px] pointer-events-none"></div>
 
-  <!-- HEADER / NAVIGATION (Visible on all pages) -->
+  <!-- HEADER / NAVIGATION -->
   <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <!-- HEADER LOGO -->
@@ -76,11 +76,11 @@
         </div>
       </div>
 
-      <!-- USER PROFILE / CONTROLS (VISIBLE AFTER LOG IN) -->
-      <div id="nav-user-info" class="hidden flex items-center space-x-3 sm:space-x-4">
+      <!-- USER PROFILE / CONTROLS -->
+      <div id="nav-user-info" class="flex items-center space-x-3 sm:space-x-4">
         <div class="text-right hidden sm:block">
-          <p id="user-display-name" class="text-sm font-bold text-white"></p>
-          <p id="user-display-id" class="text-xs text-slate-400"></p>
+          <p id="user-display-name" class="text-sm font-bold text-white">Healthcare Practitioner</p>
+          <p id="user-display-id" class="text-xs text-slate-400">MOH-GUEST</p>
         </div>
 
         <!-- LINK TO BLS LEARNING MANUAL PDF -->
@@ -93,7 +93,7 @@
           <i class="fa-solid fa-border-all"></i>
           <span>Question Grid</span>
         </button>
-        <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Log Out">
+        <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Exit Module">
           <i class="fa-solid fa-right-from-bracket text-lg"></i>
         </button>
       </div>
@@ -103,73 +103,8 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 flex flex-col justify-center relative z-10">
 
-    <!-- PAGE 1: LANDING & AUTH PAGE -->
-    <div id="page-auth" class="w-full max-w-md mx-auto">
-      <div class="glass-card rounded-3xl p-8 shadow-2xl relative overflow-hidden text-center">
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-brand-500/20 rounded-full blur-2xl"></div>
-        
-        <!-- TOP LANDING PAGE LOGO -->
-        <div class="mb-6">
-          <img id="img-landing-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="BLS Certification Logo" class="h-20 w-auto mx-auto object-contain drop-shadow-md">
-        </div>
-
-        <div class="mb-6">
-          <h2 class="text-2xl font-extrabold text-white">Healthcare Worker Portal</h2>
-          <p class="text-xs text-slate-400 mt-1">Malaysia Ministry of Health BLS Certification</p>
-        </div>
-
-        <!-- AUTH TABS (REGISTER DEFAULT) -->
-        <div class="flex rounded-xl bg-slate-950/80 p-1 mb-6 border border-slate-800/80">
-          <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm">Register</button>
-          <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white">Log In</button>
-        </div>
-
-        <!-- REGISTER FORM (DEFAULT ACTIVE) -->
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left" autocomplete="off">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
-            <input type="text" id="reg-name" required autocomplete="off" placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
-            <input type="text" id="reg-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Email Address</label>
-            <input type="email" id="reg-email" required autocomplete="off" placeholder="e.g. practitioner@moh.gov.my" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Department / Facility</label>
-            <input type="text" id="reg-dept" required autocomplete="off" placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Create Password</label>
-            <input type="password" id="reg-pass" required autocomplete="new-password" placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <button type="submit" id="btn-reg-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
-            <span>Register Practitioner</span>
-          </button>
-        </form>
-
-        <!-- LOGIN FORM (HIDDEN BY DEFAULT) -->
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left hidden" autocomplete="off">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
-            <input type="text" id="login-id" required autocomplete="off" placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Access Password</label>
-            <input type="password" id="login-pass" required autocomplete="current-password" placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <button type="submit" id="btn-login-submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
-            <span>Access Assessment</span>
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- PAGE 2: QUIZ DASHBOARD / START SCREEN (DISPLAYED AFTER LOG IN) -->
-    <div id="page-dashboard" class="hidden max-w-2xl mx-auto w-full">
+    <!-- PAGE 1: QUIZ DASHBOARD / START SCREEN -->
+    <div id="page-dashboard" class="max-w-2xl mx-auto w-full">
       <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
         <!-- TOP DASHBOARD LOGO -->
         <div class="mb-2">
@@ -181,7 +116,7 @@
           <p class="text-sm text-slate-400 mt-2 max-w-md mx-auto">Based on the Ministry of Health Malaysia Basic Life Support Training Manual (2nd Edition, 2023).</p>
         </div>
 
-        <!-- LEARNING MATERIAL & PDF DOWNLOAD BUTTON (DISPLAYED AFTER LOGIN) -->
+        <!-- LEARNING MATERIAL & PDF DOWNLOAD BUTTON -->
         <div class="bg-slate-900/90 rounded-2xl p-5 text-left border border-slate-800 shadow-md space-y-3">
           <div class="flex items-center space-x-3">
             <div class="p-2.5 bg-rose-500/20 text-rose-400 rounded-xl">
@@ -235,7 +170,7 @@
       </div>
     </div>
 
-    <!-- PAGE 3: ACTIVE QUIZ SCREEN -->
+    <!-- PAGE 2: ACTIVE QUIZ SCREEN -->
     <div id="page-quiz" class="hidden space-y-6">
       
       <!-- TOP STATUS, TIMER & PROGRESS -->
@@ -294,7 +229,7 @@
       </div>
     </div>
 
-    <!-- PAGE 4: RESULTS SCREEN -->
+    <!-- PAGE 3: RESULTS SCREEN -->
     <div id="page-results" class="hidden max-w-3xl mx-auto w-full">
       <div class="glass-card rounded-3xl p-8 shadow-2xl text-center space-y-6">
         
@@ -373,11 +308,10 @@
     </div>
   </div>
 
-  <!-- FOOTER (Visible on all pages with 2 Footer Logos) -->
+  <!-- FOOTER -->
   <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400 relative z-10">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       
-      <!-- 2 FOOTER LOGOS FROM GOOGLE DRIVE -->
       <div class="flex items-center space-x-3 bg-white/5 p-2 rounded-xl border border-white/10">
         <img id="img-footer-logo-1" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1" class="h-8 w-auto object-contain">
         <div class="h-5 w-px bg-slate-800"></div>
@@ -398,9 +332,7 @@
     // GOOGLE APPS SCRIPT WEBHOOK DEPLOYMENT URL
     const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwtKz7PDx-cvT01XU4lkPSTlF-7zYKh5j0mhu7Cdu23SdqC6HdF-Ux09yq1xAYoX3kAGQ/exec";
 
-    // ------------------------------------------------------------------
     // MASTER 200 MCQ QUESTION POOL
-    // ------------------------------------------------------------------
     const questionsData = [
       { id: 1, q: "Who developed the NCORT Basic Life Support Training Manual Second Edition?", options: ["American Heart Association", "BLS Subcommittee, National Committee on Resuscitation Training (NCORT)", "European Resuscitation Council", "World Health Organization"], ans: 1, explanation: "The manual is produced under the MOH Malaysia by the BLS Subcommittee, National Committee on Resuscitation Training (NCORT)." },
       { id: 2, q: "What is the national emergency response number dialed via MERS in Malaysia?", options: ["911", "999", "112", "994"], ans: 1, explanation: "In Malaysia, the official emergency hotline operated under MERS is 999." },
@@ -614,7 +546,6 @@
     let timeLeft = 45 * 60; // 45 minutes in seconds
 
     // DOM ELEMENTS
-    const pageAuth = document.getElementById('page-auth');
     const pageDashboard = document.getElementById('page-dashboard');
     const pageQuiz = document.getElementById('page-quiz');
     const pageResults = document.getElementById('page-results');
@@ -622,19 +553,15 @@
 
     // INITIALIZATION & SESSION CHECK
     window.onload = () => {
-      // Clear forms on page refresh to ensure clean blank start
-      document.getElementById('form-login')?.reset();
-      document.getElementById('form-register')?.reset();
-
-      const savedSession = localStorage.getItem('bls_active_session');
+      // Check for active session created from index.html or local storage
+      const savedSession = localStorage.getItem('edhkn_active_session') || localStorage.getItem('bls_active_session');
       if (savedSession) {
         currentUser = JSON.parse(savedSession);
-        updateNavUser();
-        showPage('dashboard');
       } else {
-        switchTab('register');
-        showPage('auth');
+        currentUser = { name: 'Healthcare Practitioner', id: 'MOH-GUEST' };
       }
+      updateNavUser();
+      showPage('dashboard');
     };
 
     // 45-MINUTE COUNTDOWN TIMER LOGIC
@@ -703,153 +630,32 @@
       }
     }
 
-    // HELPER: Get registered users from localStorage
-    function getRegisteredUsers() {
-      const users = localStorage.getItem('bls_registered_users');
-      return users ? JSON.parse(users) : [];
-    }
-
-    // REGISTER FUNCTIONALITY
-    async function handleRegister(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-reg-submit');
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Registering...</span>`;
-
-      const name = document.getElementById('reg-name').value.trim();
-      const id = document.getElementById('reg-id').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const dept = document.getElementById('reg-dept').value.trim();
-      const pass = document.getElementById('reg-pass').value;
-
-      const users = getRegisteredUsers();
-      const existingUser = users.find(u => u.id.toLowerCase() === id.toLowerCase());
-      if (existingUser) {
-        alert("This Staff ID / IC Number is already registered locally. Please log in.");
-        btn.disabled = false;
-        btn.innerHTML = `<span>Register Practitioner</span>`;
-        switchTab('login');
-        document.getElementById('login-id').value = id;
-        return;
-      }
-
-      const newUser = { id, name, email, dept, pass };
-      users.push(newUser);
-      localStorage.setItem('bls_registered_users', JSON.stringify(users));
-
-      await sendWebhookRequest({ action: 'register', id, name, email, dept, pass });
-
-      currentUser = { id: newUser.id, name: newUser.name, email: newUser.email, dept: newUser.dept };
-      localStorage.setItem('bls_active_session', JSON.stringify(currentUser));
-
-      alert("Registration successful! Welcome to the BLS Assessment Platform.");
-      btn.disabled = false;
-      btn.innerHTML = `<span>Register Practitioner</span>`;
-      updateNavUser();
-      showPage('dashboard');
-    }
-
-    // LOGIN FUNCTIONALITY
-    async function handleLogin(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-login-submit');
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Authenticating...</span>`;
-
-      const id = document.getElementById('login-id').value.trim();
-      const pass = document.getElementById('login-pass').value;
-
-      let loginSuccess = false;
-      const remoteRes = await sendWebhookRequest({ action: 'login', id, pass });
-      
-      if (remoteRes && remoteRes.success) {
-        currentUser = remoteRes.user;
-        loginSuccess = true;
-      } else {
-        const users = getRegisteredUsers();
-        const foundUser = users.find(
-          u => u.id.toLowerCase() === id.toLowerCase() && u.pass === pass
-        );
-        if (foundUser) {
-          currentUser = { id: foundUser.id, name: foundUser.name, email: foundUser.email, dept: foundUser.dept };
-          loginSuccess = true;
-        }
-      }
-
-      btn.disabled = false;
-      btn.innerHTML = `<span>Access Assessment</span>`;
-
-      if (loginSuccess) {
-        localStorage.setItem('bls_active_session', JSON.stringify(currentUser));
-        updateNavUser();
-        showPage('dashboard');
-      } else {
-        alert("Invalid Staff ID or Password! Please check your credentials or register.");
-      }
-    }
-
-    // NAVIGATION & SESSION HELPERS
+    // NAVIGATION HELPERS
     function showPage(pageName) {
-      pageAuth.classList.add('hidden');
       pageDashboard.classList.add('hidden');
       pageQuiz.classList.add('hidden');
       pageResults.classList.add('hidden');
 
-      if (pageName === 'auth') pageAuth.classList.remove('hidden');
       if (pageName === 'dashboard') pageDashboard.classList.remove('hidden');
       if (pageName === 'quiz') pageQuiz.classList.remove('hidden');
       if (pageName === 'results') pageResults.classList.remove('hidden');
     }
 
-    function switchTab(tab) {
-      const loginBtn = document.getElementById('tab-login-btn');
-      const regBtn = document.getElementById('tab-register-btn');
-      const formLogin = document.getElementById('form-login');
-      const formReg = document.getElementById('form-register');
-
-      // Always reset inputs when switching tabs
-      formLogin.reset();
-      formReg.reset();
-
-      if (tab === 'register') {
-        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
-        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
-        formReg.classList.remove('hidden');
-        formLogin.classList.add('hidden');
-      } else {
-        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
-        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
-        formLogin.classList.remove('hidden');
-        formReg.classList.add('hidden');
-      }
-    }
-
     function updateNavUser() {
       if (currentUser) {
-        document.getElementById('user-display-name').innerText = currentUser.name;
-        document.getElementById('user-display-id').innerText = currentUser.id;
-        navUserInfo.classList.remove('hidden');
-      } else {
-        navUserInfo.classList.add('hidden');
+        document.getElementById('user-display-name').innerText = currentUser.name || 'Healthcare Practitioner';
+        document.getElementById('user-display-id').innerText = currentUser.id || 'MOH-GUEST';
       }
     }
 
     function logout() {
       stopTimer();
-      localStorage.removeItem('bls_active_session');
-      currentUser = null;
-      updateNavUser();
-      switchTab('register');
-      showPage('auth');
+      window.location.href = "index.html";
     }
 
     function goHome() {
       stopTimer();
-      if (currentUser) showPage('dashboard');
-      else {
-        switchTab('register');
-        showPage('auth');
-      }
+      showPage('dashboard');
     }
 
     // QUIZ ENGINE SETUP
