@@ -279,7 +279,7 @@
   <!-- HEADER / NAVIGATION -->
   <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <div class="flex items-center space-x-3 cursor-pointer">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
         <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/10">
           <img id="img-header-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
         </div>
@@ -291,10 +291,10 @@
         </div>
       </div>
 
-      <!-- USER PROFILE / CONTROLS (VISIBLE AFTER LOG IN) -->
-      <div id="nav-user-info" class="hidden flex items-center space-x-3 sm:space-x-4">
+      <!-- USER PROFILE / CONTROLS -->
+      <div id="nav-user-info" class="flex items-center space-x-3 sm:space-x-4">
         <div class="text-right hidden sm:block">
-          <p id="user-display-name" class="text-sm font-bold text-white">Practitioner Mode</p>
+          <p id="user-display-name" class="text-sm font-bold text-white">Healthcare Practitioner</p>
           <p id="user-display-id" class="text-xs text-slate-400">ID: MOH-ACTIVE</p>
         </div>
 
@@ -303,7 +303,7 @@
           <span class="hidden md:inline">ALS Manual PDF</span>
         </a>
 
-        <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Log Out">
+        <button onclick="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Exit Module">
           <i class="fa-solid fa-right-from-bracket text-lg"></i>
         </button>
       </div>
@@ -313,68 +313,8 @@
   <!-- MAIN CONTENT AREA -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col justify-center relative z-10">
 
-    <!-- PAGE 1: LANDING & AUTH PAGE -->
-    <div id="page-auth" class="w-full max-w-md mx-auto my-auto">
-      <div class="glass-card rounded-3xl p-8 shadow-2xl relative overflow-hidden text-center">
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-brand-500/20 rounded-full blur-2xl"></div>
-        
-        <div class="mb-6">
-          <img id="img-landing-logo" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="ALS Certification Logo" class="h-20 w-auto mx-auto object-contain drop-shadow-md">
-        </div>
-
-        <div class="mb-6">
-          <h2 class="text-2xl font-extrabold text-white">Healthcare Worker Portal</h2>
-          <p class="text-xs text-slate-400 mt-1">Malaysia Ministry of Health ALS Certification</p>
-        </div>
-
-        <!-- AUTH TABS -->
-        <div class="flex rounded-xl bg-slate-950/80 p-1 mb-6 border border-slate-800/80">
-          <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm">Register</button>
-          <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white">Log In</button>
-        </div>
-
-        <!-- REGISTER FORM -->
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 text-left" autocomplete="off">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
-            <input type="text" id="reg-name" required placeholder="Dr. / Staff Nurse / MA Name" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
-            <input type="text" id="reg-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Department / Facility</label>
-            <input type="text" id="reg-dept" required placeholder="e.g. Emergency & Trauma Dept" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Create Password</label>
-            <input type="password" id="reg-pass" required placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition flex items-center justify-center gap-2">
-            <span>Register Practitioner</span>
-          </button>
-        </form>
-
-        <!-- LOGIN FORM -->
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 text-left hidden" autocomplete="off">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Staff ID / IC Number</label>
-            <input type="text" id="login-id" required placeholder="e.g. MOH88291" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Access Password</label>
-            <input type="password" id="login-pass" required placeholder="••••••••" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none transition placeholder-slate-600">
-          </div>
-          <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-bold rounded-xl shadow-lg shadow-brand-500/20 hover:opacity-95 transition flex items-center justify-center gap-2">
-            <span>Access Assessment & Monitor</span>
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- PAGE 2: CLINICAL APPLICATION (MONITOR & CONTROLLER) -->
-    <div id="page-app" class="hidden flex-col gap-4">
+    <!-- CLINICAL APPLICATION (MONITOR & CONTROLLER) -->
+    <div id="page-app" class="flex flex-col gap-4">
       
       <!-- CLINICAL MONITOR SECTION -->
       <div class="monitor-container">
@@ -628,63 +568,33 @@
 
   <!-- SCRIPT ENGINE -->
   <script>
-    // --- AUTHENTICATION & NAVIGATION HANDLERS ---
-    function switchTab(tab) {
-      const regBtn = document.getElementById('tab-register-btn');
-      const loginBtn = document.getElementById('tab-login-btn');
-      const regForm = document.getElementById('form-register');
-      const loginForm = document.getElementById('form-login');
+    let currentUser = null;
 
-      if (tab === 'register') {
-        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
-        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
-        regForm.classList.remove('hidden');
-        loginForm.classList.add('hidden');
+    // INITIALIZATION & SESSION CHECK FROM index.html
+    window.onload = () => {
+      const savedSession = localStorage.getItem('edhkn_active_session') || localStorage.getItem('als_active_session') || localStorage.getItem('bls_active_session');
+      if (savedSession) {
+        currentUser = JSON.parse(savedSession);
       } else {
-        loginBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-brand-600 text-white shadow-sm";
-        regBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
-        loginForm.classList.remove('hidden');
-        regForm.classList.add('hidden');
+        currentUser = { name: 'Healthcare Practitioner', id: 'MOH-GUEST' };
       }
-    }
 
-    function handleRegister(e) {
-      e.preventDefault();
-      const name = document.getElementById('reg-name').value;
-      const staffId = document.getElementById('reg-id').value;
-      loginUser(name, staffId);
-    }
-
-    function handleLogin(e) {
-      e.preventDefault();
-      const staffId = document.getElementById('login-id').value;
-      loginUser("Practitioner", staffId);
-    }
-
-    function loginUser(name, id) {
-      document.getElementById('user-display-name').innerText = name;
-      document.getElementById('user-display-id').innerText = "ID: " + id;
-      document.getElementById('page-auth').classList.add('hidden');
-      document.getElementById('page-app').classList.remove('hidden');
-      document.getElementById('page-app').classList.add('flex');
-      document.getElementById('nav-user-info').classList.remove('hidden');
-      document.getElementById('nav-user-info').classList.add('flex');
+      document.getElementById('user-display-name').innerText = currentUser.name || 'Healthcare Practitioner';
+      document.getElementById('user-display-id').innerText = currentUser.id ? `ID: ${currentUser.id}` : 'ID: MOH-ACTIVE';
+      
       updateVitalLabels();
       updatePacerLabels();
-      resizeCanvas();
-    }
+      initCanvas();
+      setRhythm('NSR');
+    };
 
     function logout() {
-      stopAudio(); // Stop audio playback immediately on log off
+      stopAudio();
       clearTimeout(defibTimeout);
       clearInterval(chargeInterval);
       clearInterval(cprAudioTimer);
       cprAudioTimer = null;
-      document.getElementById('page-app').classList.add('hidden');
-      document.getElementById('page-app').classList.remove('flex');
-      document.getElementById('nav-user-info').classList.add('hidden');
-      document.getElementById('nav-user-info').classList.remove('flex');
-      document.getElementById('page-auth').classList.remove('hidden');
+      window.location.href = "index.html";
     }
 
     function updateVitalLabels() {
@@ -1359,10 +1269,8 @@
       clearTimeout(shockBannerTimeout); shockBannerTimeout = setTimeout(() => { el.classList.add('hidden'); }, 2500);
     }
 
-    // Initialize System
+    // Initialize System Loop
     setInterval(updateMonitorDisplay, 1000);
-    initCanvas();
-    setRhythm('NSR');
   </script>
 </body>
 </html>
