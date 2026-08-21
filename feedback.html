@@ -1,1 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EDHKN System Feedback & Evaluation</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              900: '#134e4a',
+              950: '#042f2e',
+            },
+            accent: {
+              500: '#0284c7',
+              600: '#0369a1',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background-color: #030712;
+      color: #f3f4f6;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+    .rating-btn {
+      transition: all 0.2s ease;
+    }
+    .rating-btn.active {
+      background: linear-gradient(135deg, #0d9488, #0284c7);
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-black text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
 
+  <!-- BACKGROUND AMBIENT GLOW EFFECT -->
+  <div class="fixed top-0 left-1/4 -translate-x-1/2 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+  <div class="fixed bottom-0 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+  <!-- HEADER -->
+  <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+        <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/10">
+          <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
+        </div>
+        <div>
+          <span class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            EDHKN <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30">System Feedback</span>
+          </span>
+          <p class="text-xs text-slate-400 font-medium">Emergency & Trauma Dept • Hospital Kuala Nerang</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <div class="text-right hidden sm:block">
+          <p id="user-display-name" class="text-sm font-bold text-white">Healthcare Practitioner</p>
+          <p id="user-display-id" class="text-xs text-slate-400">MOH-ACTIVE</p>
+        </div>
+        <button onclick="window.location.href='index.html'" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg border border-slate-800 transition flex items-center gap-2">
+          <i class="fa-solid fa-house"></i>
+          <span class="hidden md:inline">Portal Main</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8 relative z-10">
+
+    <div class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8">
+      
+      <!-- HEADING -->
+      <div class="text-center space-y-2 border-b border-slate-800/80 pb-6">
+        <div class="inline-flex p-3 bg-brand-500/10 text-brand-400 rounded-2xl border border-brand-500/20 mb-2">
+          <i class="fa-solid fa-clipboard-check text-2xl"></i>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">System Evaluation & Feedback</h1>
+        <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">
+          Please rate the 20 criteria below to help us continuously optimize the Clinical Learning & Simulation Portal.
+        </p>
+      </div>
+
+      <!-- PRACTITIONER METADATA CARD -->
+      <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800/80 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+        <div>
+          <span class="text-slate-400 uppercase font-semibold block">Practitioner Name</span>
+          <span id="meta-name" class="font-bold text-white text-sm">---</span>
+        </div>
+        <div>
+          <span class="text-slate-400 uppercase font-semibold block">Staff ID / IC</span>
+          <span id="meta-id" class="font-bold text-brand-400 text-sm">---</span>
+        </div>
+        <div>
+          <span class="text-slate-400 uppercase font-semibold block">Facility / Dept</span>
+          <span id="meta-dept" class="font-bold text-white text-sm">---</span>
+        </div>
+      </div>
+
+      <!-- FEEDBACK FORM -->
+      <form id="form-feedback" onsubmit="handleFeedbackSubmit(event)" class="space-y-8">
+        
+        <!-- RATING SCALE GUIDE -->
+        <div class="bg-slate-950/80 rounded-xl p-3 border border-slate-800 text-center text-xs text-slate-400 flex justify-around">
+          <span><strong class="text-rose-400">1:</strong> Poor</span>
+          <span><strong class="text-amber-400">2:</strong> Fair</span>
+          <span><strong class="text-yellow-400">3:</strong> Good</span>
+          <span><strong class="text-brand-400">4:</strong> Very Good</span>
+          <span><strong class="text-emerald-400">5:</strong> Excellent</span>
+        </div>
+
+        <!-- 20 EVALUATION CRITERIA -->
+        <div id="criteria-container" class="space-y-6"></div>
+
+        <!-- ADDITIONAL COMMENTS -->
+        <div class="space-y-2 pt-4 border-t border-slate-800">
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+            Additional Comments & Recommendations
+          </label>
+          <textarea id="feedback-comments" rows="4" placeholder="Share your suggestions, requested features, or clinical observations..." class="w-full px-4 py-3 text-sm rounded-xl bg-slate-900/90 text-white border border-slate-800 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition placeholder-slate-600 resize-none"></textarea>
+        </div>
+
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" id="btn-submit-feedback" class="w-full py-4 bg-gradient-to-r from-brand-600 to-accent-500 text-white font-extrabold text-base rounded-2xl shadow-xl shadow-brand-500/20 hover:opacity-95 transition transform active:scale-[0.99] flex items-center justify-center gap-3">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Submit Comprehensive Feedback</span>
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs font-medium text-slate-400 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3 bg-white/5 p-2 rounded-xl border border-white/10">
+        <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1" class="h-8 w-auto object-contain">
+        <div class="h-5 w-px bg-slate-800"></div>
+        <img src="https://lh3.googleusercontent.com/d/1LdMRx-PF49CWOcrjthClGLJg-yQoJ2mt" alt="Footer Logo 2" class="h-8 w-auto object-contain">
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Online Evaluation System Ver 1.2</span>
+      </div>
+      <p class="text-slate-300 font-semibold tracking-wide">copyright Yassin Razak @ 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwKLAGcxIj5Z1GhbHgeOEKIRLvb0oNG8g2xrCNtF5tgaHUKjlvkJKw0XUNIAeRkfpfd/exec";
+
+    // 20 EVALUATION CRITERIA DEFINITIONS
+    const criteriaList = [
+      { id: 1, category: "System & User Interface", title: "Portal Visual Design & Dark Mode Aesthetic" },
+      { id: 2, category: "System & User Interface", title: "Navigation Smoothness & Page Transition Speed" },
+      { id: 3, category: "System & User Interface", title: "Mobile & Tablet Screen Responsiveness" },
+      { id: 4, category: "System & User Interface", title: "Overall System Reliability & Bug-Free Performance" },
+      { id: 5, category: "BLS Training Module", title: "BLS Question Bank Relevance & Accuracy" },
+      { id: 6, category: "BLS Training Module", title: "BLS Answer Rationale & Explanation Quality" },
+      { id: 7, category: "BLS Training Module", title: "BLS Reference Manual PDF Integration & Accessibility" },
+      { id: 8, category: "BLS Training Module", title: "Alignment with MOH Malaysia BLS 2nd Edition (2023)" },
+      { id: 9, category: "ALS Clinical Simulator", title: "ECG Waveform Rendering Accuracy & Realism" },
+      { id: 10, category: "ALS Clinical Simulator", title: "Vital Signs Controls & Dynamic Adjustment Ease" },
+      { id: 11, category: "ALS Clinical Simulator", title: "Defibrillator & Transcutaneous Pacer Operation" },
+      { id: 12, category: "ALS Clinical Simulator", title: "Monitor Audio & Alarm Beep Sound Realism" },
+      { id: 13, category: "ALS Online MCQ Assessment", title: "ALS Scenario Case Quality & Clinical Depth" },
+      { id: 14, category: "ALS Online MCQ Assessment", title: "45-Minute Timer & Exam Mode Functionality" },
+      { id: 15, category: "ALS Online MCQ Assessment", title: "Question Navigator Grid & Review-Later Feature" },
+      { id: 16, category: "ALS Online MCQ Assessment", title: "Post-Exam Detailed Question Review Clarity" },
+      { id: 17, category: "Clinical & Practical Value", title: "Applicability to Emergency & Trauma Department Practice" },
+      { id: 18, category: "Clinical & Practical Value", title: "Real-time Score & Result Webhook Synchronization" },
+      { id: 19, category: "Clinical & Practical Value", title: "Self-Guided Learning Accessibility Without Prior Guidance" },
+      { id: 20, category: "Overall Satisfaction", title: "Overall Satisfaction with EDHKN Portal Experience" }
+    ];
+
+    let currentUser = null;
+    let scores = {};
+
+    window.onload = () => {
+      // Fetch session from index.html / modules
+      const savedSession = localStorage.getItem('edhkn_active_session') || 
+                           localStorage.getItem('bls_active_session') || 
+                           localStorage.getItem('als_active_session');
+
+      if (savedSession) {
+        currentUser = JSON.parse(savedSession);
+      } else {
+        currentUser = { name: 'Practitioner Guest', id: 'MOH-GUEST', dept: 'Emergency & Trauma Dept' };
+      }
+
+      // Display Metadata
+      document.getElementById('user-display-name').innerText = currentUser.name || 'Practitioner';
+      document.getElementById('user-display-id').innerText = currentUser.id ? `ID: ${currentUser.id}` : 'MOH-ACTIVE';
+      document.getElementById('meta-name').innerText = currentUser.name || 'Guest Practitioner';
+      document.getElementById('meta-id').innerText = currentUser.id || 'N/A';
+      document.getElementById('meta-dept').innerText = currentUser.dept || 'Emergency & Trauma Dept';
+
+      renderCriteria();
+    };
+
+    function renderCriteria() {
+      const container = document.getElementById('criteria-container');
+      container.innerHTML = '';
+
+      let currentCategory = '';
+
+      criteriaList.forEach((c) => {
+        // Initialize default score 5
+        scores[c.id] = 5;
+
+        // Add Category Divider
+        if (c.category !== currentCategory) {
+          currentCategory = c.category;
+          const catHeader = document.createElement('div');
+          catHeader.className = "text-xs font-extrabold uppercase tracking-wider text-brand-400 pt-4 border-t border-slate-800/80 flex items-center gap-2";
+          catHeader.innerHTML = `<i class="fa-solid fa-layer-group"></i> <span>${currentCategory}</span>`;
+          container.appendChild(catHeader);
+        }
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4";
+
+        card.innerHTML = `
+          <div class="space-y-0.5 flex-1">
+            <span class="text-[10px] text-slate-500 font-bold uppercase">Criterion ${c.id} of 20</span>
+            <p class="text-sm font-bold text-white">${c.title}</p>
+          </div>
+          <div class="flex items-center gap-1.5 self-start sm:self-auto" id="rating-group-${c.id}">
+            ${[1, 2, 3, 4, 5].map(val => `
+              <button type="button" onclick="setRating(${c.id}, ${val})" class="rating-btn rating-btn-${c.id} w-9 h-9 rounded-xl text-xs font-bold border border-slate-800 bg-slate-950 text-slate-400 ${val === 5 ? 'active' : ''}" data-val="${val}">
+                ${val}
+              </button>
+            `).join('')}
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function setRating(criterionId, val) {
+      scores[criterionId] = val;
+      const btns = document.querySelectorAll(`.rating-btn-${criterionId}`);
+      btns.forEach(btn => {
+        if (parseInt(btn.getAttribute('data-val'), 10) === val) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    async function handleFeedbackSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit-feedback');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Submitting Feedback...</span>`;
+
+      const comments = document.getElementById('feedback-comments').value.trim();
+
+      // Calculate average rating
+      const scoreValues = Object.values(scores);
+      const avgScore = (scoreValues.reduce((a, b) => a + b, 0) / scoreValues.length).toFixed(2);
+
+      const payload = {
+        action: 'submitFeedback',
+        id: currentUser.id || 'N/A',
+        name: currentUser.name || 'Anonymous',
+        email: currentUser.email || 'N/A',
+        dept: currentUser.dept || 'N/A',
+        scores: scores,
+        averageScore: avgScore,
+        comments: comments || 'No additional comments provided.'
+      };
+
+      try {
+        await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.warn("Webhook transmission logged:", err);
+      }
+
+      alert("Thank you! Your evaluation and feedback have been successfully recorded.");
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-check-circle"></i><span>Feedback Submitted Successfully</span>`;
+      
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
