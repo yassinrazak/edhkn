@@ -52,6 +52,11 @@
     .rating-btn {
       transition: all 0.2s ease;
     }
+    .rating-btn:hover {
+      border-color: #38bdf8;
+      color: #ffffff;
+      background: rgba(56, 189, 248, 0.15);
+    }
     .rating-btn.active {
       background: linear-gradient(135deg, #0d9488, #0284c7);
       color: #ffffff;
@@ -207,7 +212,7 @@
     let scores = {};
 
     window.onload = () => {
-      // Fetch session from index.html / modules
+      // Fetch active practitioner session from index.html / modules
       const savedSession = localStorage.getItem('edhkn_active_session') || 
                            localStorage.getItem('bls_active_session') || 
                            localStorage.getItem('als_active_session');
@@ -235,8 +240,8 @@
       let currentCategory = '';
 
       criteriaList.forEach((c) => {
-        // Initialize default score 5
-        scores[c.id] = 5;
+        // Start completely blank (unselected)
+        scores[c.id] = null;
 
         // Add Category Divider
         if (c.category !== currentCategory) {
@@ -248,7 +253,7 @@
         }
 
         const card = document.createElement('div');
-        card.className = "bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4";
+        card.className = "bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors" + ` id="card-criterion-${c.id}"`;
 
         card.innerHTML = `
           <div class="space-y-0.5 flex-1">
@@ -257,7 +262,7 @@
           </div>
           <div class="flex items-center gap-1.5 self-start sm:self-auto" id="rating-group-${c.id}">
             ${[1, 2, 3, 4, 5].map(val => `
-              <button type="button" onclick="setRating(${c.id}, ${val})" class="rating-btn rating-btn-${c.id} w-9 h-9 rounded-xl text-xs font-bold border border-slate-800 bg-slate-950 text-slate-400 ${val === 5 ? 'active' : ''}" data-val="${val}">
+              <button type="button" onclick="setRating(${c.id}, ${val})" class="rating-btn rating-btn-${c.id} w-9 h-9 rounded-xl text-xs font-bold border border-slate-800 bg-slate-950 text-slate-400" data-val="${val}">
                 ${val}
               </button>
             `).join('')}
@@ -270,6 +275,11 @@
 
     function setRating(criterionId, val) {
       scores[criterionId] = val;
+      
+      // Reset card border
+      const card = document.getElementById(`card-criterion-${criterionId}`);
+      if (card) card.style.borderColor = 'rgba(30, 41, 59, 0.8)';
+
       const btns = document.querySelectorAll(`.rating-btn-${criterionId}`);
       btns.forEach(btn => {
         if (parseInt(btn.getAttribute('data-val'), 10) === val) {
@@ -282,6 +292,21 @@
 
     async function handleFeedbackSubmit(e) {
       e.preventDefault();
+
+      // Check for unrated criteria
+      const unrated = criteriaList.filter(c => !scores[c.id]);
+      if (unrated.length > 0) {
+        // Highlight first unrated card
+        const firstUnrated = unrated[0];
+        const card = document.getElementById(`card-criterion-${firstUnrated.id}`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.style.borderColor = '#ef4444';
+        }
+        alert(`Please rate all 20 criteria before submitting. (${unrated.length} item(s) unrated)`);
+        return;
+      }
+
       const btn = document.getElementById('btn-submit-feedback');
       btn.disabled = true;
       btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Submitting Feedback...</span>`;
