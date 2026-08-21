@@ -16,6 +16,7 @@
             --accent-cyan: #38bdf8;
             --accent-blue: #3b82f6;
             --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --btn-dark-bg: linear-gradient(135deg, #0f172a 0%, #020617 100%);
@@ -293,7 +294,7 @@
         /* --- PORTAL CONTENT STYLES --- */
         .portal-heading {
             text-align: center;
-            margin-bottom: 3.5rem;
+            margin-bottom: 3rem;
         }
 
         .portal-heading h2 {
@@ -311,8 +312,8 @@
 
         .portal-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
         }
 
         .card {
@@ -336,7 +337,7 @@
         }
 
         .card-header {
-            padding: 2.2rem 2rem 1.5rem;
+            padding: 2rem 1.5rem 1.25rem;
             text-align: center;
             position: relative;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -354,16 +355,20 @@
             background: linear-gradient(180deg, rgba(12, 74, 110, 0.5) 0%, rgba(15, 23, 42, 0) 100%);
         }
 
+        .card-feedback .card-header {
+            background: linear-gradient(180deg, rgba(180, 83, 9, 0.5) 0%, rgba(15, 23, 42, 0) 100%);
+        }
+
         .card-icon {
-            font-size: 3rem;
+            font-size: 2.75rem;
             margin-bottom: 0.75rem;
             filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
         }
 
         .card-title {
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: 800;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             color: #ffffff;
             text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
         }
@@ -371,9 +376,10 @@
         .card-bls .card-title { color: #60a5fa; text-shadow: 0 0 12px rgba(96, 165, 250, 0.5); }
         .card-als .card-title { color: #34d399; text-shadow: 0 0 12px rgba(52, 211, 153, 0.5); }
         .card-tls .card-title { color: #38bdf8; text-shadow: 0 0 12px rgba(56, 189, 248, 0.5); }
+        .card-feedback .card-title { color: #fbbf24; text-shadow: 0 0 12px rgba(251, 191, 36, 0.5); }
 
         .card-body {
-            padding: 2rem;
+            padding: 1.5rem;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -382,10 +388,10 @@
         }
 
         .card-body p {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.6;
             color: var(--text-muted);
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             text-align: center;
         }
 
@@ -393,9 +399,9 @@
             display: block;
             width: 100%;
             text-align: center;
-            padding: 1rem 1.5rem;
+            padding: 0.85rem 1.25rem;
             border-radius: 10px;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -445,6 +451,19 @@
             color: #ffffff;
             border-color: #38bdf8;
             box-shadow: 0 0 20px rgba(14, 165, 233, 0.6);
+            transform: scale(1.02);
+        }
+
+        .btn-feedback {
+            color: #fbbf24;
+            border-color: rgba(251, 191, 36, 0.4);
+        }
+
+        .btn-feedback:hover {
+            background: linear-gradient(135deg, #b45309 0%, #0f172a 100%);
+            color: #ffffff;
+            border-color: #fbbf24;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
             transform: scale(1.02);
         }
 
@@ -626,7 +645,7 @@
         <div id="page-portal" class="hidden">
             <div class="portal-heading">
                 <h2>Select Training Module</h2>
-                <p>Choose a portal to access learning modules, guidelines, and simulation scenarios.</p>
+                <p>Choose a portal to access learning modules, guidelines, simulation scenarios, or evaluation.</p>
             </div>
 
             <div class="portal-grid">
@@ -663,6 +682,18 @@
                     <div class="card-body">
                         <p>Interactive Advanced Life Support MCQ question bank featuring 200 comprehensive scenarios, timed 45-minute exam mode, and instant scoring feedback.</p>
                         <a href="alsmcq.html" target="_blank" rel="noopener noreferrer" class="btn btn-tls">Enter ALS MCQ Portal &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- System Feedback Card -->
+                <div class="card card-feedback">
+                    <div class="card-header">
+                        <div class="card-icon">📝</div>
+                        <h3 class="card-title">SYSTEM EVALUATION</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Provide comprehensive 20-point feedback and evaluation on portal usability, MCQ accuracy, and clinical simulation features.</p>
+                        <a href="feedback.html" target="_blank" rel="noopener noreferrer" class="btn btn-feedback">Give Feedback &rarr;</a>
                     </div>
                 </div>
             </div>
