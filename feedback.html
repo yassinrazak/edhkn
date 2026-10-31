@@ -212,15 +212,16 @@
     let scores = {};
 
     window.onload = () => {
-      // Fetch active practitioner session from index.html / modules
-      const savedSession = localStorage.getItem('edhkn_active_session') || 
+      // Prioritize sessionStorage matching index.html
+      const savedSession = sessionStorage.getItem('edhkn_active_session') ||
+                           localStorage.getItem('edhkn_active_session') || 
                            localStorage.getItem('bls_active_session') || 
                            localStorage.getItem('als_active_session');
 
       if (savedSession) {
         currentUser = JSON.parse(savedSession);
       } else {
-        currentUser = { name: 'Practitioner Guest', id: 'MOH-GUEST', dept: 'Emergency & Trauma Dept' };
+        currentUser = { name: 'Practitioner Guest', id: 'MOH-GUEST', dept: 'Emergency & Trauma Dept', email: 'N/A' };
       }
 
       // Display Metadata
