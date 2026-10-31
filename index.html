@@ -44,37 +44,118 @@
             display: none !important;
         }
 
-        /* --- HEADER & TOP USER BAR --- */
-        header {
+        /* --- FLOATING HEADER STYLES --- */
+        .floating-header {
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+            max-width: 1140px;
+            width: calc(100% - 2rem);
+            margin: 1rem auto 0 auto;
             background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            color: white;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            border-bottom: 2px solid rgba(239, 68, 68, 0.6);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.2);
-            position: relative;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.15);
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
         }
 
-        .top-user-bar {
-            max-width: 1100px;
-            margin: 0 auto 1.5rem auto;
+        .header-container {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             gap: 1rem;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .header-logo {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
+            transition: transform 0.2s ease;
+        }
+
+        .header-brand:hover .header-logo {
+            transform: scale(1.05);
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .header-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 12px;
+            background: rgba(13, 148, 136, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .brand-sub {
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* HOME BUTTON */
+        .btn-home {
+            background: rgba(2, 132, 199, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-home:hover {
+            background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+            color: #ffffff;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+            transform: translateY(-1px);
         }
 
         .user-badge-info {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.6rem;
             background: rgba(255, 255, 255, 0.05);
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
+            padding: 0.45rem 0.9rem;
+            border-radius: 20px;
             border: 1px solid rgba(56, 189, 248, 0.3);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .user-badge-info .user-name {
@@ -84,14 +165,14 @@
 
         .user-badge-info .user-id {
             color: var(--accent-cyan);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
         }
 
         .btn-logout {
             background: rgba(239, 68, 68, 0.15);
             color: #fca5a5;
             border: 1px solid rgba(239, 68, 68, 0.4);
-            padding: 0.45rem 0.9rem;
+            padding: 0.45rem 0.85rem;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 700;
@@ -108,17 +189,22 @@
             border-color: #ef4444;
         }
 
+        /* --- HERO BANNER --- */
+        .hero-section {
+            text-align: center;
+            margin: 2rem auto 2.5rem auto;
+        }
+
         .main-logo {
-            max-height: 100px;
+            max-height: 90px;
             width: auto;
             margin-bottom: 0.75rem;
             filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
-            transition: transform 0.3s ease, filter 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
         .main-logo:hover {
             transform: scale(1.04);
-            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.7));
         }
 
         .hospital-badge {
@@ -136,8 +222,8 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        header h1 {
-            font-size: 2rem;
+        .hero-section h1 {
+            font-size: 2.2rem;
             letter-spacing: 1px;
             margin-bottom: 0.35rem;
             background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
@@ -146,7 +232,7 @@
             font-weight: 800;
         }
 
-        header p {
+        .hero-section p {
             font-size: 1rem;
             color: var(--accent-cyan);
             letter-spacing: 0.5px;
@@ -155,7 +241,7 @@
 
         .container {
             max-width: 1100px;
-            margin: 3rem auto;
+            margin: 0 auto 3rem auto;
             padding: 0 1.5rem;
             flex: 1;
         }
@@ -163,7 +249,7 @@
         /* --- AUTH CARD & FORM STYLES --- */
         .auth-container {
             max-width: 450px;
-            margin: 2rem auto;
+            margin: 1.5rem auto;
         }
 
         .auth-card {
@@ -294,7 +380,7 @@
         /* --- PORTAL CONTENT STYLES --- */
         .portal-heading {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
 
         .portal-heading h2 {
@@ -556,34 +642,82 @@
             font-size: 0.8rem;
             letter-spacing: 0.02em;
         }
+
+        @media (max-width: 640px) {
+            .brand-title span:first-child {
+                font-size: 0.88rem;
+            }
+            .brand-sub {
+                display: none;
+            }
+            .btn-home span {
+                display: none;
+            }
+            .btn-home {
+                padding: 0.5rem 0.75rem;
+            }
+            .user-badge-info .user-name {
+                max-width: 80px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <!-- LOGGED-IN USER NAV CONTROL -->
-        <div id="nav-user-info" class="top-user-bar hidden">
-            <div class="user-badge-info">
-                <i class="fa-solid fa-user-doctor text-cyan-400"></i>
+    <!-- FLOATING STICKY HEADER -->
+    <header class="floating-header">
+        <div class="header-container">
+            <!-- Brand / Logo Link -->
+            <div class="header-brand" onclick="goHome()" title="Hospital Kuala Nerang Portal">
+                <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Logo" class="header-logo">
                 <div>
-                    <span id="user-display-name" class="user-name">---</span>
-                    <span id="user-display-id" class="user-id">(---)</span>
+                    <div class="brand-title">
+                        <span>Hospital Kuala Nerang</span>
+                        <span class="header-badge">EDHKN</span>
+                    </div>
+                    <p class="brand-sub">Jabatan Kecemasan & Trauma</p>
                 </div>
             </div>
-            <button onclick="logout()" class="btn-logout" title="Log Out">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Log Out</span>
-            </button>
-        </div>
 
-        <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Hospital Kuala Nerang Logo" class="main-logo">
-        <br>
-        <span class="hospital-badge">Jabatan Kecemasan & Trauma</span>
-        <h1>Hospital Kuala Nerang</h1>
-        <p>Training & Clinical Simulation Learning Portal</p>
+            <!-- Action Buttons: Home & User Profile -->
+            <div class="header-actions">
+                <!-- HOME BUTTON -->
+                <button onclick="goHome()" class="btn-home" title="Return to Portal Home">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </button>
+
+                <!-- LOGGED-IN PRACTITIONER INFO & LOGOUT -->
+                <div id="nav-user-info" class="hidden" style="display: flex; align-items: center; gap: 0.6rem;">
+                    <div class="user-badge-info">
+                        <i class="fa-solid fa-user-doctor text-cyan-400"></i>
+                        <div>
+                            <span id="user-display-name" class="user-name">---</span>
+                            <span id="user-display-id" class="user-id">(---)</span>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="btn-logout" title="Log Out">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span class="hidden sm:inline">Log Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </header>
 
     <main class="container">
+        <!-- HERO BANNER -->
+        <div class="hero-section">
+            <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Hospital Kuala Nerang Logo" class="main-logo">
+            <br>
+            <span class="hospital-badge">Jabatan Kecemasan & Trauma</span>
+            <h1>Hospital Kuala Nerang</h1>
+            <p>Training & Clinical Simulation Learning Portal</p>
+        </div>
+
         <!-- AUTHENTICATION SCREEN (REGISTER / LOGIN) -->
         <div id="page-auth" class="auth-container">
             <div class="auth-card">
@@ -669,7 +803,7 @@
                     </div>
                     <div class="card-body">
                         <p>Advanced Life Support scenario generators, ECG interpretation, emergency pharmacology, and interactive team-based resuscitation algorithms.</p>
-                        <a href="monitors.html" target="_blank" rel="noopener noreferrer" class="btn btn-als">Enter ALS Simulator &rarr;</a>
+                        <a href="monitor.html" target="_blank" rel="noopener noreferrer" class="btn btn-als">Enter ALS Simulator &rarr;</a>
                     </div>
                 </div>
 
@@ -703,7 +837,6 @@
     <!-- FOOTER -->
     <footer>
         <div class="footer-container">
-            <!-- 2 FOOTER LOGOS -->
             <div class="footer-logos">
                 <img id="img-footer-logo-1" src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Footer Logo 1">
                 <div class="logo-divider"></div>
@@ -719,14 +852,12 @@
         </div>
     </footer>
 
-    <!-- AUTHENTICATION & WEBHOOK SCRIPT -->
+    <!-- SCRIPT ENGINE -->
     <script>
-        // GOOGLE APPS SCRIPT WEBHOOK DEPLOYMENT URL
         const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwKLAGcxIj5Z1GhbHgeOEKIRLvb0oNG8g2xrCNtF5tgaHUKjlvkJKw0XUNIAeRkfpfd/exec";
 
         let currentUser = null;
 
-        // INITIALIZATION & SESSION CHECK
         window.onload = () => {
             document.getElementById('form-login')?.reset();
             document.getElementById('form-register')?.reset();
@@ -742,6 +873,17 @@
                 showAuth();
             }
         };
+
+        // HOME NAVIGATION HANDLER
+        function goHome() {
+            if (currentUser) {
+                showPortal();
+            } else {
+                showAuth();
+                switchTab('login');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         async function sendWebhookRequest(payload) {
             if (!GOOGLE_SHEET_WEBHOOK_URL || GOOGLE_SHEET_WEBHOOK_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL")) {
@@ -818,8 +960,6 @@
             await sendWebhookRequest({ action: 'register', id, name, email, dept, pass });
 
             currentUser = { id: newUser.id, name: newUser.name, email: newUser.email, dept: newUser.dept };
-            
-            // Save to localStorage so new tabs can read it
             localStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
 
             alert("Registration successful! Welcome to EDHKN Portal.");
@@ -859,7 +999,6 @@
             btn.innerHTML = `<span>Access Portal</span>`;
 
             if (loginSuccess) {
-                // Save to localStorage so all child pages can access it
                 localStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
                 updateNavUser();
                 showPortal();
