@@ -726,24 +726,42 @@
 
         let currentUser = null;
 
-        window.onload = () => {
-            document.getElementById('form-login')?.reset();
-            document.getElementById('form-register')?.reset();
+        // INITIALIZATION & SESSION CHECK
+    window.onload = () => {
+      // 1. Check if login credentials were passed via URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlName = urlParams.get('username') || urlParams.get('name') || urlParams.get('fullName');
+      const urlId = urlParams.get('id') || urlParams.get('staffId') || urlParams.get('userid');
 
-            // Clear legacy persistent localStorage active sessions if present
-            localStorage.removeItem('edhkn_active_session');
+      // 2. Check for active session (Checking sessionStorage first, matching index.html)
+      const savedSession = sessionStorage.getItem('edhkn_active_session') || 
+                           localStorage.getItem('edhkn_active_session') || 
+                           localStorage.getItem('bls_active_session');
 
-            // Use sessionStorage so active login terminates on browser/tab exit
-            const savedSession = sessionStorage.getItem('edhkn_active_session');
-            if (savedSession) {
-                currentUser = JSON.parse(savedSession);
-                updateNavUser();
-                showPortal();
-            } else {
-                switchTab('register');
-                showAuth();
-            }
+      if (urlName) {
+        // Populate from URL
+        currentUser = { 
+          name: urlName, 
+          id: urlId || 'MOH-GUEST',
+          dept: urlParams.get('dept') || 'N/A'
         };
+        sessionStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
+      } else if (savedSession) {
+        // Populate from Storage
+        const parsed = JSON.parse(savedSession);
+        currentUser = { 
+          name: parsed.username || parsed.name || parsed.fullName || 'Healthcare Practitioner', 
+          id: parsed.id || parsed.staffId || parsed.userId || 'MOH-GUEST',
+          dept: parsed.dept || parsed.department || 'N/A'
+        };
+      } else {
+        // Fallback
+        currentUser = { name: 'Healthcare Practitioner', id: 'MOH-GUEST', dept: 'N/A' };
+      }
+      
+      updateNavUser();
+      showPage('dashboard');
+    };
 
         async function sendWebhookRequest(payload) {
             if (!GOOGLE_SHEET_WEBHOOK_URL || GOOGLE_SHEET_WEBHOOK_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL")) {
