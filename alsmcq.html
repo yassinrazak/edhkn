@@ -562,13 +562,39 @@
 
     // INITIALIZATION & SESSION CHECK
     window.onload = () => {
-      // Check for active session from index.html or local session
-      const savedSession = localStorage.getItem('edhkn_active_session') || localStorage.getItem('als_active_session');
-      if (savedSession) {
-        currentUser = JSON.parse(savedSession);
+      // 1. Check if login credentials were passed via URL parameters (e.g. ?username=John&id=123)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlName = urlParams.get('username') || urlParams.get('name') || urlParams.get('fullName');
+      const urlId = urlParams.get('id') || urlParams.get('staffId') || urlParams.get('userid');
+
+      // 2. Check for active session in localStorage (checking common login keys)
+      const savedSession = localStorage.getItem('edhkn_active_session') || 
+                           localStorage.getItem('als_active_session') ||
+                           localStorage.getItem('userSession');
+
+      if (urlName) {
+        // Populate from URL
+        currentUser = { 
+          name: urlName, 
+          id: urlId || 'MOH-GUEST',
+          dept: urlParams.get('dept') || 'N/A'
+        };
+        // Save to storage so it persists if they refresh the page
+        localStorage.setItem('als_active_session', JSON.stringify(currentUser));
+      } else if (savedSession) {
+        // Populate from LocalStorage
+        const parsed = JSON.parse(savedSession);
+        currentUser = { 
+          // Maps multiple possible keys your index.html might have used
+          name: parsed.username || parsed.name || parsed.fullName || 'Healthcare Practitioner', 
+          id: parsed.id || parsed.staffId || parsed.userId || 'MOH-GUEST',
+          dept: parsed.dept || parsed.department || 'N/A'
+        };
       } else {
-        currentUser = { name: 'Healthcare Practitioner', id: 'MOH-GUEST' };
+        // Fallback if no login data is found
+        currentUser = { name: 'Healthcare Practitioner', id: 'MOH-GUEST', dept: 'N/A' };
       }
+      
       updateNavUser();
       showPage('dashboard');
     };
