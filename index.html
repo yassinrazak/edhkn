@@ -727,41 +727,21 @@
         let currentUser = null;
 
         // INITIALIZATION & SESSION CHECK
-    window.onload = () => {
-      // 1. Check if login credentials were passed via URL parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlName = urlParams.get('username') || urlParams.get('name') || urlParams.get('fullName');
-      const urlId = urlParams.get('id') || urlParams.get('staffId') || urlParams.get('userid');
+        window.onload = () => {
+            document.getElementById('form-login')?.reset();
+            document.getElementById('form-register')?.reset();
 
-      // 2. Check for active session (Checking sessionStorage first, matching index.html)
-      const savedSession = sessionStorage.getItem('edhkn_active_session') || 
-                           localStorage.getItem('edhkn_active_session') || 
-                           localStorage.getItem('bls_active_session');
-
-      if (urlName) {
-        // Populate from URL
-        currentUser = { 
-          name: urlName, 
-          id: urlId || 'MOH-GUEST',
-          dept: urlParams.get('dept') || 'N/A'
+            // Read persistent session from localStorage (cross-tab support)
+            const savedSession = localStorage.getItem('edhkn_active_session');
+            if (savedSession) {
+                currentUser = JSON.parse(savedSession);
+                updateNavUser();
+                showPortal();
+            } else {
+                switchTab('login');
+                showAuth();
+            }
         };
-        sessionStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
-      } else if (savedSession) {
-        // Populate from Storage
-        const parsed = JSON.parse(savedSession);
-        currentUser = { 
-          name: parsed.username || parsed.name || parsed.fullName || 'Healthcare Practitioner', 
-          id: parsed.id || parsed.staffId || parsed.userId || 'MOH-GUEST',
-          dept: parsed.dept || parsed.department || 'N/A'
-        };
-      } else {
-        // Fallback
-        currentUser = { name: 'Healthcare Practitioner', id: 'MOH-GUEST', dept: 'N/A' };
-      }
-      
-      updateNavUser();
-      showPage('dashboard');
-    };
 
         async function sendWebhookRequest(payload) {
             if (!GOOGLE_SHEET_WEBHOOK_URL || GOOGLE_SHEET_WEBHOOK_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL")) {
@@ -823,7 +803,7 @@
             const users = getRegisteredUsers();
             const existingUser = users.find(u => u.id.toLowerCase() === id.toLowerCase());
             if (existingUser) {
-                alert("This Staff ID / IC Number is already registered locally. Please log in.");
+                alert("This Staff ID / IC Number is already registered. Please log in.");
                 btn.disabled = false;
                 btn.innerHTML = `<span>Register Practitioner</span>`;
                 switchTab('login');
@@ -838,7 +818,9 @@
             await sendWebhookRequest({ action: 'register', id, name, email, dept, pass });
 
             currentUser = { id: newUser.id, name: newUser.name, email: newUser.email, dept: newUser.dept };
-            sessionStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
+            
+            // Save to localStorage so new tabs can read it
+            localStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
 
             alert("Registration successful! Welcome to EDHKN Portal.");
             btn.disabled = false;
@@ -877,7 +859,8 @@
             btn.innerHTML = `<span>Access Portal</span>`;
 
             if (loginSuccess) {
-                sessionStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
+                // Save to localStorage so all child pages can access it
+                localStorage.setItem('edhkn_active_session', JSON.stringify(currentUser));
                 updateNavUser();
                 showPortal();
             } else {
@@ -907,11 +890,11 @@
         }
 
         function logout() {
-            sessionStorage.removeItem('edhkn_active_session');
             localStorage.removeItem('edhkn_active_session');
+            sessionStorage.removeItem('edhkn_active_session');
             currentUser = null;
             showAuth();
-            switchTab('register');
+            switchTab('login');
         }
     </script>
 </body>
