@@ -63,6 +63,164 @@
       border-color: #38bdf8;
       box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
     }
+
+    /* --- FLOATING HEADER STYLES --- */
+    .floating-header {
+      position: sticky;
+      top: 1rem;
+      z-index: 100;
+      max-width: 1140px;
+      width: calc(100% - 2rem);
+      margin: 1rem auto 0 auto;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.15);
+      padding: 0.75rem 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .header-logo {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
+      transition: transform 0.2s ease;
+    }
+
+    .header-brand:hover .header-logo {
+      transform: scale(1.05);
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .header-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 12px;
+      background: rgba(13, 148, 136, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      color: #38bdf8;
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* HOME BUTTON */
+    .btn-home {
+      background: rgba(2, 132, 199, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-home:hover {
+      background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .user-badge-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.45rem 0.9rem;
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-size: 0.8rem;
+    }
+
+    .user-badge-info .user-name {
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .user-badge-info .user-id {
+      color: #38bdf8;
+      font-size: 0.72rem;
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 0.45rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #ffffff;
+      border-color: #ef4444;
+    }
+
+    @media (max-width: 640px) {
+      .brand-title span:first-child { font-size: 0.88rem; }
+      .brand-sub { display: none; }
+      .btn-home span { display: none; }
+      .btn-home { padding: 0.5rem 0.75rem; }
+      .user-badge-info .user-name {
+        max-width: 80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
   </style>
 </head>
 <body class="bg-black text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
@@ -71,30 +229,42 @@
   <div class="fixed top-0 left-1/4 -translate-x-1/2 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[140px] pointer-events-none"></div>
   <div class="fixed bottom-0 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[140px] pointer-events-none"></div>
 
-  <!-- HEADER -->
-  <header class="bg-slate-950/80 border-b border-slate-800/80 sticky top-0 z-50 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
-        <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center p-1 shadow-lg ring-1 ring-white/10">
-          <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="MOH Logo" class="max-h-full max-w-full object-contain">
-        </div>
+  <!-- FLOATING STICKY HEADER -->
+  <header class="floating-header">
+    <div class="header-container">
+      <!-- Brand / Logo Link -->
+      <div class="header-brand" onclick="goHome()" title="Hospital Kuala Nerang Portal">
+        <img src="https://lh3.googleusercontent.com/d/1O2Nj1Dr4U6wo7ISjdkDRukPYwZUkOOuJ" alt="Logo" class="header-logo">
         <div>
-          <span class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            EDHKN <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30">System Feedback</span>
-          </span>
-          <p class="text-xs text-slate-400 font-medium">Emergency & Trauma Dept • Hospital Kuala Nerang</p>
+          <div class="brand-title">
+            <span>EDHKN System Feedback</span>
+            <span class="header-badge">Evaluation</span>
+          </div>
+          <p class="brand-sub">Emergency & Trauma Dept • Hospital Kuala Nerang</p>
         </div>
       </div>
 
-      <div class="flex items-center space-x-3 sm:space-x-4">
-        <div class="text-right hidden sm:block">
-          <p id="user-display-name" class="text-sm font-bold text-white">Healthcare Practitioner</p>
-          <p id="user-display-id" class="text-xs text-slate-400">MOH-ACTIVE</p>
-        </div>
-        <button onclick="window.location.href='index.html'" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold rounded-lg border border-slate-800 transition flex items-center gap-2">
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <!-- HOME BUTTON -->
+        <button onclick="goHome()" class="btn-home" title="Return to Portal Home">
           <i class="fa-solid fa-house"></i>
-          <span class="hidden md:inline">Portal Main</span>
+          <span>Home</span>
         </button>
+
+        <!-- LOGGED-IN PRACTITIONER INFO & LOGOUT -->
+        <div id="nav-user-info" class="hidden sm:flex" style="align-items: center; gap: 0.6rem;">
+          <div class="user-badge-info">
+            <i class="fa-solid fa-user-doctor text-cyan-400"></i>
+            <div class="hidden md:block">
+              <span id="user-display-name" class="user-name block text-[11px] leading-tight">---</span>
+              <span id="user-display-id" class="user-id block text-[9px]">(---)</span>
+            </div>
+          </div>
+          <button onclick="logout()" class="btn-logout" title="Log Out">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -212,27 +382,47 @@
     let scores = {};
 
     window.onload = () => {
-      // Prioritize sessionStorage matching index.html
-      const savedSession = sessionStorage.getItem('edhkn_active_session') ||
-                           localStorage.getItem('edhkn_active_session') || 
+      // Prioritize persistent localStorage first, then fallback to sessionStorage
+      const savedSession = localStorage.getItem('edhkn_active_session') || 
+                           sessionStorage.getItem('edhkn_active_session') ||
                            localStorage.getItem('bls_active_session') || 
                            localStorage.getItem('als_active_session');
 
       if (savedSession) {
         currentUser = JSON.parse(savedSession);
       } else {
-        currentUser = { name: 'Practitioner Guest', id: 'MOH-GUEST', dept: 'Emergency & Trauma Dept', email: 'N/A' };
+        currentUser = { 
+          name: 'Guest Practitioner', 
+          id: 'MOH-GUEST', 
+          dept: 'Emergency & Trauma Dept', 
+          email: 'N/A' 
+        };
       }
 
       // Display Metadata
-      document.getElementById('user-display-name').innerText = currentUser.name || 'Practitioner';
-      document.getElementById('user-display-id').innerText = currentUser.id ? `ID: ${currentUser.id}` : 'MOH-ACTIVE';
-      document.getElementById('meta-name').innerText = currentUser.name || 'Guest Practitioner';
-      document.getElementById('meta-id').innerText = currentUser.id || 'N/A';
-      document.getElementById('meta-dept').innerText = currentUser.dept || 'Emergency & Trauma Dept';
+      const userName = currentUser.name || 'Practitioner';
+      const userId = currentUser.id || 'N/A';
+      const userDept = currentUser.dept || 'Emergency & Trauma Dept';
+
+      document.getElementById('user-display-name').innerText = userName;
+      document.getElementById('user-display-id').innerText = `(${userId})`;
+      document.getElementById('meta-name').innerText = userName;
+      document.getElementById('meta-id').innerText = userId;
+      document.getElementById('meta-dept').innerText = userDept;
 
       renderCriteria();
     };
+
+    function goHome() {
+      window.location.href = "index.html";
+    }
+
+    function logout() {
+      localStorage.removeItem('edhkn_active_session');
+      sessionStorage.removeItem('edhkn_active_session');
+      currentUser = null;
+      window.location.href = "index.html";
+    }
 
     function renderCriteria() {
       const container = document.getElementById('criteria-container');
@@ -241,10 +431,8 @@
       let currentCategory = '';
 
       criteriaList.forEach((c) => {
-        // Start completely blank (unselected)
         scores[c.id] = null;
 
-        // Add Category Divider
         if (c.category !== currentCategory) {
           currentCategory = c.category;
           const catHeader = document.createElement('div');
@@ -277,7 +465,6 @@
     function setRating(criterionId, val) {
       scores[criterionId] = val;
       
-      // Reset card border
       const card = document.getElementById(`card-criterion-${criterionId}`);
       if (card) card.style.borderColor = 'rgba(30, 41, 59, 0.8)';
 
@@ -294,10 +481,8 @@
     async function handleFeedbackSubmit(e) {
       e.preventDefault();
 
-      // Check for unrated criteria
       const unrated = criteriaList.filter(c => !scores[c.id]);
       if (unrated.length > 0) {
-        // Highlight first unrated card
         const firstUnrated = unrated[0];
         const card = document.getElementById(`card-criterion-${firstUnrated.id}`);
         if (card) {
@@ -314,7 +499,6 @@
 
       const comments = document.getElementById('feedback-comments').value.trim();
 
-      // Calculate average rating
       const scoreValues = Object.values(scores);
       const avgScore = (scoreValues.reduce((a, b) => a + b, 0) / scoreValues.length).toFixed(2);
 
